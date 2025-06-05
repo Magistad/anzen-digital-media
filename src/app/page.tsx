@@ -1,7 +1,6 @@
 /* ----------------------------------------------------------------
    Home page – minimalist hero with centered looping MP4
    ---------------------------------------------------------------- */
-import Image from 'next/image';   // still useful for later pages
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -18,7 +17,7 @@ export default function Home() {
         {/* Hero video */}
         <div className="relative w-full max-w-lg aspect-[3/4] mb-10">
           <video
-            src="/hero.mp4"     /* file lives in /public */
+            src="/hero.mp4"
             autoPlay
             muted
             loop
@@ -31,8 +30,9 @@ export default function Home() {
         <p className="animate-bounce text-sm opacity-80">scroll</p>
       </main>
 
-      {/* Footer grid (will be created in the next step) */}
+      {/* Footer stub (real grid in next step) */}
       <Footer />
     </>
   );
 }
+
