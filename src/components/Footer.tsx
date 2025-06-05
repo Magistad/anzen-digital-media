@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------
-   Footer – 8-category grid, white text, less top margin
+   Footer – 8-category grid, white text, flush with hero section
    ---------------------------------------------------------------- */
 const categories = [
   { en: 'Generative Content',   jp: '生成系' },
@@ -14,7 +14,7 @@ const categories = [
 
 export default function Footer() {
   return (
-    <footer className="mt-10 bg-black py-8 border-t border-white/20 text-white">
+    <footer className="bg-black py-8 text-white">
       <ul className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-5xl mx-auto text-sm">
         {categories.map(({ en, jp }) => (
           <li key={en} className="group">
