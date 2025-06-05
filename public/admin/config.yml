@@ -1,0 +1,33 @@
+backend:
+  name: git-gateway
+  branch: main          # change only if your default branch is 'master'
+
+media_folder: "public/uploads"      # files stored in repo
+public_folder: "/uploads"           # paths used by the site
+
+collections:
+  # 1) Affiliate Cards  ---------------------------------------------------
+  - name: "affiliates"
+    label: "Affiliate Cards"
+    folder: "content/affiliates"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Company Name", name: "title", widget: "string" }
+      - { label: "Logo",         name: "logo",  widget: "image" }
+      - { label: "URL",          name: "url",   widget: "string" }
+      - { label: "Category",     name: "category", widget: "select", options:
+          ["Generative Content", "Workflow & Automation", "Dev Tools & APIs",
+           "Customer Support", "Marketing AI", "Data & BI",
+           "Creative (Media)", "Voice & NLP"] }
+
+  # 2) Blog posts  --------------------------------------------------------
+  - name: "blog"
+    label: "Blog"
+    folder: "content/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title",        name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date",  widget: "datetime" }
+      - { label: "Body",         name: "body",  widget: "markdown" }
