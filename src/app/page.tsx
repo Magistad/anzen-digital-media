@@ -1,6 +1,7 @@
 /* ----------------------------------------------------------------
-   Home page – full-screen looping video background
+   Home page – full-screen video background + Affiliate grid + footer
    ---------------------------------------------------------------- */
+import AffiliateGrid from '@/components/AffiliateGrid';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -18,7 +19,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Centered page content */}
+      {/* Centered hero */}
       <main className="min-h-screen flex flex-col items-center justify-center text-center px-4">
         <h1 className="font-serif text-4xl md:text-6xl tracking-wide mb-6 text-[--ink]">
           <span className="inline-block border-b-4 border-[--hinomaru] pb-1">
@@ -29,9 +30,13 @@ export default function Home() {
         <p className="animate-bounce text-sm opacity-80 text-[--ink]">scroll</p>
       </main>
 
-      {/* Footer grid */}
+      {/* NEW – Affiliate grid */}
+      <AffiliateGrid />
+
+      {/* Footer */}
       <Footer />
     </>
   );
 }
+
 
