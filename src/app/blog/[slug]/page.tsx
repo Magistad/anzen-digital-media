@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* ----------------------------------------------------------------
    /blog/[slug] – renders a single MDX post
    ---------------------------------------------------------------- */
@@ -14,9 +13,14 @@ export async function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }));
 }
 
-export default async function BlogPost({ params }) {
-  const posts = await getAllPosts();
-  const post = posts.find((p) => p.slug === params.slug);
+export default async function BlogPost({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: Record<string, string | string[]>;
+}) {
+  const post = (await getAllPosts()).find((p) => p.slug === params.slug);
   if (!post) notFound();
 
   return (
@@ -33,6 +37,7 @@ export default async function BlogPost({ params }) {
     </article>
   );
 }
+
 
 
 
