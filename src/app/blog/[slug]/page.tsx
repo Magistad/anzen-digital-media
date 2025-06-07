@@ -30,7 +30,7 @@ export default async function BlogPost(props: any) {
         {post.front.tags.join(', ')}
       </p>
 
-      <MDXRemote {...post.mdxSource} />
+      <MDXRemote source={post.mdxSource} />
     </article>
   );
 }
