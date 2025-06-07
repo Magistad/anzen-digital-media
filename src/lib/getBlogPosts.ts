@@ -5,7 +5,10 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { serialize } from 'next-mdx-remote/serialize';
+import {
+  serialize,
+  MDXRemoteSerializeResult,
+} from 'next-mdx-remote/serialize';
 
 export interface BlogPost {
   slug: string;
@@ -16,7 +19,7 @@ export interface BlogPost {
     affiliate: string;
     logo: string;
   };
-  mdxSource: any;        // serialised MDX
+  mdxSource: MDXRemoteSerializeResult;
 }
 
 const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
@@ -42,8 +45,9 @@ export async function getAllPosts(): Promise<BlogPost[]> {
     })
   );
 
-  // Newest first
+  // newest first
   return posts.sort(
-    (a, b) => new Date(b.front.date).getTime() - new Date(a.front.date).getTime()
+    (a, b) =>
+      new Date(b.front.date).getTime() - new Date(a.front.date).getTime()
   );
 }
