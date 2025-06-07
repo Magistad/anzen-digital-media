@@ -5,10 +5,8 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import {
-  serialize,
-  MDXRemoteSerializeResult,
-} from 'next-mdx-remote/serialize';
+import { serialize } from 'next-mdx-remote/serialize';
+import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 
 export interface BlogPost {
   slug: string;
