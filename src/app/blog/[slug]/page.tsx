@@ -2,7 +2,6 @@
    /blog/[slug] – renders a single MDX post
    ---------------------------------------------------------------- */
 import { notFound } from 'next/navigation';
-import type { PageProps } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllPosts } from '@/lib/getBlogPosts';
 import { Noto_Sans } from 'next/font/google';
@@ -16,7 +15,9 @@ export async function generateStaticParams() {
 
 export default async function BlogPost({
   params,
-}: PageProps<{ slug: string }>) {
+}: {
+  params: { slug: string };
+}) {
   const posts = await getAllPosts();
   const post = posts.find((p) => p.slug === params.slug);
 
