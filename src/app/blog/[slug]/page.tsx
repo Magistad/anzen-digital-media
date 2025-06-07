@@ -15,10 +15,10 @@ export async function generateStaticParams() {
 
 export default async function BlogPost({
   params,
-  searchParams,
+  _searchParams, // required by Next.js PageProps, prefixed to avoid ESLint unused-var
 }: {
   params: { slug: string };
-  searchParams: Record<string, string | string[]>;
+  _searchParams: Record<string, string | string[]>;
 }) {
   const post = (await getAllPosts()).find((p) => p.slug === params.slug);
   if (!post) notFound();
