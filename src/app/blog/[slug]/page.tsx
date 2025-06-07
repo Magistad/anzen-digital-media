@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 /* ----------------------------------------------------------------
    /blog/[slug] – renders a single MDX post
    ---------------------------------------------------------------- */
@@ -13,7 +14,13 @@ export async function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }));
 }
 
-export default async function BlogPost({ params }: any) {
+export default async function BlogPost({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: Record<string, string | string[]>;
+}) {
   const post = (await getAllPosts()).find((p) => p.slug === params.slug);
   if (!post) notFound();
 
