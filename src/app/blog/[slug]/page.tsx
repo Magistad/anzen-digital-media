@@ -2,6 +2,7 @@
    /blog/[slug] – renders a single MDX post
    ---------------------------------------------------------------- */
 import { notFound } from 'next/navigation';
+import type { PageProps } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllPosts } from '@/lib/getBlogPosts';
 import { Noto_Sans } from 'next/font/google';
@@ -15,9 +16,7 @@ export async function generateStaticParams() {
 
 export default async function BlogPost({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: PageProps<{ slug: string }>) {
   const posts = await getAllPosts();
   const post = posts.find((p) => p.slug === params.slug);
 
@@ -29,7 +28,7 @@ export default async function BlogPost({
     >
       <h1 className="text-3xl font-semibold mb-4">{post.front.title}</h1>
       <p className="text-xs opacity-70 mb-8">
-        {new Date(post.front.date).toLocaleDateString()} ·{' '}
+        {new Date(post.front.date).toLocaleDateString()} &nbsp;|&nbsp;{' '}
         {post.front.tags.join(', ')}
       </p>
 
@@ -37,3 +36,4 @@ export default async function BlogPost({
     </article>
   );
 }
+
