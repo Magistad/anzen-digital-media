@@ -16,14 +16,11 @@ export async function generateStaticParams() {
 export default async function BlogPost({
   params,
 }: {
-  /** route params */
   params: { slug: string };
-  /** query params (unused but required for PageProps) */
   searchParams?: Record<string, string | string[]>;
 }) {
   const posts = await getAllPosts();
   const post = posts.find((p) => p.slug === params.slug);
-
   if (!post) notFound();
 
   return (
