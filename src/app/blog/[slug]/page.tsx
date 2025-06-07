@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* ----------------------------------------------------------------
-   /blog/[slug] – renders a single MDX post
+   /blog/[slug] – renders one MDX post
    ---------------------------------------------------------------- */
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
@@ -14,9 +14,11 @@ export async function generateStaticParams() {
   return posts.map(({ slug }) => ({ slug }));
 }
 
-export default async function BlogPost(props: any) {
-  const { params } = props as { params: { slug: string } };
-
+export default async function BlogPost({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const post = (await getAllPosts()).find((p) => p.slug === params.slug);
   if (!post) notFound();
 
@@ -30,7 +32,8 @@ export default async function BlogPost(props: any) {
         {post.front.tags.join(', ')}
       </p>
 
-      <MDXRemote {...post.mdxSource} />
+      {/* MDX body */}
+      <MDXRemote source={post.mdxSource as any} />
     </article>
   );
 }
