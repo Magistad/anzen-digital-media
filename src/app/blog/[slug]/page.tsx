@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* ----------------------------------------------------------------
    /blog/[slug] – renders a single MDX post
    ---------------------------------------------------------------- */
@@ -15,10 +16,10 @@ export async function generateStaticParams() {
 
 export default async function BlogPost({
   params,
-  _searchParams, // required by Next.js PageProps, prefixed to avoid ESLint unused-var
+  searchParams,
 }: {
   params: { slug: string };
-  _searchParams: Record<string, string | string[]>;
+  searchParams: Record<string, string | string[]>;
 }) {
   const post = (await getAllPosts()).find((p) => p.slug === params.slug);
   if (!post) notFound();
