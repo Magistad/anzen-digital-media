@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* ----------------------------------------------------------------
    /blog/[slug] – renders a single MDX post
    ---------------------------------------------------------------- */
@@ -11,16 +11,12 @@ const noto = Noto_Sans({ subsets: ['latin'], display: 'swap' });
 
 export async function generateStaticParams() {
   const posts = await getAllPosts();
-  return posts.map((p) => ({ slug: p.slug }));
+  return posts.map(({ slug }) => ({ slug }));
 }
 
-export default async function BlogPost({
-  params,
-  searchParams,
-}: {
-  params: { slug: string };
-  searchParams: Record<string, string | string[]>;
-}) {
+export default async function BlogPost(props: any) {
+  const { params } = props as { params: { slug: string } };
+
   const post = (await getAllPosts()).find((p) => p.slug === params.slug);
   if (!post) notFound();
 
