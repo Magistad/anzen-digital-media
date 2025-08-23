@@ -79,4 +79,24 @@ html, body { height: 100%; }
   animation: crtPowerOff 360ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
+/* ───────────── Reduced-motion accessibility ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .crt-flicker,
+  .crt-scan-glow,
+  .crt-poweron,
+  .crt-poweroff { animation: none !important; }
+
+  /* Keep visual style but calm the effects */
+  .crt-curved { filter: none; }
+  .crt-grain { opacity: 0.06; }
+}
+
+
 
