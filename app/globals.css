@@ -53,3 +53,26 @@ html, body {
   animation: scanGlow 6s ease-in-out infinite;
 }
 
+/* Phosphor grain overlay */
+.crt-grain {
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255,255,255,0.02) 0.5px, transparent 0.5px);
+  background-size: 2px 2px;
+  mix-blend-mode: overlay;
+  opacity: 0.15;
+}
+
+/* Power-on sweep */
+@keyframes crtPowerOn {
+  0%   { transform: scaleY(0.02) scaleX(0); filter: brightness(2); opacity: 0; }
+  30%  { transform: scaleY(0.02) scaleX(1); filter: brightness(3); opacity: 1; }
+  60%  { transform: scaleY(1.08) scaleX(1); filter: brightness(1.2); }
+  100% { transform: scaleY(1) scaleX(1); filter: none; opacity: 1; }
+}
+.crt-poweron {
+  transform-origin: 50% 50%;
+  animation: crtPowerOn 900ms cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+

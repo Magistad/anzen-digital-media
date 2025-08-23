@@ -2,12 +2,16 @@ type CRTOpts = {
   flicker: boolean;
   curvature: boolean;
   scanGlow: boolean;
+  grain: boolean;
+  powerOn: boolean;
 };
 
 const CRT_OPTS: CRTOpts = {
-  flicker: true,      // toggle on/off
-  curvature: true,    // toggle on/off
-  scanGlow: true,     // toggle on/off
+  flicker: true,
+  curvature: true,
+  scanGlow: true,
+  grain: true,
+  powerOn: true,
 };
 
 function CRTFrame({ children, opts }: { children: React.ReactNode; opts: CRTOpts }) {
@@ -40,7 +44,14 @@ function CRTFrame({ children, opts }: { children: React.ReactNode; opts: CRTOpts
           <div className="pointer-events-none absolute inset-0 [background:radial-gradient(90%_60%_at_50%_-20%,rgba(255,255,255,0.12),transparent_60%),radial-gradient(40%_30%_at_0%_0%,rgba(255,255,255,0.08),transparent_50%),radial-gradient(40%_30%_at_100%_0%,rgba(255,255,255,0.06),transparent_50%)]" />
 
           {/* Content */}
-          <div className="relative">{children}</div>
+          <div className={["relative", opts.powerOn ? "crt-poweron" : ""].join(" ")}>
+            {children}
+          </div>
+
+          {/* Phosphor grain overlay */}
+          {opts.grain && (
+            <div className="pointer-events-none absolute inset-0 crt-grain" />
+          )}
 
           {/* Flicker overlay (top of stack) */}
           {opts.flicker && (
@@ -350,4 +361,5 @@ export default function Page() {
     </CRTFrame>
   );
 }
+
 
