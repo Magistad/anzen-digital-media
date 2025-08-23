@@ -49,14 +49,10 @@ function CRTFrame({ children, opts }: { children: React.ReactNode; opts: CRTOpts
           </div>
 
           {/* Phosphor grain overlay */}
-          {opts.grain && (
-            <div className="pointer-events-none absolute inset-0 crt-grain" />
-          )}
+          {opts.grain && <div className="pointer-events-none absolute inset-0 crt-grain" />}
 
           {/* Flicker overlay (top of stack) */}
-          {opts.flicker && (
-            <div className="pointer-events-none absolute inset-0 crt-flicker" />
-          )}
+          {opts.flicker && <div className="pointer-events-none absolute inset-0 crt-flicker" />}
         </div>
 
         {/* Lower bezel controls */}
@@ -115,26 +111,9 @@ export default function Page() {
   ];
 
   const logos = [
-    "AWS",
-    "Azure",
-    "Google Cloud",
-    "Cloudflare",
-    "Kubernetes",
-    "Docker",
-    "Vercel",
-    "Render",
-    "Netlify",
-    "GitHub",
-    "Snowflake",
-    "Databricks",
-    "Postgres",
-    "BigQuery",
-    "Stripe",
-    "Twilio",
-    "OpenAI",
-    "Anthropic",
-    "Vertex AI",
-    "Bedrock",
+    "AWS","Azure","Google Cloud","Cloudflare","Kubernetes","Docker","Vercel","Render","Netlify",
+    "GitHub","Snowflake","Databricks","Postgres","BigQuery","Stripe","Twilio","OpenAI","Anthropic",
+    "Vertex AI","Bedrock",
   ];
 
   return (
@@ -152,20 +131,13 @@ export default function Page() {
             </span>
           </div>
           <div className="hidden items-center gap-6 md:flex">
-            <a className="text-sm text-zinc-300 hover:text-white" href="#work">
-              Work
-            </a>
-            <a className="text-sm text-zinc-300 hover:text-white" href="#services">
-              Solutions
-            </a>
-            <a className="text-sm text-zinc-300 hover:text-white" href="#why">
-              Why Anzen
-            </a>
-            <a className="text-sm text-zinc-300 hover:text-white" href="#contact">
-              Contact
-            </a>
+            <a data-poweroff className="text-sm text-zinc-300 hover:text-white" href="#work">Work</a>
+            <a data-poweroff className="text-sm text-zinc-300 hover:text-white" href="#services">Solutions</a>
+            <a data-poweroff className="text-sm text-zinc-300 hover:text-white" href="#why">Why Anzen</a>
+            <a data-poweroff className="text-sm text-zinc-300 hover:text-white" href="#contact">Contact</a>
           </div>
           <a
+            data-poweroff
             href="#services"
             className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium hover:bg-white/10"
           >
@@ -190,16 +162,10 @@ export default function Page() {
             measurable, and production-ready.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="#services"
-              className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-zinc-900 hover:bg-zinc-200"
-            >
+            <a data-poweroff href="#services" className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-zinc-900 hover:bg-zinc-200">
               Explore solutions
             </a>
-            <a
-              href="#why"
-              className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold hover:bg-white/10"
-            >
+            <a data-poweroff href="#why" className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold hover:bg-white/10">
               See our approach
             </a>
           </div>
@@ -208,9 +174,7 @@ export default function Page() {
         {/* Logo rail */}
         <div className="mt-16 grid grid-cols-2 items-center justify-items-center gap-6 opacity-70 sm:grid-cols-3 md:grid-cols-6">
           {logos.map((l) => (
-            <div key={l} className="text-xs text-zinc-400">
-              {l}
-            </div>
+            <div key={l} className="text-xs text-zinc-400">{l}</div>
           ))}
         </div>
       </section>
@@ -220,9 +184,7 @@ export default function Page() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-10 flex items-end justify-between">
             <h2 className="text-2xl font-semibold md:text-3xl">Solutions</h2>
-            <p className="text-sm text-zinc-400">
-              Compliance • Automation • Assistance • Development
-            </p>
+            <p className="text-sm text-zinc-400">Compliance • Automation • Assistance • Development</p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {services.map((s) => (
@@ -253,43 +215,19 @@ export default function Page() {
             <div>
               <h3 className="text-2xl font-semibold md:text-3xl">Why leaders choose Anzen</h3>
               <ul className="mt-6 space-y-4 text-zinc-300">
-                <li>
-                  <span className="font-medium text-white">Outcome first.</span> We ship value in
-                  weeks, not quarters.
-                </li>
-                <li>
-                  <span className="font-medium text-white">Secure by design.</span> Data isolation,
-                  least privilege, and auditable traces.
-                </li>
-                <li>
-                  <span className="font-medium text-white">Measurable impact.</span> We define
-                  success metrics and instrument from day one.
-                </li>
-                <li>
-                  <span className="font-medium text-white">Vendor-agnostic and cloud-native.</span>{" "}
-                  We meet you in your stack (AWS, Azure, GCP, Cloudflare, Kubernetes,
-                  Vercel/Netlify/Render, on-prem) without lock-in.
-                </li>
+                <li><span className="font-medium text-white">Outcome first.</span> We ship value in weeks, not quarters.</li>
+                <li><span className="font-medium text-white">Secure by design.</span> Data isolation, least privilege, and auditable traces.</li>
+                <li><span className="font-medium text-white">Measurable impact.</span> We define success metrics and instrument from day one.</li>
+                <li><span className="font-medium text-white">Vendor-agnostic and cloud-native.</span> We meet you in your stack (AWS, Azure, GCP, Cloudflare, Kubernetes, Vercel/Netlify/Render, on-prem) without lock-in.</li>
               </ul>
             </div>
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
               <div className="text-sm text-zinc-300">
-                <div className="mb-3 text-xs uppercase tracking-widest text-zinc-400">
-                  Sample Engagements
-                </div>
+                <div className="mb-3 text-xs uppercase tracking-widest text-zinc-400">Sample Engagements</div>
                 <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    Automated audit pack generation that cut prep time 78%.
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    CX copilot reducing AHT by 24% with higher CSAT.
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    RAG over private data with evals and governance.
-                  </li>
+                  <li className="flex items-start gap-3"><span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />Automated audit pack generation that cut prep time 78%.</li>
+                  <li className="flex items-start gap-3"><span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />CX copilot reducing AHT by 24% with higher CSAT.</li>
+                  <li className="flex items-start gap-3"><span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />RAG over private data with evals and governance.</li>
                 </ul>
               </div>
             </div>
@@ -301,9 +239,7 @@ export default function Page() {
       <section id="contact" className="border-t border-white/10 bg-zinc-900/30 py-16">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h3 className="text-2xl font-semibold md:text-3xl">Contact</h3>
-          <p className="mx-auto mt-4 max-w-2xl text-zinc-300">
-            Currently not accepting new clients in 2025.
-          </p>
+          <p className="mx-auto mt-4 max-w-2xl text-zinc-300">Currently not accepting new clients in 2025.</p>
         </div>
       </section>
 
@@ -313,33 +249,16 @@ export default function Page() {
           <div>
             <div className="text-lg font-semibold">ANZEN DIGITAL</div>
             <p className="mt-2 text-sm text-zinc-400">
-              The AI House for modern operations: compliance, automation, assistance, and
-              development.
+              The AI House for modern operations: compliance, automation, assistance, and development.
             </p>
           </div>
           <div>
             <div className="text-sm font-medium text-zinc-300">Company</div>
             <ul className="mt-3 space-y-2 text-sm text-zinc-400">
-              <li>
-                <a href="#work" className="hover:text-white">
-                  Work
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-white">
-                  Solutions
-                </a>
-              </li>
-              <li>
-                <a href="#why" className="hover:text-white">
-                  Why Anzen
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="hover:text-white">
-                  Contact
-                </a>
-              </li>
+              <li><a data-poweroff href="#work" className="hover:text-white">Work</a></li>
+              <li><a data-poweroff href="#services" className="hover:text-white">Solutions</a></li>
+              <li><a data-poweroff href="#why" className="hover:text-white">Why Anzen</a></li>
+              <li><a data-poweroff href="#contact" className="hover:text-white">Contact</a></li>
             </ul>
           </div>
           <div>
