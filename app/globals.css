@@ -17,3 +17,39 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ───────────────── CRT extras ───────────────── */
+
+/* Subtle brightness jitter overlay */
+@keyframes crtFlicker {
+  0%, 100% { opacity: 0.00; }
+  41% { opacity: 0.00; }
+  42% { opacity: 0.08; }
+  43% { opacity: 0.00; }
+  78% { opacity: 0.00; }
+  79% { opacity: 0.06; }
+  80% { opacity: 0.00; }
+}
+.crt-flicker {
+  animation: crtFlicker 7s infinite steps(80);
+  background: rgba(255,255,255,0.03);
+  mix-blend-mode: overlay;
+}
+
+/* A touch more edge pressure + slight pop */
+.crt-curved {
+  box-shadow:
+    inset 0 -110px 220px rgba(0,0,0,0.70),
+    inset 0 0 180px rgba(0,0,0,0.82);
+  filter: contrast(1.02) saturate(1.05);
+}
+
+/* Gentle breathing of scanline glow */
+@keyframes scanGlow {
+  0%, 100% { opacity: 0.14; }
+  50%      { opacity: 0.22; }
+}
+.crt-scan-glow {
+  animation: scanGlow 6s ease-in-out infinite;
+}
+

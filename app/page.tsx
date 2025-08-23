@@ -1,20 +1,53 @@
-function CRTFrame({ children }: { children: React.ReactNode }) {
+type CRTOpts = {
+  flicker: boolean;
+  curvature: boolean;
+  scanGlow: boolean;
+};
+
+const CRT_OPTS: CRTOpts = {
+  flicker: true,      // toggle on/off
+  curvature: true,    // toggle on/off
+  scanGlow: true,     // toggle on/off
+};
+
+function CRTFrame({ children, opts }: { children: React.ReactNode; opts: CRTOpts }) {
   return (
     <div className="min-h-screen bg-[#12100d] flex items-center justify-center p-4">
       <div className="relative w-full max-w-7xl rounded-[24px] bg-[#d2c6a6] shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-black/15">
         {/* Outer bevel */}
         <div className="pointer-events-none absolute inset-0 rounded-[24px] [box-shadow:inset_0_2px_0_rgba(255,255,255,0.25),inset_0_-4px_20px_rgba(0,0,0,0.25)]" />
+
         {/* Screen well */}
-        <div className="relative m-5 rounded-[18px] bg-[#0b1213] overflow-hidden ring-1 ring-black/40 shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]">
+        <div
+          className={[
+            "relative m-5 rounded-[18px] bg-[#0b1213] overflow-hidden ring-1 ring-black/40 shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]",
+            opts.curvature ? "crt-curved" : "",
+          ].join(" ")}
+        >
           {/* Curvature + vignette */}
           <div className="pointer-events-none absolute inset-0 rounded-[18px] [box-shadow:inset_0_-80px_140px_rgba(0,0,0,0.6),inset_0_0_120px_rgba(0,0,0,0.7)]" />
+
           {/* Scanlines */}
-          <div className="pointer-events-none absolute inset-0 opacity-25 mix-blend-overlay [background-image:repeating-linear-gradient(to_bottom,rgba(255,255,255,0.05)_0px,rgba(255,255,255,0.05)_1px,transparent_1px,transparent_3px)]" />
+          <div
+            className={[
+              "pointer-events-none absolute inset-0 opacity-25 mix-blend-overlay",
+              "[background-image:repeating-linear-gradient(to_bottom,rgba(255,255,255,0.05)_0px,rgba(255,255,255,0.05)_1px,transparent_1px,transparent_3px)]",
+              opts.scanGlow ? "crt-scan-glow" : "",
+            ].join(" ")}
+          />
+
           {/* Glass reflections */}
           <div className="pointer-events-none absolute inset-0 [background:radial-gradient(90%_60%_at_50%_-20%,rgba(255,255,255,0.12),transparent_60%),radial-gradient(40%_30%_at_0%_0%,rgba(255,255,255,0.08),transparent_50%),radial-gradient(40%_30%_at_100%_0%,rgba(255,255,255,0.06),transparent_50%)]" />
+
           {/* Content */}
           <div className="relative">{children}</div>
+
+          {/* Flicker overlay (top of stack) */}
+          {opts.flicker && (
+            <div className="pointer-events-none absolute inset-0 crt-flicker" />
+          )}
         </div>
+
         {/* Lower bezel controls */}
         <div className="mx-5 mb-5 mt-2 flex items-center justify-between">
           <div className="h-10 w-28 rounded-sm bg-[#cdbf9f] shadow-inner ring-1 ring-black/20 flex items-center justify-center text-[10px] tracking-widest text-[#6b6048]">
@@ -94,7 +127,7 @@ export default function Page() {
   ];
 
   return (
-    <CRTFrame>
+    <CRTFrame opts={CRT_OPTS}>
       {/* Navbar */}
       <header className="sticky top-0 z-20 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/60">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -317,3 +350,4 @@ export default function Page() {
     </CRTFrame>
   );
 }
+
