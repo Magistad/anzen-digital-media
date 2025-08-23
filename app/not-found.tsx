@@ -55,6 +55,7 @@ export default function NotFound() {
                 The page you’re looking for isn’t broadcasting. Try the main channel.
               </p>
               <a
+                data-poweroff
                 href="/"
                 className="mt-8 inline-block rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-zinc-900 hover:bg-zinc-200"
               >
@@ -109,3 +110,4 @@ export default function NotFound() {
     </CRTFrame>
   );
 }
+
