@@ -121,7 +121,7 @@ function buildStart(workbook: ExcelJS.Workbook) {
     { text: "", size: 12, height: 12 },
     { text: "What this file is", size: 16, bold: true, height: 24 },
     {
-      text: "One row here is one property there. The lead, showings, offers, critical dates, and commission on a file share that address. This is not a Follow Up Boss or BoldTrail replacement. Those are monthly CRMs.",
+      text: "One row here is one property there. The lead, showings, offers, critical dates, and commission on a file share that address. This is not a Follow Up Boss or BoldTrail replacement. Those are full CRMs.",
       size: 12,
       height: 48,
     },

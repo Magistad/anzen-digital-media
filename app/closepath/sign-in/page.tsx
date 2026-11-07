@@ -20,6 +20,8 @@ const fieldClass =
 const errors: Record<string, string> = {
   invalid: "Email or password is wrong.",
   locked: "Too many attempts. Wait fifteen minutes.",
+  inactive: "This subscription isn’t active. The book stays closed.",
+  billing: "Closepath can’t confirm this subscription right now.",
   unconfigured: "Closepath can’t open accounts right now.",
 };
 
@@ -44,7 +46,7 @@ export default function SignInPage({
           Open your book.
         </h1>
         <p className="mt-5 max-w-[34rem] text-base leading-snug tracking-[-0.02em] text-paper/75 sm:mt-8 sm:text-lg">
-          The email and password you set after you bought Closepath.
+          The email and password you set after checkout.
         </p>
         {message ? (
           <p className="mt-4 max-w-md text-sm text-paper/70" role="alert">
@@ -71,7 +73,7 @@ export default function SignInPage({
           </button>
         </form>
         <p className="mt-5 max-w-md text-sm leading-snug text-paper/60 sm:mt-6">
-          Bought Closepath and never set a password? Use the page Stripe sent you back to after checkout.{" "}
+          Subscribed and never set a password? Use the page Stripe sent you back to after checkout.{" "}
           <Link href="/products/closepath" className="text-paper/80 hover:text-paper">
             Back to Closepath
           </Link>

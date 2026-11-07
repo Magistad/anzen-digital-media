@@ -34,7 +34,17 @@ function isView(value: string | null): value is ViewId {
   return value === "morning" || value === "files" || value === "leads";
 }
 
-export function ClosepathApp({ initial, email }: { initial: Workspace; email: string }) {
+export function ClosepathApp({
+  initial,
+  email,
+  billingNote,
+  canManageBilling = false,
+}: {
+  initial: Workspace;
+  email: string;
+  billingNote?: string;
+  canManageBilling?: boolean;
+}) {
   const router = useRouter();
   const params = useSearchParams();
   const fileId = params.get("file");
@@ -160,6 +170,13 @@ export function ClosepathApp({ initial, email }: { initial: Workspace; email: st
             <a href={exportHref} className="book-tap text-paper/70 hover:text-paper">
               Export
             </a>
+            {canManageBilling ? (
+              <form action="/api/closepath/billing" method="post" className="inline-flex">
+                <button type="submit" className="book-quiet">
+                  Billing
+                </button>
+              </form>
+            ) : null}
             <form action="/api/closepath/sign-out" method="post" className="inline-flex">
               <button type="submit" className="book-quiet">
                 Sign out
@@ -167,6 +184,11 @@ export function ClosepathApp({ initial, email }: { initial: Workspace; email: st
             </form>
           </div>
         </div>
+        {billingNote ? (
+          <p className="mt-2 text-[14px] text-paper/70" role="status">
+            {billingNote}
+          </p>
+        ) : null}
 
         {file ? null : (
           <>
