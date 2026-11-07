@@ -14,10 +14,11 @@ import {
   fileFromLead,
   filesByAttention,
   morningLines,
+  outcomeTotals,
   todayIso,
 } from "../../lib/closepath-model";
 import { sampleFiles } from "../../lib/closepath-samples";
-import { FileList } from "./FileList";
+import { FileList, type FileShow } from "./FileList";
 import { FileView } from "./FileView";
 import { LeadList } from "./LeadList";
 import { MorningList } from "./MorningList";
@@ -32,6 +33,17 @@ type ViewId = (typeof VIEWS)[number]["id"];
 
 function isView(value: string | null): value is ViewId {
   return value === "morning" || value === "files" || value === "leads";
+}
+
+function isShow(value: string | null): value is FileShow {
+  return value === "all" || value === "open" || value === "closed" || value === "did-not-close";
+}
+
+function matchesShow(outcome: string, show: FileShow): boolean {
+  if (show === "open") return outcome === "Open";
+  if (show === "closed") return outcome === "Closed";
+  if (show === "did-not-close") return outcome === "Did not close";
+  return true;
 }
 
 export function ClosepathApp({
@@ -49,7 +61,9 @@ export function ClosepathApp({
   const params = useSearchParams();
   const fileId = params.get("file");
   const requested = params.get("view");
+  const requestedShow = params.get("show");
   const view: ViewId = isView(requested) ? requested : "morning";
+  const show: FileShow = isShow(requestedShow) ? requestedShow : "all";
   const [workspace, setWorkspace] = useState(initial);
   const [today, setToday] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"saved" | "saving" | "error">("saved");
@@ -133,21 +147,32 @@ export function ClosepathApp({
     router.push(`/closepath?file=${encodeURIComponent(id)}#dates`);
   }
 
-  function go(next: ViewId) {
-    router.push(next === "morning" ? "/closepath" : `/closepath?view=${next}`);
+  function go(next: ViewId, nextShow?: FileShow) {
+    if (next === "morning") router.push("/closepath");
+    else if (next === "leads") router.push("/closepath?view=leads");
+    else if (nextShow && nextShow !== "all") router.push(`/closepath?view=files&show=${nextShow}`);
+    else router.push("/closepath?view=files");
+  }
+
+  function setOutcome(id: string, outcome: "Open" | "Closed" | "Did not close") {
+    commit((current) => ({
+      ...current,
+      files: current.files.map((item) => (item.id === id ? { ...item, outcome } : item)),
+    }));
   }
 
   const file = fileId ? workspace.files.find((item) => item.id === fileId) : undefined;
   const ordered = today ? filesByAttention(workspace.files, today) : workspace.files;
+  const visible = ordered.filter((item) => matchesShow(item.outcome, show));
   const lines = today ? morningLines(workspace.files, today) : morningLines(workspace.files, "2000-01-01");
-  const funded = workspace.files.filter((item) => item.funded === "Yes");
+  const totals = outcomeTotals(workspace.files);
   const hasExamples = workspace.files.some((item) => item.example) || workspace.leads.some((item) => item.example);
   const offerSamples = !workspace.examplesLoaded && !workspace.examplesDismissed;
   const active = file ? "files" : view;
   const title = view === "files" ? "Files" : view === "leads" ? "Leads" : "This morning";
   const blurb =
     view === "files"
-      ? "One file per property. Dates, showings, offers, and the commission hang off that address."
+      ? "One file per property. Open files are the live deals. Closed and did not close stay in the book."
       : view === "leads"
         ? "People who are not a file yet."
         : "Open this before your inbox. Anything inside three days gets done today.";
@@ -155,29 +180,29 @@ export function ClosepathApp({
   return (
     <main id="content" className="pb-16 pt-20">
       <div className="frame">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-          <p className="text-[13px] text-paper/50">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 sm:gap-x-6">
+          <p className="min-w-0 max-w-full text-[13px] text-paper/50">
             Closepath
-            <span className="ml-3 text-paper/35">{email}</span>
+            <span className="book-email">{email}</span>
           </p>
-          <div className="flex items-baseline gap-4 text-[14px]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0 text-[14px] sm:items-baseline sm:gap-x-4">
             <span className="text-paper/45">{saveState === "saving" ? "Saving" : saveState === "error" ? "Not saved" : "Saved"}</span>
             {saveState === "error" ? (
               <button type="button" className="book-quiet" onClick={() => void drain()}>
                 Retry
               </button>
             ) : null}
-            <a href={exportHref} className="text-paper/70 hover:text-paper">
+            <a href={exportHref} className="book-tap text-paper/70 hover:text-paper">
               Export
             </a>
             {canManageBilling ? (
-              <form action="/api/closepath/billing" method="post">
+              <form action="/api/closepath/billing" method="post" className="inline-flex">
                 <button type="submit" className="book-quiet">
                   Billing
                 </button>
               </form>
             ) : null}
-            <form action="/api/closepath/sign-out" method="post">
+            <form action="/api/closepath/sign-out" method="post" className="inline-flex">
               <button type="submit" className="book-quiet">
                 Sign out
               </button>
@@ -197,7 +222,7 @@ export function ClosepathApp({
           </>
         )}
 
-        <nav aria-label="Book" className="mt-3 flex gap-5 border-b border-paper/15 text-[15px]">
+        <nav aria-label="Book" className="book-nav mt-3 flex gap-5 border-b border-paper/15 text-[15px]">
           {VIEWS.map((item) => {
             const current = active === item.id;
             return (
@@ -206,7 +231,7 @@ export function ClosepathApp({
                 type="button"
                 aria-current={current ? "page" : undefined}
                 onClick={() => go(item.id)}
-                className={`-mb-px border-b pb-1.5 ${current ? "border-paper text-paper" : "border-transparent text-paper/45 hover:text-paper"}`}
+                className={`book-tab -mb-px border-b pb-1.5 ${current ? "border-paper text-paper" : "border-transparent text-paper/45 hover:text-paper"}`}
               >
                 {item.label}
               </button>
@@ -215,11 +240,11 @@ export function ClosepathApp({
         </nav>
 
         {offerSamples ? (
-          <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-paper/15 py-2 text-[14px] leading-snug">
-            <p className="max-w-xl text-paper/70">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-b border-paper/15 py-1 text-[14px] leading-snug sm:items-baseline sm:py-2">
+            <p className="min-w-0 max-w-xl text-paper/70">
               Two sample files are ready: 1842 Maple Street and 910 Cedar Avenue. Not your clients. Fake 555 numbers and .test emails.
             </p>
-            <span className="flex gap-4">
+            <span className="flex flex-wrap gap-x-4">
               <button
                 type="button"
                 className="book-quiet text-paper"
@@ -250,8 +275,8 @@ export function ClosepathApp({
         ) : null}
 
         {hasExamples ? (
-          <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-[14px]">
-            <p className="text-paper/50">Sample files are marked Example.</p>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 text-[14px] sm:items-baseline">
+            <p className="min-w-0 text-paper/50">Sample files are marked Example.</p>
             <button
               type="button"
               className="book-quiet"
@@ -309,9 +334,11 @@ export function ClosepathApp({
         {!file && view === "morning" ? (
           <MorningList
             lines={lines}
-            funded={funded}
+            closedCount={totals.closed}
+            didNotCloseCount={totals.didNotClose}
             today={today}
             onOpen={openFile}
+            onReview={() => go("files")}
             onAdd={() => {
               if (latest.current.files.length >= LIMITS.files) return;
               const created = emptyFile();
@@ -323,9 +350,13 @@ export function ClosepathApp({
 
         {!file && view === "files" ? (
           <FileList
-            files={ordered}
+            files={visible}
+            book={ordered}
+            show={show}
             today={today}
             onOpen={openFile}
+            onShow={(next) => go("files", next)}
+            onReopen={(id) => setOutcome(id, "Open")}
             onAdd={() => {
               if (latest.current.files.length >= LIMITS.files) return;
               const created = emptyFile();

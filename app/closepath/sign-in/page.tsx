@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { QuestionsLine } from "../../../components/QuestionsLine";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { readSession, SESSION_COOKIE } from "../../../lib/closepath-auth";
@@ -39,13 +40,13 @@ export default function SignInPage({
   const message = errors[one(searchParams?.error) ?? ""];
 
   return (
-    <main id="content" className="flex min-h-[100svh] flex-col justify-end pb-20 pt-28 md:pb-28">
-      <div className="frame">
+    <main id="content" className="flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-12 pt-24 sm:pb-20 sm:pt-28 md:pb-28">
+      <div className="frame min-w-0">
         <p className="text-[15px] tracking-[-0.02em] text-paper/60">Closepath</p>
-        <h1 className="mt-6 max-w-[12ch] text-[clamp(2.85rem,8vw,7rem)] font-semibold leading-[0.86] tracking-[-0.055em]">
+        <h1 className="mt-4 max-w-full text-[2.35rem] font-semibold leading-[0.92] tracking-[-0.045em] sm:mt-6 sm:max-w-[12ch] sm:text-[clamp(2.85rem,8vw,7rem)] sm:leading-[0.86] sm:tracking-[-0.055em]">
           Open your book.
         </h1>
-        <p className="mt-8 max-w-[34rem] text-lg leading-snug tracking-[-0.02em] text-paper/75">
+        <p className="mt-5 max-w-[34rem] text-base leading-snug tracking-[-0.02em] text-paper/75 sm:mt-8 sm:text-lg">
           The email and password you set after checkout.
         </p>
         {message ? (
@@ -53,12 +54,12 @@ export default function SignInPage({
             {message}
           </p>
         ) : null}
-        <form action="/api/closepath/sign-in" method="post" className="mt-8 max-w-md">
+        <form action="/api/closepath/sign-in" method="post" className="mt-6 max-w-md sm:mt-8">
           <label className="block">
             <span className="text-[15px] text-paper/60">Email</span>
             <input name="email" type="email" required autoComplete="email" className={fieldClass} />
           </label>
-          <label className="mt-6 block">
+          <label className="mt-4 block sm:mt-6">
             <span className="text-[15px] text-paper/60">Password</span>
             <input
               name="password"
@@ -68,16 +69,25 @@ export default function SignInPage({
               className={fieldClass}
             />
           </label>
-          <button type="submit" className={`${linkClass} mt-8`}>
+          <button type="submit" className={`${linkClass} mt-6 min-h-11 sm:mt-8`}>
             Sign in
           </button>
         </form>
-        <p className="mt-6 max-w-md text-sm leading-snug text-paper/60">
-          Subscribed and never set a password? Use the page Stripe sent you back to after checkout.{" "}
+        <p className="mt-5 max-w-md text-sm leading-snug text-paper/60 sm:mt-6">
+          Subscribed and never set a password? Use the page Stripe sent you back to after checkout.
+          Questions go to{" "}
+          <a
+            href="mailto:contact@anzendigitalmedia.com"
+            className="text-paper/80 hover:text-paper"
+          >
+            contact@anzendigitalmedia.com
+          </a>
+          .{" "}
           <Link href="/products/closepath" className="text-paper/80 hover:text-paper">
             Back to Closepath
           </Link>
         </p>
+        <QuestionsLine className="mt-8" />
       </div>
     </main>
   );

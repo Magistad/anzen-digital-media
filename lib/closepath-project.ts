@@ -56,7 +56,7 @@ function projectFile(file: DealFile, today: string): {
   dates: SheetRow;
   commission: SheetRow;
 } {
-  const next = file.funded === "Yes" ? null : nextWatch(file, today);
+  const next = file.outcome === "Open" ? nextWatch(file, today) : null;
   const { net } = commissionFigures(file.salePrice, file.ratePercent, file.splitPercent);
   const deal: SheetRow = {
     example: Boolean(file.example),
@@ -65,10 +65,11 @@ function projectFile(file: DealFile, today: string): {
       file.side,
       file.client,
       file.status,
+      file.outcome,
       file.listPrice,
       file.contractPrice,
       next?.date ?? null,
-      next?.label ?? (file.funded === "Yes" ? "Funded" : ""),
+      next?.label ?? "",
       file.closeDate,
       net,
       file.notes,
@@ -106,7 +107,7 @@ function projectFile(file: DealFile, today: string): {
       null,
       file.closeDate,
       null,
-      file.funded || "No",
+      file.outcome,
       file.dateNotes,
     ],
   };

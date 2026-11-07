@@ -9,6 +9,7 @@ import {
   filesByAttention,
   morningLines,
   nextWatch,
+  outcomeTotals,
   sanitizeWorkspace,
   urgency,
   type LooseLead,
@@ -58,11 +59,94 @@ test("sample files put the next deadline first", () => {
   assert.equal(ordered[0]?.address, "1842 Maple Street");
 });
 
-test("a funded file leaves the morning list", () => {
-  const [maple] = sampleFiles();
-  assert.ok(maple);
-  maple.funded = "Yes";
-  assert.equal(morningLines([maple], TODAY).length, 0);
+test("closed and did-not-close files leave the morning list", () => {
+  const [maple, cedar] = sampleFiles();
+  assert.ok(maple && cedar);
+  maple.outcome = "Closed";
+  cedar.outcome = "Did not close";
+  assert.equal(morningLines([maple, cedar], TODAY).length, 0);
+  maple.outcome = "Open";
+  assert.ok(morningLines([maple], TODAY).length > 0);
+});
+
+test("legacy close values fold into outcome and keep the file", () => {
+  const file = emptyFile("file-1234");
+  file.address = "1 Funded Lane";
+  file.inspectionDeadline = "2026-11-09";
+  file.showings = [{ id: "show-1234", date: "2026-11-01", time: "", confirmed: "", result: "", feedback: "Kept", nextStep: "" }];
+  const { outcome: _ignored, ...legacy } = file;
+  const funded = sanitizeWorkspace({
+    files: [{ ...legacy, status: "Under contract", funded: "Yes" }],
+    leads: [],
+    examplesLoaded: false,
+    examplesDismissed: false,
+  });
+  assert.equal(funded?.files[0]?.outcome, "Closed");
+  assert.equal(funded?.files[0]?.status, "Under contract");
+  assert.equal(funded?.files[0]?.inspectionDeadline, "2026-11-09");
+  assert.equal(funded?.files[0]?.showings[0]?.feedback, "Kept");
+  assert.equal(morningLines(funded?.files ?? [], TODAY).length, 0);
+
+  const closedStatus = sanitizeWorkspace({
+    files: [{ ...legacy, status: "Funded", funded: "No" }],
+    leads: [],
+    examplesLoaded: false,
+    examplesDismissed: false,
+  });
+  assert.equal(closedStatus?.files[0]?.outcome, "Closed");
+  assert.equal(closedStatus?.files[0]?.status, "");
+
+  const fell = sanitizeWorkspace({
+    files: [{ ...legacy, status: "Fell through" }],
+    leads: [],
+    examplesLoaded: false,
+    examplesDismissed: false,
+  });
+  assert.equal(fell?.files[0]?.outcome, "Did not close");
+  assert.equal(fell?.files[0]?.address, "1 Funded Lane");
+  assert.equal(morningLines(fell?.files ?? [], TODAY).length, 0);
+
+  const reopened = sanitizeWorkspace({
+    files: [{ ...file, outcome: "Open", funded: "Yes", status: "Clear to close" }],
+    leads: [],
+    examplesLoaded: false,
+    examplesDismissed: false,
+  });
+  assert.equal(reopened?.files[0]?.outcome, "Open");
+  assert.equal(reopened?.files[0]?.status, "Clear to close");
+  assert.equal(reopened?.files[0]?.showings.length, 1);
+});
+
+test("outcome totals count closed files and their net only", () => {
+  const closed = emptyFile("file-closed");
+  closed.outcome = "Closed";
+  closed.salePrice = 200000;
+  closed.ratePercent = 3;
+  closed.splitPercent = 50;
+  const second = emptyFile("file-second");
+  second.outcome = "Closed";
+  second.salePrice = 100000;
+  second.ratePercent = 3;
+  second.splitPercent = 50;
+  const fell = emptyFile("file-fell12");
+  fell.outcome = "Did not close";
+  fell.salePrice = 900000;
+  fell.ratePercent = 3;
+  fell.splitPercent = 50;
+  const open = emptyFile("file-open12");
+  open.salePrice = 100000;
+  open.ratePercent = 3;
+  open.splitPercent = 50;
+  const bare = emptyFile("file-bare12");
+  bare.outcome = "Closed";
+  const totals = outcomeTotals([closed, second, fell, open, bare]);
+  assert.equal(totals.closed, 3);
+  assert.equal(totals.didNotClose, 1);
+  assert.equal(totals.net, 4500);
+  assert.equal(outcomeTotals([bare]).net, null);
+  const reopened = { ...closed, outcome: "Open" as const };
+  assert.equal(reopened.inspectionDeadline, closed.inspectionDeadline);
+  assert.equal(outcomeTotals([reopened]).closed, 0);
 });
 
 test("sanitize keeps a real file and drops a bad status", () => {
@@ -113,6 +197,7 @@ test("export threads one address through every sheet", () => {
   file.address = "123 Test Lane";
   file.client = "Ada Lane";
   file.side = "Listing";
+  file.outcome = "Closed";
   file.inspectionDeadline = "2026-11-09";
   file.salePrice = 200000;
   file.ratePercent = 3;
@@ -124,11 +209,13 @@ test("export threads one address through every sheet", () => {
   const sheets = projectWorkspace(book, TODAY);
   assert.equal(sheets.deals.length, 1);
   assert.equal(sheets.deals[0]?.values[0], "123 Test Lane");
+  assert.equal(sheets.deals[0]?.values[4], "Closed");
+  assert.equal(sheets.dates[0]?.values[12], "Closed");
   assert.equal(sheets.showings[0]?.values[3], "123 Test Lane");
   assert.equal(sheets.offers[0]?.values[1], "123 Test Lane");
   assert.equal(sheets.dates[0]?.values[0], "123 Test Lane");
   assert.equal(sheets.commissions[0]?.values[0], "123 Test Lane");
   assert.equal(sheets.leads[0]?.values[0], "Ada Lane");
-  assert.equal(sheets.deals[0]?.values[9], 3000);
+  assert.equal(sheets.deals[0]?.values[10], 3000);
   assert.equal(sheets.showings.some((row) => row.values.includes("1842 Maple Street")), false);
 });

@@ -1,14 +1,14 @@
 export const SIDES = ["Listing", "Buyer"] as const;
+/** Where the transaction is. Close result is `outcome`, not another status. */
 export const DEAL_STATUSES = [
   "Prospect",
   "Showing",
   "Offer out",
   "Under contract",
   "Clear to close",
-  "Closed",
-  "Funded",
-  "Fell through",
 ] as const;
+/** Open while the file is live. Closed means the deal funded. Did not close means it fell through. */
+export const FILE_OUTCOMES = ["Open", "Closed", "Did not close"] as const;
 export const LEAD_STATUSES = ["New", "Contacted", "Nurture", "Appointment set", "Active", "Cold"] as const;
 export const SHOWING_RESULTS = ["Scheduled", "Completed", "No-show", "Cancelled"] as const;
 export const YES_NO = ["Yes", "No"] as const;
@@ -28,6 +28,7 @@ export const LIMITS = {
 
 export type Side = (typeof SIDES)[number];
 export type DealStatus = (typeof DEAL_STATUSES)[number];
+export type FileOutcome = (typeof FILE_OUTCOMES)[number];
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 export type ShowingResult = (typeof SHOWING_RESULTS)[number];
 export type YesNo = (typeof YES_NO)[number];
@@ -66,6 +67,7 @@ export type DealFile = {
   email: string;
   source: string;
   status: DealStatus | "";
+  outcome: FileOutcome;
   listPrice: number | null;
   contractPrice: number | null;
   notes: string;
@@ -80,7 +82,6 @@ export type DealFile = {
   appraisalDeadline: string | null;
   loanContingency: string | null;
   closeDate: string | null;
-  funded: YesNo | "";
   dateNotes: string;
   showings: Showing[];
   offers: Offer[];
@@ -162,6 +163,7 @@ export function emptyFile(id = newId()): DealFile {
     email: "",
     source: "",
     status: "",
+    outcome: "Open",
     listPrice: null,
     contractPrice: null,
     notes: "",
@@ -175,7 +177,6 @@ export function emptyFile(id = newId()): DealFile {
     appraisalDeadline: null,
     loanContingency: null,
     closeDate: null,
-    funded: "No",
     dateNotes: "",
     showings: [],
     offers: [],
@@ -328,12 +329,46 @@ export function nextWatch(file: DealFile, today: string): WatchedDate | null {
 
 export function filesByAttention(files: DealFile[], today: string): DealFile[] {
   const rank = (file: DealFile) => {
-    if (file.funded === "Yes") return 20_000;
+    if (file.outcome === "Closed") return 20_000;
+    if (file.outcome === "Did not close") return 30_000;
     const next = nextWatch(file, today);
     if (!next) return 10_000;
     return next.days;
   };
   return [...files].sort((a, b) => rank(a) - rank(b) || a.address.localeCompare(b.address));
+}
+
+export type OutcomeTotals = {
+  closed: number;
+  didNotClose: number;
+  /** Net commission on Closed files. Null when none of those files has a calculable net. */
+  net: number | null;
+};
+
+/** Counts for the lookback. Net is sale price × rate × split, and only Closed files contribute. */
+export function outcomeTotals(files: DealFile[]): OutcomeTotals {
+  let closed = 0;
+  let didNotClose = 0;
+  let net = 0;
+  let hasNet = false;
+  for (const file of files) {
+    if (file.outcome === "Did not close") {
+      didNotClose += 1;
+      continue;
+    }
+    if (file.outcome !== "Closed") continue;
+    closed += 1;
+    const figures = commissionFigures(file.salePrice, file.ratePercent, file.splitPercent);
+    if (figures.net !== null) {
+      net += figures.net;
+      hasNet = true;
+    }
+  }
+  return {
+    closed,
+    didNotClose,
+    net: hasNet ? Math.round(net * 100) / 100 : null,
+  };
 }
 
 export type MorningLine = {
@@ -352,7 +387,7 @@ export type MorningLine = {
 export function morningLines(files: DealFile[], today: string): MorningLine[] {
   const lines: MorningLine[] = [];
   for (const file of files) {
-    if (file.funded === "Yes") continue;
+    if (file.outcome !== "Open") continue;
     for (const row of watchedDates(file, today)) {
       lines.push({
         fileId: file.id,
@@ -374,6 +409,7 @@ export function morningLines(files: DealFile[], today: string): MorningLine[] {
 
 export function fileSummary(file: DealFile, today: string): string {
   const parts: string[] = [];
+  if (file.outcome !== "Open") parts.push(file.outcome);
   if (file.nextFollowUp && daysUntil(file.nextFollowUp, today) !== null) {
     parts.push(`Next contact ${formatDate(file.nextFollowUp)}`);
   } else {
@@ -463,6 +499,16 @@ function sanitizeOffer(value: unknown): Offer | null {
   };
 }
 
+/** Older books stored the close on status ("Closed", "Funded", "Fell through") or funded = Yes. */
+function outcomeFromLegacy(row: Record<string, unknown>): FileOutcome {
+  const explicit = oneOf(row.outcome, FILE_OUTCOMES);
+  if (explicit) return explicit;
+  const status = typeof row.status === "string" ? row.status.trim() : "";
+  if (status === "Fell through") return "Did not close";
+  if (status === "Closed" || status === "Funded" || row.funded === "Yes") return "Closed";
+  return "Open";
+}
+
 function sanitizeFile(value: unknown): DealFile | null {
   if (!value || typeof value !== "object") return null;
   const row = value as Record<string, unknown>;
@@ -485,6 +531,7 @@ function sanitizeFile(value: unknown): DealFile | null {
     email: text(row.email, LIMITS.email),
     source: text(row.source, LIMITS.text),
     status: oneOf(row.status, DEAL_STATUSES),
+    outcome: outcomeFromLegacy(row),
     listPrice: money(row.listPrice),
     contractPrice: money(row.contractPrice),
     notes: text(row.notes, LIMITS.notes),
@@ -499,7 +546,6 @@ function sanitizeFile(value: unknown): DealFile | null {
     appraisalDeadline: iso(row.appraisalDeadline),
     loanContingency: iso(row.loanContingency),
     closeDate: iso(row.closeDate),
-    funded: oneOf(row.funded, YES_NO) || "No",
     dateNotes: text(row.dateNotes, LIMITS.notes),
     showings,
     offers,
