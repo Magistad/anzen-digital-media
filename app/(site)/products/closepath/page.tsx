@@ -49,6 +49,21 @@ function AlreadySubscribed() {
   );
 }
 
+function Questions({ className = "mt-2" }: { className?: string }) {
+  return (
+    <p className={`${className} text-sm text-paper/60`}>
+      Questions go to{" "}
+      <a
+        href="mailto:contact@anzendigitalmedia.com"
+        className="text-paper transition-colors duration-300 hover:text-paper"
+      >
+        contact@anzendigitalmedia.com
+      </a>
+      .
+    </p>
+  );
+}
+
 const shots: { src: string; alt: string; label: string; caption: string }[] = [
   {
     src: "/closepath/morning.png",
@@ -176,6 +191,7 @@ export default function ClosepathPage({
               unavailable={unavailable}
             />
             <AlreadySubscribed />
+            <Questions />
           </div>
         </div>
       </section>
@@ -212,6 +228,7 @@ export default function ClosepathPage({
               alt="Closepath leads, empty. The page says no loose leads, because the sample deals are already files."
             />
           </div>
+          <Questions className="mt-8" />
         </div>
       </section>
 
@@ -294,6 +311,7 @@ export default function ClosepathPage({
               unavailable={unavailable}
             />
             <AlreadySubscribed />
+            <Questions />
           </div>
         </div>
       </section>
