@@ -6,7 +6,7 @@ import { isStripeConfigured } from "../../../../lib/env";
 export const dynamic = "force-dynamic";
 
 const description =
-  "Closepath is a listing-to-close system for solo residential real estate agents. Open it in the browser. $9.99 a month. Cancel anytime.";
+  "Closepath is a listing-to-close system for solo residential real estate agents. It supplements the tools you already use. Open it in the browser on a computer or phone. $9.99 a month. Cancel anytime.";
 
 export const metadata: Metadata = {
   title: "Closepath",
@@ -181,7 +181,8 @@ export default function ClosepathPage({
             style={{ animationDelay: "280ms" }}
           >
             Closepath is a listing-to-close system for solo residential real
-            estate agents. You open it in the browser. $9.99 a month. Cancel
+            estate agents. It supplements the tools you already use. You open
+            it in the browser on a computer or phone. $9.99 a month. Cancel
             anytime.
           </p>
           <div className="rise mt-6 sm:mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>

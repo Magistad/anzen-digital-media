@@ -11,18 +11,19 @@ const sans = Instrument_Sans({
   variable: "--font-sans",
 });
 
+const title = "Closepath — Anzen Digital Media";
 const description =
-  "Closepath is $9.99 a month. Anzen builds systems you open in the browser, for working professionals who get paid when the details don’t slip.";
+  "Closepath is a listing-to-close organization book for solo residential agents. Open it in the browser. $9.99 a month. Cancel anytime.";
 
 export const metadata: Metadata = {
   title: {
-    default: "Anzen Digital Media",
+    default: title,
     template: "%s — Anzen",
   },
   description,
   metadataBase: new URL("https://anzendigitalmedia.com"),
   openGraph: {
-    title: "Anzen Digital Media",
+    title,
     description,
     url: "https://anzendigitalmedia.com",
     siteName: "Anzen Digital Media",
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Anzen Digital Media",
+    title,
     description,
   },
 };
