@@ -37,6 +37,66 @@ function AlreadyBought() {
   );
 }
 
+const shots: { src: string; alt: string; label: string; caption: string }[] = [
+  {
+    src: "/closepath/morning.png",
+    label: "Morning",
+    caption:
+      "Open this before your inbox. Maple’s inspection is inside three days, so it sits under Do these today.",
+    alt: "Closepath morning list. 1842 Maple Street, Elena Vasquez, inspection deadline in 3 days under Do these today. Later dates for Maple and 910 Cedar Avenue follow.",
+  },
+  {
+    src: "/closepath/files.png",
+    label: "Files",
+    caption: "One row per property. The next deadline, and the net still to collect.",
+    alt: "Closepath files. 1842 Maple Street, listing, Elena Vasquez, inspection in 3 days, net $6,270. 910 Cedar Avenue, buyer, Marcus Hale, inspection in 4 days, net $5,700.",
+  },
+  {
+    src: "/closepath/file.png",
+    label: "The file",
+    caption:
+      "Open 1842 Maple Street. Critical dates on one side. The commission, $6,270 net on this sample, on the other.",
+    alt: "Closepath file for 1842 Maple Street, Elena Vasquez, listing under contract. Inspection is in 3 days. Gross commission $12,540, net $6,270.",
+  },
+  {
+    src: "/closepath/showings.png",
+    label: "Same file",
+    caption:
+      "The showing, the accepted offer, and Elena stay on that address. The deal does not split across lists.",
+    alt: "Lower half of the 1842 Maple Street file: a completed showing, an accepted offer at $418,000, and Elena Vasquez’s phone and email.",
+  },
+];
+
+function BookShot({
+  src,
+  alt,
+  label,
+  caption,
+}: {
+  src: string;
+  alt: string;
+  label: string;
+  caption: string;
+}) {
+  return (
+    <figure className="min-w-0">
+      <img
+        src={src}
+        alt={alt}
+        width={1920}
+        height={998}
+        loading="lazy"
+        decoding="async"
+        className="block h-auto w-full max-w-full border border-paper/15"
+      />
+      <figcaption className="mt-2 grid gap-1 text-[15px] leading-snug tracking-[-0.015em] sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-x-5">
+        <span className="text-paper/45">{label}</span>
+        <span className="text-paper/80">{caption}</span>
+      </figcaption>
+    </figure>
+  );
+}
+
 export default function ClosepathPage({
   searchParams,
 }: {
@@ -76,6 +136,39 @@ export default function ClosepathPage({
               unavailable={unavailable}
             />
             <AlreadyBought />
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-20" aria-labelledby="closepath-book">
+        <div className="frame">
+          <h2 id="closepath-book" className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
+            The book
+          </h2>
+          <p className="mt-5 max-w-[16em] text-[clamp(1.85rem,3.6vw,2.9rem)] font-medium leading-[1.08] tracking-[-0.04em]">
+            One address. The dates first.
+          </p>
+          <p className="mt-4 max-w-[38rem] text-[15px] leading-snug tracking-[-0.015em] text-paper/70 md:text-base">
+            This is Closepath after you pay. The rows are samples: 1842 Maple Street, Elena Vasquez, and 910 Cedar Avenue, Marcus Hale. Not real clients.
+          </p>
+          <div className="mt-8 space-y-8">
+            {shots.map((shot) => (
+              <BookShot key={shot.src} {...shot} />
+            ))}
+          </div>
+          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+            <BookShot
+              src="/closepath/sign-in.png"
+              label="Return"
+              caption="The password you set after checkout. The book is there on the next phone."
+              alt="Closepath sign-in. The heading reads Open your book, with email and password fields."
+            />
+            <BookShot
+              src="/closepath/leads.png"
+              label="Leads"
+              caption="A lead is a person who is not a file yet. Maple and Cedar already have an address, so this list is empty."
+              alt="Closepath leads, empty. The page says no loose leads, because the sample deals are already files."
+            />
           </div>
         </div>
       </section>
