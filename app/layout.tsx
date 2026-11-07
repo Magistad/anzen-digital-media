@@ -12,7 +12,7 @@ const sans = Instrument_Sans({
 });
 
 const description =
-  "Tools you buy once and use every day. Anzen builds systems you open in the browser, for working professionals who get paid when the details don’t slip.";
+  "Closepath is $9.99 a month. Anzen builds systems you open in the browser, for working professionals who get paid when the details don’t slip.";
 
 export const metadata: Metadata = {
   title: {

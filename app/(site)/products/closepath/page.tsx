@@ -5,10 +5,22 @@ import { isStripeConfigured } from "../../../../lib/env";
 
 export const dynamic = "force-dynamic";
 
+const description =
+  "Closepath is a listing-to-close system for solo residential real estate agents. Open it in the browser. $9.99 a month. Cancel anytime.";
+
 export const metadata: Metadata = {
   title: "Closepath",
-  description:
-    "Closepath is a listing-to-close system for solo residential real estate agents. Open it in the browser. One purchase, no monthly fee. $59.",
+  description,
+  openGraph: {
+    title: "Closepath",
+    description,
+    url: "/products/closepath",
+  },
+  twitter: {
+    card: "summary",
+    title: "Closepath",
+    description,
+  },
 };
 
 const tracks: { title: string; detail?: string }[] = [
@@ -26,10 +38,10 @@ function one(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function AlreadyBought() {
+function AlreadySubscribed() {
   return (
     <p className="mt-4 text-sm text-paper/60">
-      Already bought Closepath?{" "}
+      Already have Closepath?{" "}
       <Link href="/closepath/sign-in" className="text-paper transition-colors duration-300 hover:text-paper">
         Sign in
       </Link>
@@ -154,8 +166,8 @@ export default function ClosepathPage({
             style={{ animationDelay: "280ms" }}
           >
             Closepath is a listing-to-close system for solo residential real
-            estate agents. You open it in the browser. One purchase, no monthly
-            fee.
+            estate agents. You open it in the browser. $9.99 a month. Cancel
+            anytime.
           </p>
           <div className="rise mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
             <BuyClosepath
@@ -163,7 +175,7 @@ export default function ClosepathPage({
               enabled={checkoutReady}
               unavailable={unavailable}
             />
-            <AlreadyBought />
+            <AlreadySubscribed />
           </div>
         </div>
       </section>
@@ -179,7 +191,7 @@ export default function ClosepathPage({
             One address. The dates first.
           </p>
           <p className="mt-4 max-w-[38rem] text-[15px] leading-snug tracking-[-0.015em] text-paper/70 md:text-base">
-            This is Closepath after you pay. The rows are samples: 1842 Maple Street, Elena Vasquez, and 910 Cedar Avenue, Marcus Hale. Not real clients.
+            This is Closepath after you subscribe. The rows are samples: 1842 Maple Street, Elena Vasquez, and 910 Cedar Avenue, Marcus Hale. Not real clients.
           </p>
           <div className="mt-8 space-y-8">
             {shots.map((shot) => (
@@ -252,10 +264,10 @@ export default function ClosepathPage({
             What it is not
           </h2>
           <p className="mt-8 max-w-[22em] border-l border-paper/25 pl-6 text-[clamp(1.4rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 md:mt-12 md:pl-8">
-            Not a Follow Up Boss or BoldTrail replacement. Those are monthly
-            CRMs. Closepath is the system underneath — one purchase if you
-            don’t need a full CRM yet, and one place that holds the transaction
-            from listing to funded.
+            Not a Follow Up Boss or BoldTrail replacement. Those are full
+            CRMs. Closepath is the book underneath — $9.99 a month, cancel
+            anytime — and one place that holds the transaction from listing to
+            funded.
           </p>
         </div>
       </section>
@@ -265,12 +277,15 @@ export default function ClosepathPage({
           <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
             Price
           </h2>
-          <p className="mt-6 text-[clamp(5.5rem,18vw,12.5rem)] font-semibold leading-[0.8] tracking-[-0.065em]">
-            <span className="sr-only">$59</span>
+          <p className="mt-6 text-[clamp(4.5rem,16vw,11rem)] font-semibold leading-[0.8] tracking-[-0.065em]">
+            <span className="sr-only">$9.99 a month</span>
             <span aria-hidden className="flex items-start">
               <span className="mt-[0.12em] text-[0.38em] font-medium">$</span>
-              59
+              9.99
             </span>
+          </p>
+          <p className="mt-4 text-lg tracking-[-0.02em] text-paper/70 md:text-xl">
+            a month. Cancel anytime.
           </p>
           <div className="mt-10 md:mt-14">
             <BuyClosepath
@@ -278,7 +293,7 @@ export default function ClosepathPage({
               enabled={checkoutReady}
               unavailable={unavailable}
             />
-            <AlreadyBought />
+            <AlreadySubscribed />
           </div>
         </div>
       </section>

@@ -19,7 +19,7 @@ export function BuyClosepath({
           aria-describedby={noteId}
           className={`${buttonClass} cursor-not-allowed opacity-100`}
         >
-          Buy Closepath
+          Subscribe
         </button>
         <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60">
           Checkout coming soon.
@@ -34,7 +34,7 @@ export function BuyClosepath({
         type="submit"
         className={`${buttonClass} cursor-pointer transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink`}
       >
-        Buy Closepath
+        Subscribe
       </button>
       {unavailable ? (
         <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60" role="status">

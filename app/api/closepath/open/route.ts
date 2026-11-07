@@ -33,13 +33,17 @@ export async function POST(req: Request) {
   if (!email || (checkoutEmail && checkoutEmail !== email)) return back(req, sessionId, "email");
 
   try {
+    const billing = {
+      stripeSubscriptionId: access.subscriptionId,
+      stripeCustomerId: access.customerId,
+    };
     const existing = await findAccount(email);
     if (existing && !reset) return back(req, sessionId, "exists");
     if (existing && reset) {
       if (!checkoutEmail || checkoutEmail !== email) return back(req, sessionId, "email");
-      await resetAccountPassword(email, password, sessionId);
+      await resetAccountPassword(email, password, sessionId, billing);
     } else {
-      await createAccount({ email, password, stripeSessionId: sessionId });
+      await createAccount({ email, password, stripeSessionId: sessionId, ...billing });
     }
     const token = issueSession(email);
     if (!token) return back(req, sessionId, "unconfigured");

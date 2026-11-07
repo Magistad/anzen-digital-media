@@ -1,3 +1,4 @@
+import { accountAccess } from "../../../../lib/closepath-access";
 import { authenticate } from "../../../../lib/closepath-account";
 import { issueSession, sessionSecret } from "../../../../lib/closepath-auth";
 import { redirectTo, withSession } from "../../../../lib/closepath-response";
@@ -21,6 +22,9 @@ export async function POST(req: Request) {
   try {
     const result = await authenticate(email, password);
     if (!result.ok) return back(req, result.reason);
+    const access = await accountAccess(result.email, true);
+    if (access.state === "ended") return back(req, "inactive");
+    if (access.state !== "open") return back(req, "billing");
     const token = issueSession(result.email);
     if (!token) return back(req, "unconfigured");
     return withSession(redirectTo(req, "/closepath"), token, req);
