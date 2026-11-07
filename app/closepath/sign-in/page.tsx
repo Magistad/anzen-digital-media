@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { QuestionsLine } from "../../../components/QuestionsLine";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { readSession, SESSION_COOKIE } from "../../../lib/closepath-auth";
@@ -86,6 +87,7 @@ export default function SignInPage({
             Back to Closepath
           </Link>
         </p>
+        <QuestionsLine className="mt-8" />
       </div>
     </main>
   );
