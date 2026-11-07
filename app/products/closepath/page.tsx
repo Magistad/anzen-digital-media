@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { BuyClosepath } from "../../../components/BuyClosepath";
+import { isStripeConfigured } from "../../../lib/env";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Closepath",
@@ -18,7 +21,18 @@ const tracks: { title: string; detail?: string }[] = [
   { title: "Commissions" },
 ];
 
-export default function ClosepathPage() {
+function one(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default function ClosepathPage({
+  searchParams,
+}: {
+  searchParams?: { checkout?: string | string[] };
+}) {
+  const checkoutReady = isStripeConfigured();
+  const unavailable = one(searchParams?.checkout) === "unavailable";
+
   return (
     <main id="content">
       <section className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-28 md:pb-24">
@@ -43,7 +57,11 @@ export default function ClosepathPage() {
             estate agents. One download, no monthly fee.
           </p>
           <div className="rise mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
-            <BuyClosepath noteId="closepath-checkout-hero" />
+            <BuyClosepath
+              noteId="closepath-checkout-hero"
+              enabled={checkoutReady}
+              unavailable={unavailable}
+            />
           </div>
         </div>
       </section>
@@ -118,7 +136,11 @@ export default function ClosepathPage() {
             </span>
           </p>
           <div className="mt-10 md:mt-14">
-            <BuyClosepath noteId="closepath-checkout-price" />
+            <BuyClosepath
+              noteId="closepath-checkout-price"
+              enabled={checkoutReady}
+              unavailable={unavailable}
+            />
           </div>
         </div>
       </section>

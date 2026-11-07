@@ -1,21 +1,46 @@
-/**
- * Stripe is not configured for this repo. The button states the real
- * $59 offer and stays inactive until a checkout session exists.
- */
-export function BuyClosepath({ noteId }: { noteId: string }) {
+const buttonClass =
+  "inline-flex items-center border border-paper/30 bg-transparent px-5 py-3 text-[15px] tracking-[-0.015em] text-paper";
+
+export function BuyClosepath({
+  noteId,
+  enabled,
+  unavailable = false,
+}: {
+  noteId: string;
+  enabled: boolean;
+  unavailable?: boolean;
+}) {
+  if (!enabled) {
+    return (
+      <div>
+        <button
+          type="button"
+          disabled
+          aria-describedby={noteId}
+          className={`${buttonClass} cursor-not-allowed opacity-100`}
+        >
+          Buy Closepath
+        </button>
+        <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60">
+          Checkout coming soon.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <form action="/api/checkout" method="post">
       <button
-        type="button"
-        disabled
-        aria-describedby={noteId}
-        className="inline-flex cursor-not-allowed items-center border border-paper/30 px-5 py-3 text-[15px] tracking-[-0.015em] text-paper opacity-100"
+        type="submit"
+        className={`${buttonClass} cursor-pointer transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink`}
       >
         Buy Closepath
       </button>
-      <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60">
-        Checkout coming soon.
-      </p>
-    </div>
+      {unavailable ? (
+        <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60" role="status">
+          Checkout is unavailable right now.
+        </p>
+      ) : null}
+    </form>
   );
 }
