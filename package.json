@@ -2,7 +2,7 @@
   "name": "anzen-digital-media",
   "private": true,
   "version": "1.0.0",
-  "description": "Anzen Digital Media LLC — systems you buy once and open in the browser.",
+  "description": "Anzen Digital Media LLC — Closepath is $9.99 a month, opened in the browser.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
