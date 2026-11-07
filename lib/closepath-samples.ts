@@ -1,0 +1,107 @@
+import { type DealFile, emptyFile, emptyOffer, emptyShowing } from "./closepath-model";
+
+function maple(): DealFile {
+  const file = emptyFile("sample-maple");
+  file.example = true;
+  file.address = "1842 Maple Street";
+  file.side = "Listing";
+  file.client = "Elena Vasquez";
+  file.phone = "555-0148";
+  file.email = "elena.example@email.test";
+  file.source = "Past client referral";
+  file.status = "Under contract";
+  file.listPrice = 425000;
+  file.contractPrice = 418000;
+  file.notes = "Example — delete this row. Your net from Commissions.";
+  file.propertyOrSearch = "1842 Maple Street";
+  file.firstContact = "2026-10-12";
+  file.nextFollowUp = "2026-11-08";
+  file.leadStatus = "Active";
+  file.leadNotes = "Example — delete this row. Wants the listing live before Thanksgiving.";
+  file.contractDate = "2026-11-01";
+  file.inspectionDeadline = "2026-11-09";
+  file.appraisalDeadline = "2026-11-16";
+  file.loanContingency = "2026-11-18";
+  file.closeDate = "2026-11-30";
+  file.funded = "No";
+  file.dateNotes = "Example — delete this row. Inspection is the next date. Order the appraiser the day it is scheduled.";
+  file.salePrice = 418000;
+  file.ratePercent = 3;
+  file.splitPercent = 50;
+  file.commissionStatus = "Expected";
+  file.commissionNotes = "Example — delete this row. 3% listing side, 50% split.";
+  const showing = emptyShowing("sample-maple-show");
+  showing.date = "2026-10-28";
+  showing.time = "2:00 PM";
+  showing.confirmed = "Yes";
+  showing.result = "Completed";
+  showing.feedback = "Example — delete this row. Listing appointment. Agreed to ask $425,000.";
+  showing.nextStep = "Send listing paperwork the same day.";
+  file.showings = [showing];
+  const offer = emptyOffer("sample-maple-offer");
+  offer.date = "2026-10-30";
+  offer.listPrice = 425000;
+  offer.offerPrice = 418000;
+  offer.earnestMoney = 8000;
+  offer.concessions = 0;
+  offer.status = "Accepted";
+  offer.expires = "2026-10-31";
+  offer.notes = "Example — delete this row. Ratified November 1.";
+  file.offers = [offer];
+  return file;
+}
+
+function cedar(): DealFile {
+  const file = emptyFile("sample-cedar");
+  file.example = true;
+  file.address = "910 Cedar Avenue";
+  file.side = "Buyer";
+  file.client = "Marcus Hale";
+  file.phone = "555-0194";
+  file.email = "marcus.example@email.test";
+  file.source = "Open house sign-in";
+  file.status = "Under contract";
+  file.listPrice = 389000;
+  file.contractPrice = 380000;
+  file.notes = "Example — delete this row. Roof is the inspection focus.";
+  file.propertyOrSearch = "3 bed east of the park, under $400k";
+  file.firstContact = "2026-10-20";
+  file.nextFollowUp = "2026-11-08";
+  file.leadStatus = "Active";
+  file.leadNotes = "Example — delete this row. Pre-approved. Second showing is done.";
+  file.contractDate = "2026-10-24";
+  file.inspectionDeadline = "2026-11-10";
+  file.appraisalDeadline = "2026-11-17";
+  file.loanContingency = "2026-11-20";
+  file.closeDate = "2026-12-04";
+  file.funded = "No";
+  file.dateNotes = "Example — delete this row. Buyer side. The roof clause is the inspection focus.";
+  file.salePrice = 380000;
+  file.ratePercent = 3;
+  file.splitPercent = 50;
+  file.commissionStatus = "Expected";
+  file.commissionNotes = "Example — delete this row. 3% buyer side, 50% split.";
+  const showing = emptyShowing("sample-cedar-show");
+  showing.date = "2026-10-18";
+  showing.time = "11:00 AM";
+  showing.confirmed = "Yes";
+  showing.result = "Completed";
+  showing.feedback = "Example — delete this row. Liked the yard. Wants the roof looked at.";
+  showing.nextStep = "If the offer is accepted, book the inspector for the roof.";
+  file.showings = [showing];
+  const offer = emptyOffer("sample-cedar-offer");
+  offer.date = "2026-10-22";
+  offer.listPrice = 389000;
+  offer.offerPrice = 380000;
+  offer.earnestMoney = 5000;
+  offer.concessions = 2000;
+  offer.status = "Accepted";
+  offer.expires = "2026-10-23";
+  offer.notes = "Example — delete this row. $2,000 seller credit. Ratified October 24.";
+  file.offers = [offer];
+  return file;
+}
+
+export function sampleFiles(): DealFile[] {
+  return [maple(), cedar()];
+}

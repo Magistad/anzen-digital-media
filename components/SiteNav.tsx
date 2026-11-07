@@ -24,6 +24,12 @@ export function SiteNav() {
         >
           Products
         </Link>
+        <Link
+          href="/closepath/sign-in"
+          className="ml-auto text-paper/80 transition-colors duration-300 hover:text-paper"
+        >
+          Sign in
+        </Link>
       </nav>
     </header>
   );

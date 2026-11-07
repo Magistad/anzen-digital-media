@@ -12,7 +12,7 @@ const sans = Instrument_Sans({
 });
 
 const description =
-  "Tools you buy once and use every day. Anzen builds downloadable systems for working professionals who get paid when the details don’t slip.";
+  "Tools you buy once and use every day. Anzen builds systems you open in the browser, for working professionals who get paid when the details don’t slip.";
 
 export const metadata: Metadata = {
   title: {
@@ -49,13 +49,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={sans.variable}>
       <body className="bg-ink font-sans text-paper antialiased">
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 z-0"
-        >
-          <div className="wash drift absolute -left-[18%] top-[-10%] h-[70vh] w-[70vw]" />
-          <div className="vignette absolute inset-0" />
-        </div>
         <div className="relative z-10">
           <a
             href="#content"

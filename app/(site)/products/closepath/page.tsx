@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { BuyClosepath } from "../../../components/BuyClosepath";
-import { isStripeConfigured } from "../../../lib/env";
+import Link from "next/link";
+import { BuyClosepath } from "../../../../components/BuyClosepath";
+import { isStripeConfigured } from "../../../../lib/env";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Closepath",
   description:
-    "Closepath is a listing-to-close system for solo residential real estate agents. One download, no monthly fee. $59.",
+    "Closepath is a listing-to-close system for solo residential real estate agents. Open it in the browser. One purchase, no monthly fee. $59.",
 };
 
 const tracks: { title: string; detail?: string }[] = [
@@ -23,6 +24,17 @@ const tracks: { title: string; detail?: string }[] = [
 
 function one(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
+}
+
+function AlreadyBought() {
+  return (
+    <p className="mt-4 text-sm text-paper/60">
+      Already bought Closepath?{" "}
+      <Link href="/closepath/sign-in" className="text-paper transition-colors duration-300 hover:text-paper">
+        Sign in
+      </Link>
+    </p>
+  );
 }
 
 export default function ClosepathPage({
@@ -54,7 +66,8 @@ export default function ClosepathPage({
             style={{ animationDelay: "280ms" }}
           >
             Closepath is a listing-to-close system for solo residential real
-            estate agents. One download, no monthly fee.
+            estate agents. You open it in the browser. One purchase, no monthly
+            fee.
           </p>
           <div className="rise mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
             <BuyClosepath
@@ -62,6 +75,7 @@ export default function ClosepathPage({
               enabled={checkoutReady}
               unavailable={unavailable}
             />
+            <AlreadyBought />
           </div>
         </div>
       </section>
@@ -116,9 +130,9 @@ export default function ClosepathPage({
           </h2>
           <p className="mt-8 max-w-[22em] border-l border-paper/25 pl-6 text-[clamp(1.4rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 md:mt-12 md:pl-8">
             Not a Follow Up Boss or BoldTrail replacement. Those are monthly
-            CRMs. This is the file underneath — the cheaper option if you don’t
-            need a full CRM yet, or you want one system that holds the
-            transaction from listing to funded.
+            CRMs. Closepath is the system underneath — one purchase if you
+            don’t need a full CRM yet, and one place that holds the transaction
+            from listing to funded.
           </p>
         </div>
       </section>
@@ -141,6 +155,7 @@ export default function ClosepathPage({
               enabled={checkoutReady}
               unavailable={unavailable}
             />
+            <AlreadyBought />
           </div>
         </div>
       </section>
