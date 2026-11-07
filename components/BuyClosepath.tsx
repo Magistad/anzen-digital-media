@@ -1,5 +1,29 @@
+import Link from "next/link";
+
 const buttonClass =
   "inline-flex items-center border border-paper/30 bg-transparent px-5 py-3 text-[15px] tracking-[-0.015em] text-paper";
+
+const legalLinkClass = "text-paper/80 transition-colors duration-300 hover:text-paper";
+
+function PurchaseAgreement() {
+  return (
+    <p className="mt-4 max-w-md text-sm leading-snug text-paper/60">
+      Purchasing Closepath means you agree to the{" "}
+      <Link href="/terms" className={legalLinkClass}>
+        Terms of Service
+      </Link>{" "}
+      and the{" "}
+      <Link href="/privacy" className={legalLinkClass}>
+        Privacy Policy
+      </Link>
+      . See{" "}
+      <Link href="/refunds" className={legalLinkClass}>
+        Refunds
+      </Link>
+      .
+    </p>
+  );
+}
 
 export function BuyClosepath({
   noteId,
@@ -24,23 +48,27 @@ export function BuyClosepath({
         <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60">
           Checkout coming soon.
         </p>
+        <PurchaseAgreement />
       </div>
     );
   }
 
   return (
-    <form action="/api/checkout" method="post">
-      <button
-        type="submit"
-        className={`${buttonClass} cursor-pointer transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink`}
-      >
-        Buy Closepath
-      </button>
+    <div>
+      <form action="/api/checkout" method="post">
+        <button
+          type="submit"
+          className={`${buttonClass} cursor-pointer transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink`}
+        >
+          Buy Closepath
+        </button>
+      </form>
       {unavailable ? (
         <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60" role="status">
           Checkout is unavailable right now.
         </p>
       ) : null}
-    </form>
+      <PurchaseAgreement />
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { QuestionsLine } from "../../../../../components/QuestionsLine";
 import { closepathDownloadAccess } from "../../../../../lib/closepath-access";
 import { findAccount } from "../../../../../lib/closepath-account";
 import { sessionSecret } from "../../../../../lib/closepath-auth";
@@ -204,6 +205,7 @@ export default async function ClosepathSuccessPage({
             </Link>
           </>
         )}
+        <QuestionsLine className="mt-10" />
       </div>
     </main>
   );

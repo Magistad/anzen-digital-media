@@ -10,7 +10,7 @@ export function SiteNav() {
       />
       <nav
         aria-label="Primary"
-        className="frame pointer-events-auto relative flex items-baseline gap-3 py-5 text-[15px] tracking-[-0.02em] md:py-6"
+        className="frame pointer-events-auto relative flex flex-wrap items-baseline gap-x-3 gap-y-1 py-5 text-[15px] tracking-[-0.02em] md:py-6"
       >
         <Link href="/" className="text-paper">
           Anzen
@@ -24,12 +24,32 @@ export function SiteNav() {
         >
           Products
         </Link>
-        <Link
-          href="/closepath/sign-in"
-          className="ml-auto text-paper/80 transition-colors duration-300 hover:text-paper"
-        >
-          Sign in
-        </Link>
+        <span className="ml-auto flex flex-wrap items-baseline justify-end gap-x-4 gap-y-1">
+          <Link
+            href="/terms"
+            className="hidden text-paper/55 transition-colors duration-300 hover:text-paper md:inline"
+          >
+            Terms
+          </Link>
+          <Link
+            href="/privacy"
+            className="hidden text-paper/55 transition-colors duration-300 hover:text-paper md:inline"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/refunds"
+            className="hidden text-paper/55 transition-colors duration-300 hover:text-paper md:inline"
+          >
+            Refunds
+          </Link>
+          <Link
+            href="/closepath/sign-in"
+            className="text-paper/80 transition-colors duration-300 hover:text-paper"
+          >
+            Sign in
+          </Link>
+        </span>
       </nav>
     </header>
   );
