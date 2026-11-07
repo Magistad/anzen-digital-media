@@ -5,6 +5,7 @@ import {
   COMMISSION_STATUSES,
   DEAL_STATUSES,
   DATE_FIELDS,
+  FILE_OUTCOMES,
   LEAD_STATUSES,
   LIMITS,
   OFFER_STATUSES,
@@ -12,6 +13,7 @@ import {
   SIDES,
   YES_NO,
   type DealFile,
+  type FileOutcome,
   type Offer,
   type Showing,
   commissionFigures,
@@ -25,9 +27,9 @@ import {
 } from "../../lib/closepath-model";
 import { AreaField, DateField, MoneyField, PercentField, SelectField, TextField } from "./Fields";
 
-function DayState({ iso, today }: { iso: string | null; today: string | null }) {
+function DayState({ iso, today, quiet }: { iso: string | null; today: string | null; quiet?: boolean }) {
   if (!iso) return <span className="text-[13px] text-paper/40">Not written</span>;
-  if (!today) return null;
+  if (!today || quiet) return null;
   const days = daysUntil(iso, today);
   if (days === null) return null;
   const level = urgency(days);
@@ -113,6 +115,26 @@ const FILE_JUMPS = [
   ["commission", "Commission"],
 ] as const;
 
+function OutcomeActions({
+  outcome,
+  onOutcome,
+}: {
+  outcome: FileOutcome;
+  onOutcome: (outcome: FileOutcome) => void;
+}) {
+  return (
+    <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[14px]">
+      <span className="text-paper/45">Outcome</span>
+      <span>{outcome}</span>
+      {FILE_OUTCOMES.filter((item) => item !== outcome).map((item) => (
+        <button key={item} type="button" className="book-quiet text-paper" onClick={() => onOutcome(item)}>
+          {item === "Closed" ? "Mark closed" : item === "Open" ? "Reopen" : "Did not close"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Section({ id, title, detail, children }: { id?: string; title: string; detail?: string; children: ReactNode }) {
   return (
     <section id={id} className="scroll-mt-32 lg:scroll-mt-24">
@@ -160,6 +182,7 @@ export function FileView({
         {file.example ? <span className="text-paper/45">Example. Not a client. </span> : null}
         {today ? fileSummary(file, today) : fileSummary(file, summaryToday)}
       </p>
+      <OutcomeActions outcome={file.outcome} onOutcome={(outcome) => onChange({ ...file, outcome })} />
 
       <nav aria-label="In this file" className="mt-3 flex flex-wrap border-b border-paper/15 text-[14px] lg:hidden">
         {FILE_JUMPS.map(([id, label]) => (
@@ -187,7 +210,11 @@ export function FileView({
               <DateField id={`${file.id}-contract-date`} label="Contract date" bare value={file.contractDate} onChange={(contractDate) => onChange({ ...file, contractDate })} />
             </DateLine>
             {DATE_FIELDS.map((field) => (
-              <DateLine key={field.key} label={field.label} state={<DayState iso={file[field.key]} today={today} />}>
+              <DateLine
+                key={field.key}
+                label={field.label}
+                state={<DayState iso={file[field.key]} today={today} quiet={file.outcome !== "Open"} />}
+              >
                 <DateField
                   id={`${file.id}-${field.key}`}
                   label={field.label}
@@ -197,16 +224,6 @@ export function FileView({
                 />
               </DateLine>
             ))}
-            <DateLine label="Funded">
-              <SelectField
-                id={`${file.id}-funded`}
-                label="Funded"
-                bare
-                value={file.funded}
-                options={YES_NO}
-                onChange={(funded) => onChange({ ...file, funded: (funded || "No") as DealFile["funded"] })}
-              />
-            </DateLine>
           </div>
           <div className="mt-2">
             <AreaField id={`${file.id}-date-notes`} label="Date notes" value={file.dateNotes} onChange={(dateNotes) => onChange({ ...file, dateNotes })} />

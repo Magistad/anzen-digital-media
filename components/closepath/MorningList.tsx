@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import {
-  type DealFile,
   type MorningLine,
   dayPrimary,
   daySecondary,
@@ -67,20 +66,52 @@ function Group({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
+function reviewLabel(closedCount: number, didNotCloseCount: number): string {
+  const parts: string[] = [];
+  if (closedCount) parts.push(closedCount === 1 ? "1 closed" : `${closedCount} closed`);
+  if (didNotCloseCount) parts.push(didNotCloseCount === 1 ? "1 did not close" : `${didNotCloseCount} did not close`);
+  return `Review ${parts.join(" and ")}`;
+}
+
+function Review({
+  closedCount,
+  didNotCloseCount,
+  onReview,
+}: {
+  closedCount: number;
+  didNotCloseCount: number;
+  onReview: () => void;
+}) {
+  if (!closedCount && !didNotCloseCount) return null;
+  return (
+    <p className="mt-4 text-[14px]">
+      <button type="button" className="book-quiet text-paper" onClick={onReview}>
+        {reviewLabel(closedCount, didNotCloseCount)}
+      </button>
+    </p>
+  );
+}
+
 export function MorningList({
   lines,
-  funded,
+  closedCount,
+  didNotCloseCount,
   today,
   onOpen,
   onAdd,
+  onReview,
 }: {
   lines: MorningLine[];
-  funded: DealFile[];
+  closedCount: number;
+  didNotCloseCount: number;
   today: string | null;
   onOpen: (id: string) => void;
   onAdd: () => void;
+  onReview: () => void;
 }) {
-  if (!lines.length && !funded.length) {
+  const review = <Review closedCount={closedCount} didNotCloseCount={didNotCloseCount} onReview={onReview} />;
+
+  if (!lines.length && !closedCount && !didNotCloseCount) {
     return (
       <div className="mt-4">
         <p className="max-w-xl text-[15px] leading-snug text-paper/70">
@@ -93,12 +124,29 @@ export function MorningList({
     );
   }
 
+  if (!lines.length) {
+    return (
+      <div className="mt-4">
+        <p className="max-w-xl text-[15px] leading-snug text-paper/70">
+          No live dates. Closed and did not close files stay off this list.
+        </p>
+        {review}
+        <button type="button" className="book-action mt-4" onClick={onAdd}>
+          Add a file
+        </button>
+      </div>
+    );
+  }
+
   if (!today) {
     return (
-      <div className="mt-3 border-t border-paper/15">
-        {lines.map((line) => (
-          <Line key={`${line.fileId}-${line.field}`} line={line} today={today} onOpen={onOpen} />
-        ))}
+      <div>
+        <div className="mt-3 border-t border-paper/15">
+          {lines.map((line) => (
+            <Line key={`${line.fileId}-${line.field}`} line={line} today={today} onOpen={onOpen} />
+          ))}
+        </div>
+        {review}
       </div>
     );
   }
@@ -124,26 +172,7 @@ export function MorningList({
           ))}
         </Group>
       ) : null}
-      {funded.length ? (
-        <Group title="Funded">
-          {funded.map((file) => (
-            <button
-              key={file.id}
-              type="button"
-              onClick={() => onOpen(file.id)}
-              className="grid w-full min-h-11 min-w-0 grid-cols-[6.75rem_minmax(0,1fr)] items-start gap-x-3 border-b border-paper/12 py-2.5 text-left active:bg-paper/[0.04] sm:min-h-0 sm:items-baseline sm:py-1.5 sm:hover:bg-paper/[0.04]"
-            >
-              <span className="text-[14px] text-paper/50">Funded</span>
-              <span className="min-w-0 sm:truncate">
-                <span className="block text-[15px] leading-snug tracking-[-0.02em] sm:inline">
-                  {file.address || "No address yet"}
-                </span>
-                <span className="block text-[13px] leading-snug text-paper/55 sm:ml-2 sm:inline">{file.client}</span>
-              </span>
-            </button>
-          ))}
-        </Group>
-      ) : null}
+      {review}
     </div>
   );
 }
