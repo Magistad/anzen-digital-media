@@ -10,271 +10,250 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <LegalDocument title="Terms of Service">
-      <LegalSection id="agreement" title="Agreement">
+      <LegalSection id="agreement" title="1. Agreement">
         <p>
-          These terms are a contract between you and Anzen Digital Media, LLC, a Nevada limited liability
-          company (“Anzen,” “we,” “us”). They cover{" "}
-          <LegalLink href="https://anzendigitalmedia.com">anzendigitalmedia.com</LegalLink> and Closepath.
+          These Terms of Service are between you and Anzen Digital Media, LLC, a Nevada limited liability
+          company (“Anzen”). They govern access to and use of{" "}
+          <LegalLink href="https://anzendigitalmedia.com">anzendigitalmedia.com</LegalLink> and Closepath (the
+          “Service”).
         </p>
         <p>
-          Completing Stripe Checkout for Closepath is your acceptance of these terms and the{" "}
-          <LegalLink href="/privacy">Privacy Policy</LegalLink>. Using the site, or setting a password and
-          opening the book, is also acceptance. If you do not agree, do not buy Closepath and do not use it.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="product" title="The product">
-        <p>
-          Closepath is a listing-to-close book. After you pay, you open it in the browser. You type addresses,
-          client details, dates, showings, offers, and commission notes. You may export a spreadsheet from
-          inside the book. The export is optional. Excel is not the product.
-        </p>
-        <p>
-          Closepath is $9.99 USD per month, billed through Stripe Checkout on our site, on the Anzen Digital
-          Media Stripe account. You may cancel anytime. It is not a lifetime license. We do not store your
-          card number. Stripe does.
+          By completing Stripe Checkout, creating an account, or using the Service, you agree to these terms
+          and the <LegalLink href="/privacy">Privacy Policy</LegalLink>. If you do not agree, do not use the
+          Service.
         </p>
       </LegalSection>
 
-      <LegalSection id="not" title="What Closepath is not">
+      <LegalSection id="service" title="2. The Service">
         <p>
-          Closepath is a productivity tool only. It is not a brokerage, a transaction coordinator, an MLS, a
-          legal service, an accounting service, or a compliance system. We do not give legal, tax, real-estate,
-          or fiduciary advice. We are not your broker, your lawyer, your accountant, or your transaction
-          coordinator.
+          Closepath is a hosted listing-to-close book. A user may enter addresses, client details, dates,
+          showings, offers, and commission notes, and may export a spreadsheet from the Service. The export
+          is optional. Excel is not the Service.
         </p>
         <p>
-          Closepath is not a document vault, an e-sign product, or an AI contract reader. It does not take
-          uploaded contracts, and it does not connect to an MLS. It is not the system of record for your
-          forms, disclosures, or client files outside the notes you choose to type.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="responsibility" title="Your responsibility">
-        <p>
-          You are solely responsible for your own critical dates, deadlines, contracts, disclosures, client
-          communications, and compliance with the brokerage, MLS, and legal rules that apply to you. Closepath
-          does not watch a transaction for you.
+          The Service is a productivity tool. It is not a brokerage, transaction coordinator, multiple listing
+          service, legal service, tax service, accounting service, compliance system, or fiduciary service,
+          and it does not provide legal, tax, real-estate, or fiduciary advice. It is not a document vault, an
+          electronic-signature product, or an automated contract reader. It does not accept uploaded contracts
+          and does not connect to an MLS.
         </p>
         <p>
-          Closepath does not send email, text, or push alerts when a deadline is coming. The morning list is a
-          view of dates you stored. It appears when you open the book. We do not warrant that dates,
-          calculations (including commission math), in-book lists, exports, or stored data are complete,
-          accurate, or timely.
-        </p>
-        <p>
-          Commission figures are arithmetic on the numbers you type: sale price, rate, and split. They are not
-          an accounting opinion and not a statement of what you will be paid. If a deadline is missed, that
-          loss is your risk, not ours.
+          The user is responsible for critical dates, deadlines, contracts, disclosures, client
+          communications, and compliance with applicable brokerage, MLS, and legal requirements. The Service
+          does not monitor transactions and does not send email, text, or push notifications of deadlines.
+          The morning list displays dates stored in the account when the Service is opened.
         </p>
       </LegalSection>
 
-      <LegalSection id="license" title="The subscription">
+      <LegalSection id="eligibility" title="3. Eligibility and account">
         <p>
-          The $9.99 monthly fee is a personal, non-exclusive, non-transferable, revocable license for one
-          agent: the person who subscribes. It covers that agent’s own work, through one account, only while
-          the subscription is active. It is a license to use the hosted book, not a sale of the software, and
-          not a lifetime right to the book. Closepath and the site remain Anzen’s property.
+          You must be at least 18 years old and able to form a contract. After checkout, you set a password
+          for the email associated with the subscription and use that email and password to return while the
+          subscription is active. Passwords are stored as salted scrypt hashes. Anzen does not store the
+          password in plaintext.
         </p>
         <p>
-          You may not transfer the subscription, share the account as a seat for someone else, copy the
-          service, resell Closepath, rent it, sublicense it, or offer it as a hosted service for other
-          people. A spreadsheet export is a copy of your entries. It is not a separate product and not a
-          right to keep using Closepath after the subscription ends.
+          You are responsible for the confidentiality of the password, for the devices used to access the
+          account, and for activity under the account, including activity by any person with whom you share
+          access. The subscription is one account. It is not a transferable seat. Notify Anzen at{" "}
+          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink> if
+          you believe the account is being used without authorization.
         </p>
         <p>
-          You may cancel anytime. While you are signed in, Billing in the book opens Stripe’s customer
-          portal, and a cancellation there takes effect at the end of the current period. You may also cancel
-          by emailing{" "}
+          Anzen may lock sign-in after repeated failed attempts. The current setting is eight failed
+          sign-ins, followed by a lock of fifteen minutes.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="license" title="4. License to use the Service">
+        <p>
+          Subject to these terms and payment of the applicable fees, Anzen grants the subscribing agent a
+          personal, non-exclusive, non-transferable, revocable license to use the hosted Service for that
+          agent’s own work, through one account, while the subscription is active. The license is not a sale
+          of the software and is not a lifetime license. Anzen retains all right, title, and interest in the
+          Service and the site.
+        </p>
+        <p>
+          You may not transfer, sublicense, rent, or resell the Service, share the account, copy the Service,
+          or offer it as a hosted product for other people. A spreadsheet export is a copy of entries in the
+          account. It is not a separate license to the Service.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="use" title="5. Acceptable use">
+        <p>
+          You will not misuse the Service, attempt to access an account, book, or system you are not
+          authorized to use, or probe, disrupt, or circumvent access controls. You will not use the Service
+          in violation of applicable law, including duties owed to a client, a brokerage, or an MLS.
+        </p>
+        <p>
+          You are responsible for the accuracy of information you submit and for having the rights needed to
+          store information about other people in the Service.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="content" title="6. Your content">
+        <p>
+          You retain ownership of the text and figures you submit. You grant Anzen a limited, non-exclusive
+          license to host, store, display to you, and include that content in an export you request, solely
+          to operate the Service for your account. Anzen does not sell that content. The license ends when
+          the content is deleted, except where the law requires a copy to be kept.
+        </p>
+        <p>
+          You represent that you have the right to submit the client names, contact details, and other
+          third-party information you enter, and that storing it does not violate a duty owed to a client, a
+          brokerage, an MLS, or any other person.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="fees" title="7. Fees and billing">
+        <p>
+          The fee is $9.99 USD per month, billed through Stripe Checkout on the Anzen Digital Media Stripe
+          account. Anzen does not store card numbers. Stripe processes payment and sends the receipt. The
+          subscription is not a lifetime license.
+        </p>
+        <p>
+          You may cancel at any time. While you are signed in, Billing in the Service opens Stripe’s
+          customer portal, and cancellation through that portal takes effect at the end of the current
+          period. You may also cancel by emailing{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
-          Cancellation stops future monthly charges. It does not, by itself, refund a charge. Access lasts
-          through the end of the period that charge covers, and then ends, unless we refund the charge under the{" "}
-          <LegalLink href="/refunds">Refund Policy</LegalLink>. If we refund a charge, access for that period
-          ends. When access ends, we may close the account and delete the book.
+          Cancellation stops subsequent monthly charges. It does not, by itself, refund a charge already
+          paid. Access continues through the end of the period covered by the current charge unless that
+          charge is refunded. If a charge is refunded, access for that period ends.
+        </p>
+        <p>
+          Refunds are described in the <LegalLink href="/refunds">Refund Policy</LegalLink>. You may request
+          a refund of the latest monthly charge within 14 days of that charge. If Anzen does not deliver
+          access to the Service, Anzen will refund the charge for that period. If the Refund Policy and this
+          section differ on how a refund is handled, the Refund Policy controls.
         </p>
       </LegalSection>
 
-      <LegalSection id="eligibility" title="Eligibility">
+      <LegalSection id="term" title="8. Term and termination">
         <p>
-          You must be at least 18 years old and able to enter a contract. Closepath is a tool for a working
-          agent, not a product for children.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="account" title="Your account">
-        <p>
-          After checkout, you set a password for the email on the subscription. You return with that email and
-          password while the subscription is active. We store the password only as a salted scrypt hash. We
-          do not store the password itself.
+          The subscription continues until it is cancelled or terminated. Anzen may update, change, or
+          interrupt the Service, including the hosted book, and may discontinue the Service. There is no
+          uptime commitment and no service-level agreement. The license is to the Service as hosted, not to a
+          fixed copy of the software.
         </p>
         <p>
-          Account security is your responsibility. That includes the password you choose, the devices you use,
-          and anyone you allow to see or use the account. Do not share the account. Activity under your email
-          is yours, including activity by a person you gave the password to.
+          Anzen may suspend or terminate an account that misuses the Service, violates these terms, or
+          presents a security risk. Anzen may delete account content when access ends. An export may be made
+          while the account is open. Anzen does not keep a separate copy of the book for the user after
+          deletion.
         </p>
         <p>
-          Tell us at <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
-          if you believe someone else is using the account without permission. We may lock sign-in after
-          repeated failures. The lock is currently eight failed sign-ins, for fifteen minutes.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="use" title="Acceptable use">
-        <p>
-          Do not abuse the service. Do not attempt to access an account, book, or system you are not allowed
-          to use. Do not probe, disrupt, or circumvent access to Closepath. Do not use the book to violate the
-          law, including duties you owe a client, a brokerage, or an MLS.
-        </p>
-        <p>
-          You are responsible for having the right to store other people’s information in the book, and for
-          the accuracy of what you enter.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="content" title="Your content">
-        <p>
-          You own the text and figures you enter. You grant Anzen a limited, non-exclusive right to host,
-          store, display back to you, and include that content in an export you request, only so the book
-          works for your account. We do not sell your book contents. The right ends when we delete the
-          content, except where the law requires us to keep a copy.
-        </p>
-        <p>
-          You represent that you have the right to enter the client names, contact details, and other
-          third-party information you put in the book, and that storing it does not violate a duty you owe to
-          a client, a brokerage, an MLS, or anyone else.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="indemnity" title="Indemnity">
-        <p>
-          You will indemnify Anzen Digital Media, LLC and its members, employees, and agents against
-          third-party claims, losses, and reasonable attorneys’ fees arising from the information you enter,
-          from your lack of a right to enter it, or from your use of the book. That includes a claim about a
-          missed deadline, a client or brokerage dispute, or a failure of brokerage, MLS, disclosure, or other
-          legal compliance.
-        </p>
-        <p>
-          Indemnify means you cover those amounts, not that Anzen can never be sued. We will tell you about a
-          claim we know about. You will not settle it in a way that admits fault by Anzen or puts a duty on
-          Anzen unless we agree in writing. We may participate with our own counsel. This indemnity does not
-          apply to a claim caused by our fraud or willful misconduct.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="service" title="The service">
-        <p>
-          Closepath is provided as-is and as-available. There is no uptime target and no service-level
-          agreement. We may update, change, interrupt, or discontinue the service, including by changing the
-          hosted book during a subscription. You are not entitled to a frozen copy of the product.
-        </p>
-        <p>
-          We may suspend or terminate an account that abuses the service, breaks these terms, or creates a
-          security risk. We may delete the book when the account ends. If you want a spreadsheet, export it
-          while the account is open. We do not keep a copy of the book for you after deletion.
-        </p>
-        <p>
-          Stopping or changing the service does not, by itself, create a refund beyond the{" "}
+          Discontinuing or changing the Service does not, by itself, create a refund except as stated in the{" "}
           <LegalLink href="/refunds">Refund Policy</LegalLink>.
         </p>
       </LegalSection>
 
-      <LegalSection id="warranties" title="Disclaimers">
+      <LegalSection id="disclaimers" title="9. Disclaimers">
         <p>
-          To the maximum extent allowed by law, Anzen disclaims all warranties, whether express, implied, or
-          statutory, including merchantability, fitness for a particular purpose, title, and non-infringement,
-          and any warranty that Closepath will be uninterrupted, timely, secure, or error-free.
+          The Service is provided as is and as available. To the maximum extent permitted by law, Anzen
+          disclaims all warranties, whether express, implied, or statutory, including warranties of
+          merchantability, fitness for a particular purpose, title, and non-infringement, and any warranty
+          that the Service will be uninterrupted, timely, secure, or error-free.
         </p>
         <p>
-          We do not warrant that a date will be caught, that a figure is right, that a deal will close, or
-          that a commission will be paid. The product pages describe Closepath. They are not a guarantee, and
-          they do not add a warranty or a service level. Some states do not allow certain disclaimers, so
-          this section applies to the maximum extent those states allow.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="liability" title="Limitation of liability">
-        <p>
-          To the maximum extent allowed by law, Anzen and its members, employees, and agents will not be
-          liable for lost commissions, missed closings, lost deals, lost profits, loss of goodwill, loss or
-          corruption of data, or any indirect, incidental, special, consequential, or punitive damages,
-          however caused, even if we knew they were possible.
+          Dates, calculations (including commission calculations), lists, exports, and stored data are
+          provided without warranty of completeness, accuracy, or timeliness. Commission figures are
+          calculated from the sale price, rate, and split entered in the Service. Descriptions on the product
+          pages do not add a warranty or a service level.
         </p>
         <p>
-          To the maximum extent allowed by law, our total liability for direct damages arising out of
-          Closepath or these terms will not exceed the monthly charges you paid Anzen for Closepath in the
-          twelve months before the claim. The cap is aggregate for all claims, on every theory, including
-          contract, warranty, tort, and statute, and it still applies if a refund does not make you whole.
-        </p>
-        <p>
-          These terms do not limit liability that the law does not allow us to limit. They are not a promise
-          that you cannot sue. They allocate risk for a $9.99 per month tool: you remain responsible for your
-          practice, and our exposure for direct damages is capped at those twelve months of charges.
+          Some jurisdictions do not allow certain warranty disclaimers. In those jurisdictions, this section
+          applies to the maximum extent permitted.
         </p>
       </LegalSection>
 
-      <LegalSection id="refunds" title="Refunds">
+      <LegalSection id="liability" title="10. Limitation of liability">
         <p>
-          You may cancel anytime, as the subscription section says. You may request a refund of the latest
-          monthly charge within 14 days of that charge. If we failed to deliver access to the book, we will
-          refund that charge. Email{" "}
-          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
-          The procedure is the <LegalLink href="/refunds">Refund Policy</LegalLink>. If that policy and this
-          section differ on how a refund works, the Refund Policy controls.
+          To the maximum extent permitted by law, Anzen and its members, employees, and agents will not be
+          liable for indirect, incidental, special, consequential, exemplary, or punitive damages, or for
+          lost commissions, missed closings, lost profits, lost deals, loss of goodwill, or loss or
+          corruption of data, whether arising in contract, warranty, tort, or otherwise, and whether or not
+          Anzen has been advised of the possibility.
+        </p>
+        <p>
+          To the maximum extent permitted by law, Anzen’s total liability for direct damages arising out of
+          the Service or these terms will not exceed the amounts paid for the Service in the twelve months
+          before the claim. The limit is aggregate and applies to all claims and theories of liability.
+        </p>
+        <p>
+          Some jurisdictions do not allow certain limitations of liability. In those jurisdictions, Anzen’s
+          liability is limited to the maximum extent permitted by law. These terms do not limit liability
+          that applicable law does not permit to be limited.
         </p>
       </LegalSection>
 
-      <LegalSection id="changes" title="Changes">
+      <LegalSection id="indemnity" title="11. Indemnification">
         <p>
-          We may change these terms by posting the update on this page and changing the date above. The
-          updated page is the notice. The new terms apply to your use of Closepath after that date. If you do
-          not agree, stop using Closepath and email us. The terms posted when a monthly charge is made govern
-          that charge, including the price and the refund rules then in effect.
+          You will defend and indemnify Anzen Digital Media, LLC and its members, employees, and agents
+          against third-party claims, losses, and reasonable attorneys’ fees arising out of content you
+          submit, your lack of rights in that content, or your use of the Service, including claims
+          concerning deadlines, client or brokerage disputes, or brokerage, MLS, disclosure, or other legal
+          compliance.
+        </p>
+        <p>
+          Anzen will give notice of a claim of which it is aware. You will not settle a claim in a manner
+          that imposes an obligation on Anzen or admits fault by Anzen without Anzen’s prior written consent.
+          Anzen may participate in the defense with its own counsel. This section does not apply to a claim
+          arising from Anzen’s fraud or willful misconduct.
         </p>
       </LegalSection>
 
-      <LegalSection id="disputes" title="Disputes">
+      <LegalSection id="law" title="12. Governing law">
         <p>
-          Email <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
-          before you file a lawsuit. Describe the dispute and what you want us to do. We will try to resolve
-          it directly. If it is still unresolved 30 days after we receive that email, either of us may file
-          an individual claim in court. You do not have to wait if a filing deadline would otherwise expire
-          during those 30 days.
+          Before starting a formal proceeding, you will email{" "}
+          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+          with a description of the dispute and the relief requested. If the matter is unresolved 30 days
+          after Anzen receives that notice, either party may file an individual claim. A party need not wait
+          if a filing deadline would otherwise expire.
         </p>
         <p>
-          These terms are governed by the laws of the State of Nevada, United States, without using
-          conflict-of-law rules to apply another state’s law. The state and federal courts located in Nevada
-          are the exclusive venue for disputes arising out of these terms or Closepath, and you and Anzen
-          consent to personal jurisdiction there. Either of us may still bring an individual claim in small
-          claims court if the claim qualifies. There is no arbitration clause in these terms.
+          These terms are governed by the laws of the State of Nevada, United States, without regard to
+          conflict-of-law rules. The state and federal courts located in Nevada are the exclusive venue for
+          disputes arising out of these terms or the Service, and each party consents to personal
+          jurisdiction and venue in those courts. Either party may bring an individual claim in small claims
+          court if the claim qualifies.
         </p>
         <p>
-          You and Anzen agree to bring claims against the other only as an individual, not as a plaintiff or
-          class member in any class, collective, or representative action. A court may not consolidate more
-          than one person’s claims unless we both agree. This waiver does not stop an individual claim, and
-          it does not stop a government agency from bringing its own case. If a court will not enforce the
-          waiver for a particular claim, that claim may proceed in court, and the rest of these terms still
-          apply.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="other" title="Other terms">
-        <p>
-          These terms, the Privacy Policy, and the Refund Policy are the entire agreement about Closepath.
-          They replace earlier statements about the product. If the Privacy Policy differs from these terms
-          on personal information, the Privacy Policy controls that point.
-        </p>
-        <p>
-          If a court holds a provision unenforceable, the rest remains in effect. Our failure to enforce a
-          term once is not a waiver. Your responsibility for your practice, the indemnity, the disclaimers,
-          the liability cap, and the dispute terms survive the end of the subscription.
-        </p>
-        <p>
-          We may assign these terms if we transfer the business. You may not assign your account or the
-          subscription.
+          Any proceeding will be brought only in an individual capacity, and not as a plaintiff or class
+          member in any purported class, collective, or representative action. A court may not consolidate
+          more than one person’s claims unless both parties agree. This waiver does not limit an action
+          brought by a government agency. If a court holds the waiver unenforceable for a particular claim,
+          that claim may proceed, and the remainder of these terms will remain in effect.
         </p>
       </LegalSection>
 
-      <LegalSection id="contact" title="Contact">
+      <LegalSection id="changes" title="13. Changes">
+        <p>
+          Anzen may revise these terms by posting an updated version on this page and changing the date
+          above. The posted page is notice of the revision. Revised terms apply to use of the Service after
+          the updated date. The terms in effect when a monthly charge is made apply to that charge, including
+          the price and the refund terms then in effect.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="misc" title="14. Miscellaneous">
+        <p>
+          These terms, the Privacy Policy, and the Refund Policy are the entire agreement concerning the
+          Service and supersede earlier statements about it. If the Privacy Policy differs from these terms
+          on the handling of personal information, the Privacy Policy controls.
+        </p>
+        <p>
+          If a provision is held unenforceable, the remaining provisions continue in effect. A failure to
+          enforce a provision is not a waiver. The provisions on content, disclaimers, limitation of
+          liability, indemnification, and governing law survive the end of the subscription.
+        </p>
+        <p>
+          Anzen may assign these terms in connection with a transfer of the business. You may not assign the
+          account or the subscription.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="contact" title="15. Contact">
         <p>
           Anzen Digital Media, LLC
           <br />

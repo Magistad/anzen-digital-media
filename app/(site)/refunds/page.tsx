@@ -10,30 +10,31 @@ export const metadata: Metadata = {
 export default function RefundsPage() {
   return (
     <LegalDocument title="Refund Policy">
-      <LegalSection id="scope" title="What this covers">
+      <LegalSection id="scope" title="Subscription">
         <p>
-          Closepath is $9.99 USD per month from Anzen Digital Media, LLC. It is a subscription. It is not a
-          lifetime license. The <LegalLink href="/terms">Terms of Service</LegalLink> describe the
-          subscription. This page is how cancellation and a refund work.
+          Closepath is a subscription of $9.99 USD per month from Anzen Digital Media, LLC. It is not a
+          lifetime license. The <LegalLink href="/terms">Terms of Service</LegalLink> govern the
+          subscription. This page describes cancellation and refunds.
         </p>
       </LegalSection>
 
-      <LegalSection id="cancel" title="Cancel anytime">
+      <LegalSection id="cancel" title="Cancellation">
         <p>
-          While you are signed in, Billing in the book opens Stripe’s customer portal. A cancellation there
-          takes effect at the end of the current period. You may also cancel by emailing{" "}
+          While you are signed in, Billing in the book opens Stripe’s customer portal. Cancellation through
+          that portal takes effect at the end of the current period. You may also cancel by emailing{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
-          Include the email on the subscription so we can find it. Cancellation stops future monthly charges.
-          It does not, by itself, refund a charge, and it does not leave the book open indefinitely.
+          Include the email on the subscription. Cancellation stops subsequent monthly charges and does not,
+          by itself, refund a charge already paid.
         </p>
         <p>
-          Access lasts through the end of the period the current charge covers, and then ends, unless we
-          refund that charge. If we refund a charge, access for that period ends. When access ends, we may close
-          the account and delete the book. Export a spreadsheet first if you want a copy of what you typed.
+          Access continues through the end of the period covered by the current charge, and then ends, unless
+          that charge is refunded. If a charge is refunded, access for that period ends. When access ends,
+          Anzen may close the account and delete the book. A spreadsheet export is available while the
+          account is open.
         </p>
       </LegalSection>
 
-      <LegalSection id="ask" title="How to ask for a refund">
+      <LegalSection id="ask" title="Refund requests">
         <p>
           Email{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
@@ -41,31 +42,33 @@ export default function RefundsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection id="window" title="Within 14 days">
+      <LegalSection id="window" title="Latest monthly charge">
         <p>
           You may request a refund of the latest monthly charge within 14 days of that charge. We will refund
           that $9.99 charge.
         </p>
       </LegalSection>
 
-      <LegalSection id="access" title="If we do not deliver access">
+      <LegalSection id="access" title="Access not delivered">
         <p>
-          If we failed to deliver access to the book, we will refund that monthly charge. That refund does
-          not depend on the 14-day window.
+          If Anzen does not deliver access to the book, Anzen will refund that monthly charge. That refund is
+          not limited to the 14-day period above.
         </p>
       </LegalSection>
 
       <LegalSection id="chargebacks" title="Chargebacks">
         <p>
-          If you are considering a chargeback with your bank or card issuer, email us first so we can help.
+          Please email{" "}
+          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+          before opening a chargeback with a bank or card issuer, so the charge can be reviewed.
         </p>
       </LegalSection>
 
-      <LegalSection id="limit" title="What this policy does not add">
+      <LegalSection id="limit" title="Scope">
         <p>
-          A refund under this policy is of the monthly charge described above. Cancellation stops the next
-          charges. This policy does not refund every earlier month, and it does not add a warranty, an uptime
-          commitment, or any obligation beyond the refunds described here.
+          A refund under this policy is limited to the monthly charge described above. Cancellation stops
+          subsequent charges. This policy does not refund earlier months and does not add a warranty or a
+          service-level commitment.
         </p>
         <p>
           <LegalLink href="/terms">Terms of Service</LegalLink>

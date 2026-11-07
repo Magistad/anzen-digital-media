@@ -39,10 +39,10 @@ export default function PrivacyPage() {
           Stripe collects the payment details and the email you enter there, and Stripe keeps the card number
           and the billing record for the subscription. We do not receive or store the card number. We keep
           the checkout session id, and the email associated with that session, so we can confirm that the
-          subscription charge succeeded and open the book. Stripe sends the receipt. You may cancel anytime
-          from Billing in the book, which opens Stripe’s customer portal, or by emailing us, as the{" "}
-          <LegalLink href="/terms">Terms of Service</LegalLink> describe. Cancellation takes effect at the
-          end of the current period. It is not a lifetime grant of access.
+          subscription charge succeeded and open the book. Stripe sends the receipt. Cancellation is available
+          from Billing in the book, which opens Stripe’s customer portal, or by email, as described in the{" "}
+          <LegalLink href="/terms">Terms of Service</LegalLink>. Cancellation takes effect at the end of the
+          current period.
         </p>
         <p>
           Email you send us. If you write to{" "}
@@ -126,9 +126,9 @@ export default function PrivacyPage() {
           can read them as the operator. Netlify can read them as the processor that stores them.
         </p>
         <p>
-          We do not offer two-factor authentication. We do not provide SOC 2 or ISO 27001 reports. You are
-          responsible for the password you choose and for the devices you use to open the book. The{" "}
-          <LegalLink href="/terms">Terms of Service</LegalLink> state that responsibility.
+          The Service does not include two-factor authentication, and Anzen does not provide a SOC 2 or ISO
+          27001 report. Account credentials are described in the{" "}
+          <LegalLink href="/terms">Terms of Service</LegalLink>.
         </p>
       </LegalSection>
 
