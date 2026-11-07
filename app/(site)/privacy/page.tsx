@@ -40,8 +40,9 @@ export default function PrivacyPage() {
           and the billing record for the subscription. We do not receive or store the card number. We keep
           the checkout session id, and the email associated with that session, so we can confirm that the
           subscription charge succeeded and open the book. Stripe sends the receipt. You may cancel anytime
-          by emailing us, as the <LegalLink href="/terms">Terms of Service</LegalLink> describe. Cancellation
-          is not a lifetime grant of access.
+          from Billing in the book, which opens Stripe’s customer portal, or by emailing us, as the{" "}
+          <LegalLink href="/terms">Terms of Service</LegalLink> describe. Cancellation takes effect at the
+          end of the current period. It is not a lifetime grant of access.
         </p>
         <p>
           Email you send us. If you write to{" "}

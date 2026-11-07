@@ -3,6 +3,7 @@ import {
   hashPassword,
   verifyPassword,
 } from "./closepath-auth";
+import { normalizeStoredCustomerId, normalizeStoredSubscriptionId } from "./closepath-order";
 import {
   type Workspace,
   emptyWorkspace,
@@ -18,6 +19,9 @@ export type ClosepathAccount = {
   email: string;
   passwordHash: string;
   stripeSessionId: string;
+  /** Monthly subscription. Null on accounts opened before subscriptions. */
+  stripeSubscriptionId: string | null;
+  stripeCustomerId: string | null;
   createdAt: string;
   updatedAt: string;
   failedSignIns: number;
@@ -35,7 +39,12 @@ function parseAccount(raw: string | null): ClosepathAccount | null {
     const value = JSON.parse(raw) as ClosepathAccount;
     if (!value || typeof value.email !== "string" || typeof value.passwordHash !== "string") return null;
     const workspace = sanitizeWorkspace(value.workspace) ?? emptyWorkspace();
-    return { ...value, workspace };
+    return {
+      ...value,
+      workspace,
+      stripeSubscriptionId: normalizeStoredSubscriptionId(value.stripeSubscriptionId),
+      stripeCustomerId: normalizeStoredCustomerId(value.stripeCustomerId),
+    };
   } catch {
     return null;
   }
@@ -54,12 +63,16 @@ export async function createAccount(input: {
   email: string;
   password: string;
   stripeSessionId: string;
+  stripeSubscriptionId?: string | null;
+  stripeCustomerId?: string | null;
 }): Promise<ClosepathAccount> {
   const now = new Date().toISOString();
   const account: ClosepathAccount = {
     email: input.email,
     passwordHash: await hashPassword(input.password),
     stripeSessionId: input.stripeSessionId,
+    stripeSubscriptionId: normalizeStoredSubscriptionId(input.stripeSubscriptionId),
+    stripeCustomerId: normalizeStoredCustomerId(input.stripeCustomerId),
     createdAt: now,
     updatedAt: now,
     failedSignIns: 0,
@@ -74,11 +87,16 @@ export async function resetAccountPassword(
   email: string,
   password: string,
   stripeSessionId: string,
+  billing?: { stripeSubscriptionId?: string | null; stripeCustomerId?: string | null },
 ): Promise<void> {
   const account = await findAccount(email);
   if (!account) throw new Error("Closepath account is missing");
   account.passwordHash = await hashPassword(password);
   account.stripeSessionId = stripeSessionId;
+  const subscriptionId = normalizeStoredSubscriptionId(billing?.stripeSubscriptionId);
+  const customerId = normalizeStoredCustomerId(billing?.stripeCustomerId);
+  if (subscriptionId) account.stripeSubscriptionId = subscriptionId;
+  if (customerId) account.stripeCustomerId = customerId;
   account.failedSignIns = 0;
   account.lockedUntil = null;
   account.updatedAt = new Date().toISOString();

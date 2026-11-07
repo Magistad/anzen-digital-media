@@ -24,7 +24,7 @@ const errors: Record<string, string> = {
   mismatch: "Those passwords don’t match.",
   email: "Use the email from checkout.",
   exists: "This email already has a password. Sign in, or set a new one below.",
-  unpaid: "This payment is not marked paid yet.",
+  unpaid: "This subscription is not marked paid yet.",
   failed: "Closepath couldn’t open the book. Try again.",
   unconfigured: "Closepath can’t open accounts right now.",
 };
@@ -135,7 +135,9 @@ export default async function ClosepathSuccessPage({
               </Link>
               <h2 className="mt-12 text-[15px] text-paper/60">Forgot it?</h2>
               <p className="mt-3 max-w-md text-[15px] leading-snug text-paper/70">
-                Set a new password with this purchase. The files stay.
+                {access.plan === "monthly"
+                  ? "Set a new password with this subscription. The files stay."
+                  : "Set a new password. The files stay."}
               </p>
               {ready ? (
                 <PasswordForm sessionId={sessionId} email={checkoutEmail} locked={Boolean(checkoutEmail)} reset />
@@ -154,8 +156,9 @@ export default async function ClosepathSuccessPage({
                 Open Closepath.
               </h1>
               <p className="mt-8 max-w-[36rem] text-lg leading-snug tracking-[-0.02em] text-paper/75">
-                Payment of $59 is confirmed. Set a password. The dates, the offers, and the commission stay with this
-                email when you open Closepath on another phone.
+                {access.plan === "monthly"
+                  ? "Your subscription is confirmed. $9.99 a month, cancel anytime. Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone."
+                  : "Payment is confirmed. Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone."}
               </p>
               {message ? (
                 <p className="mt-4 max-w-md text-sm text-paper/70" role="alert">
@@ -177,10 +180,10 @@ export default async function ClosepathSuccessPage({
         ) : access.state === "unpaid" ? (
           <>
             <h1 className="mt-6 max-w-[14ch] text-[clamp(2.85rem,8vw,6.5rem)] font-semibold leading-[0.86] tracking-[-0.055em]">
-              This payment is not marked paid yet.
+              This subscription is not paid yet.
             </h1>
             <p className="mt-8 max-w-[34rem] text-lg leading-snug tracking-[-0.02em] text-paper/75">
-              If you just checked out, refresh in a moment. Closepath opens once Stripe marks the payment paid.
+              If you just checked out, refresh in a moment. Closepath opens when Stripe marks the subscription paid.
             </p>
             <Link href="/products/closepath" className={`${linkClass} mt-10`}>
               Back to Closepath
@@ -198,7 +201,7 @@ export default async function ClosepathSuccessPage({
         ) : (
           <>
             <h1 className="mt-6 max-w-[14ch] text-[clamp(2.85rem,8vw,6.5rem)] font-semibold leading-[0.86] tracking-[-0.055em]">
-              We couldn’t confirm this payment.
+              We couldn’t confirm this subscription.
             </h1>
             <Link href="/products/closepath" className={`${linkClass} mt-10`}>
               Back to Closepath

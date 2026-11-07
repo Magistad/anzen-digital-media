@@ -71,6 +71,29 @@ test("unknown email cannot sign in", async () => {
   assert.equal(await findAccount("nobody@email.test"), null);
 });
 
+test("a subscription id stays on the account and a password reset can replace it", async () => {
+  await createAccount({
+    email: "ada@email.test",
+    password: "maple-street",
+    stripeSessionId: "cs_test_123",
+    stripeSubscriptionId: "sub_oldsubscriber",
+    stripeCustomerId: "cus_oldsubscriber",
+  });
+  const first = await findAccount("ada@email.test");
+  assert.equal(first?.stripeSubscriptionId, "sub_oldsubscriber");
+  assert.equal(first?.stripeCustomerId, "cus_oldsubscriber");
+  await resetAccountPassword("ada@email.test", "cedar-avenue", "cs_test_456");
+  const kept = await findAccount("ada@email.test");
+  assert.equal(kept?.stripeSubscriptionId, "sub_oldsubscriber");
+  await resetAccountPassword("ada@email.test", "oak-street", "cs_test_789", {
+    stripeSubscriptionId: "sub_newsubscriber",
+    stripeCustomerId: "cus_newsubscriber",
+  });
+  const next = await findAccount("ada@email.test");
+  assert.equal(next?.stripeSubscriptionId, "sub_newsubscriber");
+  assert.equal(next?.stripeCustomerId, "cus_newsubscriber");
+});
+
 test("a new password keeps the book", async () => {
   await createAccount({ email: "ada@email.test", password: "maple-street", stripeSessionId: "cs_test_123" });
   await saveWorkspace("ada@email.test", {

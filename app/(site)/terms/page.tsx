@@ -83,7 +83,9 @@ export default function TermsPage() {
           right to keep using Closepath after the subscription ends.
         </p>
         <p>
-          Cancel by emailing{" "}
+          You may cancel anytime. While you are signed in, Billing in the book opens Stripe’s customer
+          portal, and a cancellation there takes effect at the end of the current period. You may also cancel
+          by emailing{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
           Cancellation stops future monthly charges. It does not, by itself, refund a charge. Access lasts
           through the end of the period that charge covers, and then ends, unless we refund the charge under the{" "}

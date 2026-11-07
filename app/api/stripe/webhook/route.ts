@@ -44,7 +44,9 @@ export async function POST(req: Request) {
   }
 
   try {
-    const session = await stripe.checkout.sessions.retrieve(received.id);
+    const session = await stripe.checkout.sessions.retrieve(received.id, {
+      expand: ["line_items"],
+    });
 
     if (event.type === "checkout.session.async_payment_failed") {
       if (session.payment_status === "paid") {

@@ -20,11 +20,11 @@ export default function RefundsPage() {
 
       <LegalSection id="cancel" title="Cancel anytime">
         <p>
-          Email{" "}
-          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
-          to cancel. Include the email on the subscription so we can find it. Cancellation stops future
-          monthly charges. It does not, by itself, refund a charge, and it does not leave the book open
-          indefinitely.
+          While you are signed in, Billing in the book opens Stripe’s customer portal. A cancellation there
+          takes effect at the end of the current period. You may also cancel by emailing{" "}
+          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
+          Include the email on the subscription so we can find it. Cancellation stops future monthly charges.
+          It does not, by itself, refund a charge, and it does not leave the book open indefinitely.
         </p>
         <p>
           Access lasts through the end of the period the current charge covers, and then ends, unless we
