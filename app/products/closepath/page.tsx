@@ -1,0 +1,127 @@
+import type { Metadata } from "next";
+import { BuyClosepath } from "../../../components/BuyClosepath";
+
+export const metadata: Metadata = {
+  title: "Closepath",
+  description:
+    "Closepath is a listing-to-close system for solo residential real estate agents. One download, no monthly fee. $59.",
+};
+
+const tracks: { title: string; detail?: string }[] = [
+  { title: "Leads" },
+  { title: "Showings" },
+  { title: "Offers" },
+  {
+    title: "Critical dates",
+    detail: "(inspection, appraisal, contingencies, close)",
+  },
+  { title: "Commissions" },
+];
+
+export default function ClosepathPage() {
+  return (
+    <main id="content">
+      <section className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-28 md:pb-24">
+        <div aria-hidden className="hero-glow breathe pointer-events-none absolute inset-0" />
+        <div className="frame relative">
+          <p className="rise text-[15px] tracking-[-0.02em] text-paper/60">
+            Closepath
+          </p>
+          <h1 className="mt-6 text-[clamp(2.85rem,8.2vw,8.15rem)] font-semibold leading-[0.86] tracking-[-0.058em]">
+            <span className="rise block" style={{ animationDelay: "80ms" }}>
+              Never lose a deal
+            </span>
+            <span className="rise block" style={{ animationDelay: "160ms" }}>
+              to a missed date.
+            </span>
+          </h1>
+          <p
+            className="rise mt-8 max-w-[36rem] text-lg leading-snug tracking-[-0.02em] text-paper/75 md:mt-10 md:text-[1.35rem]"
+            style={{ animationDelay: "280ms" }}
+          >
+            Closepath is a listing-to-close system for solo residential real
+            estate agents. One download, no monthly fee.
+          </p>
+          <div className="rise mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
+            <BuyClosepath noteId="closepath-checkout-hero" />
+          </div>
+        </div>
+      </section>
+
+      <section className="flex min-h-[100svh] flex-col justify-center py-28">
+        <div className="frame view-rise">
+          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
+            What it tracks
+          </h2>
+          <ol className="mt-8 border-t border-paper/15 md:mt-10">
+            {tracks.map((item, index) => (
+              <li
+                key={item.title}
+                className="group grid grid-cols-[2.25rem_1fr] items-baseline gap-x-4 border-b border-paper/15 py-5 sm:grid-cols-[3.25rem_1fr] sm:gap-x-8 sm:py-6 lg:py-7"
+              >
+                <span className="text-sm tabular-nums text-paper/40 transition-colors duration-300 group-hover:text-paper">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <p className="text-[clamp(2rem,4.2vw,3.7rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
+                    {item.title}
+                  </p>
+                  {item.detail ? (
+                    <p className="mt-2 max-w-[36rem] text-pretty text-base tracking-[-0.015em] text-paper/70 md:text-lg">
+                      {item.detail}
+                    </p>
+                  ) : null}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="flex min-h-[100svh] flex-col justify-end py-28 md:py-36">
+        <div className="frame view-rise">
+          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
+            Who it’s for
+          </h2>
+          <p className="mt-8 max-w-[14em] text-[clamp(1.9rem,4.1vw,3.45rem)] font-medium leading-[1.12] tracking-[-0.035em] md:mt-12">
+            A solo residential agent who is running listings, showings, and
+            closings out of texts and spreadsheets, and cannot afford to miss a
+            date.
+          </p>
+        </div>
+      </section>
+
+      <section className="flex min-h-[100svh] flex-col justify-end py-28 md:py-36">
+        <div className="frame view-rise">
+          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
+            What it is not
+          </h2>
+          <p className="mt-8 max-w-[22em] border-l border-paper/25 pl-6 text-[clamp(1.4rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 md:mt-12 md:pl-8">
+            Not a Follow Up Boss or BoldTrail replacement. Those are monthly
+            CRMs. This is the file underneath — the cheaper option if you don’t
+            need a full CRM yet, or you want one system that holds the
+            transaction from listing to funded.
+          </p>
+        </div>
+      </section>
+
+      <section className="flex min-h-[100svh] flex-col justify-end pb-28 pt-28 md:pb-32">
+        <div className="frame view-rise">
+          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
+            Price
+          </h2>
+          <p className="mt-6 text-[clamp(5.5rem,18vw,12.5rem)] font-semibold leading-[0.8] tracking-[-0.065em]">
+            <span className="sr-only">$59</span>
+            <span aria-hidden className="flex items-start">
+              <span className="mt-[0.12em] text-[0.38em] font-medium">$</span>
+              59
+            </span>
+          </p>
+          <div className="mt-10 md:mt-14">
+            <BuyClosepath noteId="closepath-checkout-price" />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
