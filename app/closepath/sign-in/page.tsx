@@ -71,7 +71,15 @@ export default function SignInPage({
           </button>
         </form>
         <p className="mt-6 max-w-md text-sm leading-snug text-paper/60">
-          Bought Closepath and never set a password? Use the page Stripe sent you back to after checkout.{" "}
+          Bought Closepath and never set a password? Use the page Stripe sent you back to after checkout.
+          Questions go to{" "}
+          <a
+            href="mailto:contact@anzendigitalmedia.com"
+            className="text-paper/80 hover:text-paper"
+          >
+            contact@anzendigitalmedia.com
+          </a>
+          .{" "}
           <Link href="/products/closepath" className="text-paper/80 hover:text-paper">
             Back to Closepath
           </Link>
