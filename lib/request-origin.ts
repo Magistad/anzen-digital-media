@@ -26,3 +26,14 @@ export function requestOrigin(req: Request): string {
 
   return new URL(req.url).origin;
 }
+
+/** True when the browser Origin matches this request, or when Origin is absent. */
+export function sameOrigin(req: Request): boolean {
+  const claimed = req.headers.get("origin");
+  if (!claimed) return true;
+  try {
+    return new URL(claimed).origin === requestOrigin(req);
+  } catch {
+    return false;
+  }
+}

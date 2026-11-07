@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       customer_creation: "always",
       metadata: { product: CLOSEPATH_PRODUCT },
       payment_intent_data: {
-        description: "Closepath — one-time download",
+        description: "Closepath — one purchase",
         metadata: { product: CLOSEPATH_PRODUCT },
       },
     });

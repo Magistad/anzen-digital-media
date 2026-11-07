@@ -1,17 +1,24 @@
 import ExcelJS from "exceljs";
+import { parseIsoDate } from "./closepath-model";
+import { type SheetRow, type WorkbookData } from "./closepath-project";
 
-const LAST_ROW = 28;
 const HEADER_FILL = "FF161616";
 const HEADER_FONT = "FFF4F0E6";
 const EXAMPLE_FILL = "FFF6F1E6";
 const INK = "FF1C1916";
 const PAPER = "FFF7F4EE";
 
-type Row = (string | number | Date | ExcelJS.CellFormulaValue | null)[];
+type Cell = string | number | Date | ExcelJS.CellFormulaValue | null;
 
-function workbookDate(iso: string): Date {
-  const [year, month, day] = iso.split("-").map(Number);
-  return new Date(year ?? 2026, (month ?? 1) - 1, day ?? 1, 12, 0, 0);
+function sheetLimit(count: number): number {
+  return Math.min(200, Math.max(28, count + 12));
+}
+
+function excelDate(iso: string | null): Date | null {
+  if (!iso) return null;
+  const parsed = parseIsoDate(iso);
+  if (!parsed) return null;
+  return new Date(parsed.y, parsed.m - 1, parsed.d, 12, 0, 0);
 }
 
 function listValidation(options: string): ExcelJS.DataValidation {
@@ -52,15 +59,11 @@ function styleHeader(sheet: ExcelJS.Worksheet, headers: string[], widths: number
   sheet.properties.tabColor = { argb: HEADER_FILL };
 }
 
-function writeRow(sheet: ExcelJS.Worksheet, values: Row, example: boolean) {
+function writeRow(sheet: ExcelJS.Worksheet, values: Cell[], example: boolean) {
   const row = sheet.addRow(values);
   row.height = 22;
   row.eachCell({ includeEmpty: true }, (cell, col) => {
-    cell.font = {
-      name: "Calibri",
-      size: 11,
-      color: { argb: INK },
-    };
+    cell.font = { name: "Calibri", size: 11, color: { argb: INK } };
     cell.alignment = { vertical: "middle", wrapText: col === values.length };
     if (example) {
       cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: EXAMPLE_FILL } };
@@ -83,10 +86,21 @@ function applyMoney(row: ExcelJS.Row, columns: number[]) {
   }
 }
 
-function applyList(sheet: ExcelJS.Worksheet, column: number, options: string) {
-  for (let row = 2; row <= LAST_ROW; row += 1) {
+function applyList(sheet: ExcelJS.Worksheet, column: number, options: string, lastRow: number) {
+  for (let row = 2; row <= lastRow; row += 1) {
     sheet.getCell(row, column).dataValidation = listValidation(options);
   }
+}
+
+function cells(row: SheetRow, dates: number[]): Cell[] {
+  return row.values.map((value, index) => {
+    if (dates.includes(index) && typeof value === "string") return excelDate(value);
+    return value;
+  });
+}
+
+function blank(sheet: ExcelJS.Worksheet, lastRow: number, written: number) {
+  for (let row = written + 2; row <= lastRow; row += 1) sheet.getRow(row).height = 20;
 }
 
 function buildStart(workbook: ExcelJS.Workbook) {
@@ -100,23 +114,23 @@ function buildStart(workbook: ExcelJS.Workbook) {
   const lines: { text: string; size: number; bold?: boolean; height: number }[] = [
     { text: "Closepath", size: 32, bold: true, height: 42 },
     {
-      text: "A listing-to-close workbook for a solo residential agent. One file, from the first conversation to a funded commission.",
+      text: "A copy of your listing-to-close book. The book you work in is the one in the browser. Editing this spreadsheet does not change that book.",
       size: 14,
-      height: 36,
+      height: 48,
     },
     { text: "", size: 12, height: 12 },
     { text: "What this file is", size: 16, bold: true, height: 24 },
     {
-      text: "This is the file underneath. It is not a Follow Up Boss or BoldTrail replacement. Those are monthly CRMs. Use Closepath when you are running listings, showings, and closings out of texts and spreadsheets and cannot afford to miss a date.",
+      text: "One row here is one property there. The lead, showings, offers, critical dates, and commission on a file share that address. This is not a Follow Up Boss or BoldTrail replacement. Those are monthly CRMs.",
       size: 12,
       height: 48,
     },
     { text: "", size: 12, height: 12 },
     { text: "How a deal moves", size: 16, bold: true, height: 24 },
     {
-      text: "1. Leads — who they are, where they came from, and the next time you will contact them.",
+      text: "1. Leads — who they are, where they came from, and the next time you will contact them. A file starts when there is a property.",
       size: 12,
-      height: 22,
+      height: 32,
     },
     {
       text: "2. Showings — one row every time you open a door. Keep what they said.",
@@ -139,7 +153,7 @@ function buildStart(workbook: ExcelJS.Workbook) {
       height: 32,
     },
     {
-      text: "6. Deals — one row per property. Use the same address on every sheet so the deal stays one deal.",
+      text: "6. Deals — one row per property. The same address is the deal on every sheet.",
       size: 12,
       height: 32,
     },
@@ -153,7 +167,7 @@ function buildStart(workbook: ExcelJS.Workbook) {
     { text: "", size: 12, height: 12 },
     { text: "Examples", size: 16, bold: true, height: 24 },
     {
-      text: "Shaded rows are a sample listing at 1842 Maple Street (Elena Vasquez) and a sample buyer deal at 910 Cedar Avenue (Marcus Hale). Delete them before you add a real client. They use obviously fake 555 numbers and .test emails.",
+      text: "Shaded rows are a sample listing at 1842 Maple Street (Elena Vasquez) and a sample buyer deal at 910 Cedar Avenue (Marcus Hale). They are not your clients. They use obviously fake 555 numbers and .test emails.",
       size: 12,
       height: 48,
     },
@@ -171,7 +185,7 @@ function buildStart(workbook: ExcelJS.Workbook) {
   });
 }
 
-function buildDeals(workbook: ExcelJS.Workbook) {
+function buildDeals(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
   const sheet = workbook.addWorksheet("Deals");
   const headers = [
     "Address",
@@ -187,170 +201,71 @@ function buildDeals(workbook: ExcelJS.Workbook) {
     "Notes",
   ];
   styleHeader(sheet, headers, [28, 14, 22, 20, 16, 18, 22, 24, 16, 22, 42]);
-  const examples: Row[] = [
-    [
-      "1842 Maple Street",
-      "Listing",
-      "Elena Vasquez",
-      "Under contract",
-      425000,
-      418000,
-      workbookDate("2026-11-09"),
-      "Inspection deadline",
-      workbookDate("2026-11-30"),
-      6270,
-      "Example — delete this row. Your net from Commissions.",
-    ],
-    [
-      "910 Cedar Avenue",
-      "Buyer",
-      "Marcus Hale",
-      "Under contract",
-      389000,
-      380000,
-      workbookDate("2026-11-10"),
-      "Inspection deadline",
-      workbookDate("2026-12-04"),
-      5700,
-      "Example — delete this row. Roof is the inspection focus.",
-    ],
-  ];
-  for (const values of examples) {
-    const row = writeRow(sheet, values, true);
-    applyMoney(row, [5, 6, 10]);
-    applyDates(row, [7, 9]);
-  }
-  for (let row = examples.length + 2; row <= LAST_ROW; row += 1) sheet.getRow(row).height = 20;
-  applyList(sheet, 2, "Listing,Buyer");
-  applyList(sheet, 4, "Prospect,Showing,Offer out,Under contract,Clear to close,Closed,Funded,Fell through");
+  const lastRow = sheetLimit(rows.length);
+  rows.forEach((row) => {
+    const written = writeRow(sheet, cells(row, [6, 8]), row.example);
+    applyMoney(written, [5, 6, 10]);
+    applyDates(written, [7, 9]);
+  });
+  blank(sheet, lastRow, rows.length);
+  applyList(sheet, 2, "Listing,Buyer", lastRow);
+  applyList(sheet, 4, "Prospect,Showing,Offer out,Under contract,Clear to close,Closed,Funded,Fell through", lastRow);
 }
 
-function buildLeads(workbook: ExcelJS.Workbook) {
+function buildLeads(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
   const sheet = workbook.addWorksheet("Leads");
   styleHeader(
     sheet,
     ["Name", "Phone", "Email", "Source", "Side", "Property or search", "First contact", "Next follow-up", "Status", "Notes"],
     [22, 16, 32, 24, 14, 36, 18, 18, 18, 42],
   );
-  const rows: Row[] = [
-    [
-      "Elena Vasquez",
-      "555-0148",
-      "elena.example@email.test",
-      "Past client referral",
-      "Listing",
-      "1842 Maple Street",
-      workbookDate("2026-10-12"),
-      workbookDate("2026-11-08"),
-      "Active",
-      "Example — delete this row. Wants the listing live before Thanksgiving.",
-    ],
-    [
-      "Marcus Hale",
-      "555-0194",
-      "marcus.example@email.test",
-      "Open house sign-in",
-      "Buyer",
-      "3 bed east of the park, under $400k",
-      workbookDate("2026-10-20"),
-      workbookDate("2026-11-08"),
-      "Active",
-      "Example — delete this row. Pre-approved. Second showing is done.",
-    ],
-  ];
-  for (const values of rows) {
-    const row = writeRow(sheet, values, true);
-    applyDates(row, [7, 8]);
-  }
-  applyList(sheet, 5, "Listing,Buyer");
-  applyList(sheet, 9, "New,Contacted,Nurture,Appointment set,Active,Cold");
+  const lastRow = sheetLimit(rows.length);
+  rows.forEach((row) => {
+    const written = writeRow(sheet, cells(row, [6, 7]), row.example);
+    applyDates(written, [7, 8]);
+  });
+  blank(sheet, lastRow, rows.length);
+  applyList(sheet, 5, "Listing,Buyer", lastRow);
+  applyList(sheet, 9, "New,Contacted,Nurture,Appointment set,Active,Cold", lastRow);
 }
 
-function buildShowings(workbook: ExcelJS.Workbook) {
+function buildShowings(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
   const sheet = workbook.addWorksheet("Showings");
   styleHeader(
     sheet,
     ["Date", "Time", "Client", "Address", "Side", "Confirmed", "Result", "Feedback", "Next step"],
     [16, 14, 22, 28, 14, 14, 16, 42, 42],
   );
-  const rows: Row[] = [
-    [
-      workbookDate("2026-10-28"),
-      "2:00 PM",
-      "Elena Vasquez",
-      "1842 Maple Street",
-      "Listing",
-      "Yes",
-      "Completed",
-      "Example — delete this row. Listing appointment. Agreed to ask $425,000.",
-      "Send listing paperwork the same day.",
-    ],
-    [
-      workbookDate("2026-10-18"),
-      "11:00 AM",
-      "Marcus Hale",
-      "910 Cedar Avenue",
-      "Buyer",
-      "Yes",
-      "Completed",
-      "Example — delete this row. Liked the yard. Wants the roof looked at.",
-      "If the offer is accepted, book the inspector for the roof.",
-    ],
-  ];
-  for (const values of rows) {
-    const row = writeRow(sheet, values, true);
-    applyDates(row, [1]);
-  }
-  applyList(sheet, 5, "Listing,Buyer");
-  applyList(sheet, 6, "Yes,No");
-  applyList(sheet, 7, "Scheduled,Completed,No-show,Cancelled");
+  const lastRow = sheetLimit(rows.length);
+  rows.forEach((row) => {
+    const written = writeRow(sheet, cells(row, [0]), row.example);
+    applyDates(written, [1]);
+  });
+  blank(sheet, lastRow, rows.length);
+  applyList(sheet, 5, "Listing,Buyer", lastRow);
+  applyList(sheet, 6, "Yes,No", lastRow);
+  applyList(sheet, 7, "Scheduled,Completed,No-show,Cancelled", lastRow);
 }
 
-function buildOffers(workbook: ExcelJS.Workbook) {
+function buildOffers(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
   const sheet = workbook.addWorksheet("Offers");
   styleHeader(
     sheet,
     ["Date", "Address", "Client", "Side", "List price", "Offer price", "Earnest money", "Concessions", "Status", "Expires", "Notes"],
     [16, 28, 22, 14, 16, 16, 16, 16, 14, 16, 42],
   );
-  const rows: Row[] = [
-    [
-      workbookDate("2026-10-30"),
-      "1842 Maple Street",
-      "Elena Vasquez",
-      "Listing",
-      425000,
-      418000,
-      8000,
-      0,
-      "Accepted",
-      workbookDate("2026-10-31"),
-      "Example — delete this row. Ratified November 1.",
-    ],
-    [
-      workbookDate("2026-10-22"),
-      "910 Cedar Avenue",
-      "Marcus Hale",
-      "Buyer",
-      389000,
-      380000,
-      5000,
-      2000,
-      "Accepted",
-      workbookDate("2026-10-23"),
-      "Example — delete this row. $2,000 seller credit. Ratified October 24.",
-    ],
-  ];
-  for (const values of rows) {
-    const row = writeRow(sheet, values, true);
-    applyDates(row, [1, 10]);
-    applyMoney(row, [5, 6, 7, 8]);
-  }
-  applyList(sheet, 4, "Listing,Buyer");
-  applyList(sheet, 9, "Draft,Submitted,Counter,Accepted,Rejected,Expired");
+  const lastRow = sheetLimit(rows.length);
+  rows.forEach((row) => {
+    const written = writeRow(sheet, cells(row, [0, 9]), row.example);
+    applyDates(written, [1, 10]);
+    applyMoney(written, [5, 6, 7, 8]);
+  });
+  blank(sheet, lastRow, rows.length);
+  applyList(sheet, 4, "Listing,Buyer", lastRow);
+  applyList(sheet, 9, "Draft,Submitted,Counter,Accepted,Rejected,Expired", lastRow);
 }
 
-function buildCriticalDates(workbook: ExcelJS.Workbook) {
+function buildCriticalDates(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
   const sheet = workbook.addWorksheet("Critical dates");
   const headers = [
     "Address",
@@ -371,52 +286,13 @@ function buildCriticalDates(workbook: ExcelJS.Workbook) {
   styleHeader(sheet, headers, [28, 20, 12, 16, 20, 18, 20, 18, 18, 24, 16, 16, 12, 46]);
   sheet.getCell("F1").note =
     "Blank until you enter the deadline. Warm when the date is inside three days. Red after it passes.";
-
-  const examples: { values: Row }[] = [
-    {
-      values: [
-        "1842 Maple Street",
-        "Elena Vasquez",
-        "Listing",
-        workbookDate("2026-11-01"),
-        workbookDate("2026-11-09"),
-        null,
-        workbookDate("2026-11-16"),
-        null,
-        workbookDate("2026-11-18"),
-        null,
-        workbookDate("2026-11-30"),
-        null,
-        "No",
-        "Example — delete this row. Inspection is the next date. Order the appraiser the day it is scheduled.",
-      ],
-    },
-    {
-      values: [
-        "910 Cedar Avenue",
-        "Marcus Hale",
-        "Buyer",
-        workbookDate("2026-10-24"),
-        workbookDate("2026-11-10"),
-        null,
-        workbookDate("2026-11-17"),
-        null,
-        workbookDate("2026-11-20"),
-        null,
-        workbookDate("2026-12-04"),
-        null,
-        "No",
-        "Example — delete this row. Buyer side. The roof clause is the inspection focus.",
-      ],
-    },
-  ];
-
-  examples.forEach(({ values }) => {
-    const row = writeRow(sheet, values, true);
-    applyDates(row, [4, 5, 7, 9, 11]);
+  const lastRow = sheetLimit(rows.length);
+  rows.forEach((row) => {
+    const written = writeRow(sheet, cells(row, [3, 4, 6, 8, 10]), row.example);
+    applyDates(written, [4, 5, 7, 9, 11]);
   });
 
-  for (let row = 2; row <= LAST_ROW; row += 1) {
+  for (let row = 2; row <= lastRow; row += 1) {
     const days: [string, string][] = [
       ["F", "E"],
       ["H", "G"],
@@ -429,17 +305,17 @@ function buildCriticalDates(workbook: ExcelJS.Workbook) {
       cell.numFmt = "0";
       cell.alignment = { vertical: "middle", horizontal: "center" };
       cell.font = { name: "Calibri", size: 11, color: { argb: INK } };
-      if (row <= examples.length + 1) {
+      if (row <= rows.length + 1 && rows[row - 2]?.example) {
         cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: EXAMPLE_FILL } };
       }
     }
-    if (row > examples.length + 1) sheet.getRow(row).height = 20;
+    if (row > rows.length + 1) sheet.getRow(row).height = 20;
   }
 
-  applyList(sheet, 3, "Listing,Buyer");
-  applyList(sheet, 13, "Yes,No");
+  applyList(sheet, 3, "Listing,Buyer", lastRow);
+  applyList(sheet, 13, "Yes,No", lastRow);
   sheet.addConditionalFormatting({
-    ref: `F2:L${LAST_ROW}`,
+    ref: `F2:L${lastRow}`,
     rules: [
       {
         type: "cellIs",
@@ -465,7 +341,7 @@ function buildCriticalDates(workbook: ExcelJS.Workbook) {
   });
 }
 
-function buildCommissions(workbook: ExcelJS.Workbook) {
+function buildCommissions(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
   const sheet = workbook.addWorksheet("Commissions");
   styleHeader(
     sheet,
@@ -474,58 +350,30 @@ function buildCommissions(workbook: ExcelJS.Workbook) {
   );
   sheet.getCell("D1").note = "Enter 3% as a percent, not as 3. Gross is sale price times this rate.";
   sheet.getCell("F1").note = "Your share of the gross. 50% is entered as 50%.";
+  const lastRow = sheetLimit(rows.length);
 
-  const examples: { price: number; rate: number; split: number; close: string; note: string; address: string; side: string }[] = [
-    {
-      address: "1842 Maple Street",
-      side: "Listing",
-      price: 418000,
-      rate: 0.03,
-      split: 0.5,
-      close: "2026-11-30",
-      note: "Example — delete this row. 3% listing side, 50% split.",
-    },
-    {
-      address: "910 Cedar Avenue",
-      side: "Buyer",
-      price: 380000,
-      rate: 0.03,
-      split: 0.5,
-      close: "2026-12-04",
-      note: "Example — delete this row. 3% buyer side, 50% split.",
-    },
-  ];
-
-  examples.forEach((example, index) => {
+  rows.forEach((row, index) => {
     const rowNumber = index + 2;
-    const gross = example.price * example.rate;
-    const net = gross * example.split;
-    const row = writeRow(
-      sheet,
-      [
-        example.address,
-        example.side,
-        example.price,
-        example.rate,
-        { formula: `IF(OR(C${rowNumber}="",D${rowNumber}=""),"",C${rowNumber}*D${rowNumber})`, result: gross },
-        example.split,
-        { formula: `IF(OR(E${rowNumber}="",F${rowNumber}=""),"",E${rowNumber}*F${rowNumber})`, result: net },
-        workbookDate(example.close),
-        null,
-        "Expected",
-        example.note,
-      ],
-      true,
-    );
-    row.getCell(3).numFmt = '"$"#,##0';
-    row.getCell(4).numFmt = "0.0%";
-    row.getCell(5).numFmt = '"$"#,##0.00';
-    row.getCell(6).numFmt = "0.0%";
-    row.getCell(7).numFmt = '"$"#,##0.00';
-    applyDates(row, [8]);
+    const price = typeof row.values[2] === "number" ? row.values[2] : null;
+    const rate = typeof row.values[3] === "number" ? row.values[3] : null;
+    const split = typeof row.values[5] === "number" ? row.values[5] : null;
+    const gross = price !== null && rate !== null ? price * rate : null;
+    const net = gross !== null && split !== null ? gross * split : null;
+    const values: Cell[] = cells(row, [7, 8]);
+    const grossFormula = `IF(OR(C${rowNumber}="",D${rowNumber}=""),"",C${rowNumber}*D${rowNumber})`;
+    const netFormula = `IF(OR(E${rowNumber}="",F${rowNumber}=""),"",E${rowNumber}*F${rowNumber})`;
+    values[4] = gross === null ? { formula: grossFormula } : { formula: grossFormula, result: gross };
+    values[6] = net === null ? { formula: netFormula } : { formula: netFormula, result: net };
+    const written = writeRow(sheet, values, row.example);
+    written.getCell(3).numFmt = '"$"#,##0';
+    written.getCell(4).numFmt = "0.0%";
+    written.getCell(5).numFmt = '"$"#,##0.00';
+    written.getCell(6).numFmt = "0.0%";
+    written.getCell(7).numFmt = '"$"#,##0.00';
+    applyDates(written, [8, 9]);
   });
 
-  for (let row = examples.length + 2; row <= LAST_ROW; row += 1) {
+  for (let row = rows.length + 2; row <= lastRow; row += 1) {
     sheet.getRow(row).height = 20;
     const gross = sheet.getCell(`E${row}`);
     gross.value = { formula: `IF(OR(C${row}="",D${row}=""),"",C${row}*D${row})` };
@@ -540,36 +388,28 @@ function buildCommissions(workbook: ExcelJS.Workbook) {
     sheet.getCell(`I${row}`).numFmt = "mmm d, yyyy";
   }
 
-  applyList(sheet, 2, "Listing,Buyer");
-  applyList(sheet, 10, "Expected,On statement,Funded,Paid");
+  applyList(sheet, 2, "Listing,Buyer", lastRow);
+  applyList(sheet, 10, "Expected,On statement,Funded,Paid", lastRow);
 }
 
-export async function closepathWorkbook(): Promise<Buffer> {
+export async function closepathWorkbook(data: WorkbookData): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = "Anzen Digital Media";
   workbook.lastModifiedBy = "Anzen Digital Media";
   workbook.company = "Anzen Digital Media LLC";
   workbook.title = "Closepath";
-  workbook.subject = "Listing-to-close workbook for a solo residential agent";
-  workbook.description =
-    "Track leads, showings, offers, critical dates, and commissions from listing to funded.";
+  workbook.subject = "Listing-to-close book for a solo residential agent";
+  workbook.description = "A copy of a Closepath book: files, dates, and commissions from listing to funded.";
   workbook.calcProperties.fullCalcOnLoad = true;
 
   buildStart(workbook);
-  buildDeals(workbook);
-  buildLeads(workbook);
-  buildShowings(workbook);
-  buildOffers(workbook);
-  buildCriticalDates(workbook);
-  buildCommissions(workbook);
+  buildDeals(workbook, data.deals);
+  buildLeads(workbook, data.leads);
+  buildShowings(workbook, data.showings);
+  buildOffers(workbook, data.offers);
+  buildCriticalDates(workbook, data.dates);
+  buildCommissions(workbook, data.commissions);
 
   const raw = await workbook.xlsx.writeBuffer();
   return Buffer.from(raw);
-}
-
-let cached: Buffer | null = null;
-
-export async function getClosepathWorkbook(): Promise<Buffer> {
-  if (!cached) cached = await closepathWorkbook();
-  return cached;
 }

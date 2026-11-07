@@ -20,8 +20,8 @@ export default function Page() {
             className="rise mt-8 max-w-[34rem] text-lg leading-snug tracking-[-0.02em] text-paper/75 md:mt-10 md:text-[1.35rem]"
             style={{ animationDelay: "260ms" }}
           >
-            Anzen builds downloadable systems for working professionals who get
-            paid when the details don’t slip.
+            Anzen builds systems you open in the browser, for working professionals
+            who get paid when the details don’t slip.
           </p>
         </div>
       </section>
@@ -48,9 +48,9 @@ export default function Page() {
               </p>
             </div>
             <p className="mt-10 max-w-[34rem] text-lg leading-snug tracking-[-0.02em] text-paper/75 md:mt-14 md:text-[1.35rem]">
-              A listing-to-close system for solo residential agents. Track
-              leads, showings, offers, critical dates, and commissions without
-              a monthly CRM.
+              A listing-to-close system for solo residential agents. Leads,
+              showings, offers, critical dates, and commissions in the
+              browser. One purchase, no monthly fee.
             </p>
             <span className="mt-12 inline-flex items-center gap-3 border border-paper/30 px-5 py-3 text-[15px] tracking-[-0.015em] text-paper transition-colors duration-300 group-hover:border-paper group-hover:bg-paper group-hover:text-ink md:mt-16">
               See Closepath
