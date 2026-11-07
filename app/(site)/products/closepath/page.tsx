@@ -134,7 +134,7 @@ function BookShot({
   caption: string;
 }) {
   return (
-    <figure className="min-w-0">
+      <figure className="min-w-0 max-w-full">
       <img
         src={src}
         alt={alt}
@@ -161,14 +161,14 @@ export default function ClosepathPage({
   const unavailable = one(searchParams?.checkout) === "unavailable";
 
   return (
-    <main id="content">
-      <section className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-28 md:pb-24">
+    <main id="content" className="overflow-x-clip">
+      <section className="relative flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-12 pt-24 sm:pb-16 sm:pt-28 md:pb-24">
         <div aria-hidden className="hero-glow breathe pointer-events-none absolute inset-0" />
-        <div className="frame relative">
+        <div className="frame relative min-w-0">
           <p className="rise text-[15px] tracking-[-0.02em] text-paper/60">
             Closepath
           </p>
-          <h1 className="mt-6 text-[clamp(2.85rem,8.2vw,8.15rem)] font-semibold leading-[0.86] tracking-[-0.058em]">
+          <h1 className="mt-4 max-w-full text-[2.15rem] font-semibold leading-[0.92] tracking-[-0.046em] sm:mt-6 sm:text-[clamp(2.85rem,8.2vw,8.15rem)] sm:leading-[0.86] sm:tracking-[-0.058em]">
             <span className="rise block" style={{ animationDelay: "80ms" }}>
               Never lose a deal
             </span>
@@ -177,14 +177,14 @@ export default function ClosepathPage({
             </span>
           </h1>
           <p
-            className="rise mt-8 max-w-[36rem] text-lg leading-snug tracking-[-0.02em] text-paper/75 md:mt-10 md:text-[1.35rem]"
+            className="rise mt-5 max-w-[36rem] text-base leading-snug tracking-[-0.02em] text-paper/75 sm:mt-8 sm:text-lg md:mt-10 md:text-[1.35rem]"
             style={{ animationDelay: "280ms" }}
           >
             Closepath is a listing-to-close system for solo residential real
             estate agents. You open it in the browser. $9.99 a month. Cancel
             anytime.
           </p>
-          <div className="rise mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
+          <div className="rise mt-6 sm:mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
             <BuyClosepath
               noteId="closepath-checkout-hero"
               enabled={checkoutReady}
@@ -241,12 +241,12 @@ export default function ClosepathPage({
             {tracks.map((item, index) => (
               <li
                 key={item.title}
-                className="group grid grid-cols-[2.25rem_1fr] items-baseline gap-x-4 border-b border-paper/15 py-5 sm:grid-cols-[3.25rem_1fr] sm:gap-x-8 sm:py-6 lg:py-7"
+                className="group grid grid-cols-[2.25rem_minmax(0,1fr)] items-baseline gap-x-4 border-b border-paper/15 py-5 sm:grid-cols-[3.25rem_minmax(0,1fr)] sm:gap-x-8 sm:py-6 lg:py-7"
               >
                 <span className="text-sm tabular-nums text-paper/40 transition-colors duration-300 group-hover:text-paper">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-[clamp(2rem,4.2vw,3.7rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
                     {item.title}
                   </p>
@@ -267,7 +267,7 @@ export default function ClosepathPage({
           <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
             Who it’s for
           </h2>
-          <p className="mt-8 max-w-[14em] text-[clamp(1.9rem,4.1vw,3.45rem)] font-medium leading-[1.12] tracking-[-0.035em] md:mt-12">
+          <p className="mt-6 max-w-full text-[clamp(1.55rem,4.1vw,3.45rem)] font-medium leading-[1.12] tracking-[-0.035em] sm:mt-8 sm:max-w-[14em] sm:text-[clamp(1.9rem,4.1vw,3.45rem)] md:mt-12">
             A solo residential agent who is running listings, showings, and
             closings out of texts and spreadsheets, and cannot afford to miss a
             date.
@@ -280,7 +280,7 @@ export default function ClosepathPage({
           <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
             What it is not
           </h2>
-          <p className="mt-8 max-w-[22em] border-l border-paper/25 pl-6 text-[clamp(1.4rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 md:mt-12 md:pl-8">
+          <p className="mt-6 max-w-full border-l border-paper/25 pl-4 text-[clamp(1.25rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 sm:mt-8 sm:max-w-[22em] sm:pl-6 sm:text-[clamp(1.4rem,2.45vw,2.15rem)] md:mt-12 md:pl-8">
             Not a Follow Up Boss or BoldTrail replacement. Those are full
             CRMs. Closepath is the book underneath — $9.99 a month, cancel
             anytime — and one place that holds the transaction from listing to
@@ -289,12 +289,12 @@ export default function ClosepathPage({
         </div>
       </section>
 
-      <section className="flex min-h-[100svh] flex-col justify-end pb-28 pt-28 md:pb-32">
-        <div className="frame view-rise">
+      <section className="flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-16 pt-24 sm:pb-28 sm:pt-28 md:pb-32">
+        <div className="frame view-rise min-w-0">
           <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
             Price
           </h2>
-          <p className="mt-6 text-[clamp(4.5rem,16vw,11rem)] font-semibold leading-[0.8] tracking-[-0.065em]">
+          <p className="mt-4 max-w-full text-[clamp(4.5rem,16vw,11rem)] font-semibold leading-[0.8] tracking-[-0.065em] sm:mt-6">
             <span className="sr-only">$9.99 a month</span>
             <span aria-hidden className="flex items-start">
               <span className="mt-[0.12em] text-[0.38em] font-medium">$</span>
@@ -304,7 +304,7 @@ export default function ClosepathPage({
           <p className="mt-4 text-lg tracking-[-0.02em] text-paper/70 md:text-xl">
             a month. Cancel anytime.
           </p>
-          <div className="mt-10 md:mt-14">
+          <div className="mt-8 sm:mt-10 md:mt-14">
             <BuyClosepath
               noteId="closepath-checkout-price"
               enabled={checkoutReady}
