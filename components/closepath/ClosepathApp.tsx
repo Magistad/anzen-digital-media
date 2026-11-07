@@ -145,22 +145,22 @@ export function ClosepathApp({ initial, email }: { initial: Workspace; email: st
   return (
     <main id="content" className="pb-16 pt-20">
       <div className="frame">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-          <p className="text-[13px] text-paper/50">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 sm:gap-x-6">
+          <p className="min-w-0 max-w-full text-[13px] text-paper/50">
             Closepath
-            <span className="ml-3 text-paper/35">{email}</span>
+            <span className="book-email">{email}</span>
           </p>
-          <div className="flex items-baseline gap-4 text-[14px]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0 text-[14px] sm:items-baseline sm:gap-x-4">
             <span className="text-paper/45">{saveState === "saving" ? "Saving" : saveState === "error" ? "Not saved" : "Saved"}</span>
             {saveState === "error" ? (
               <button type="button" className="book-quiet" onClick={() => void drain()}>
                 Retry
               </button>
             ) : null}
-            <a href={exportHref} className="text-paper/70 hover:text-paper">
+            <a href={exportHref} className="book-tap text-paper/70 hover:text-paper">
               Export
             </a>
-            <form action="/api/closepath/sign-out" method="post">
+            <form action="/api/closepath/sign-out" method="post" className="inline-flex">
               <button type="submit" className="book-quiet">
                 Sign out
               </button>
@@ -175,7 +175,7 @@ export function ClosepathApp({ initial, email }: { initial: Workspace; email: st
           </>
         )}
 
-        <nav aria-label="Book" className="mt-3 flex gap-5 border-b border-paper/15 text-[15px]">
+        <nav aria-label="Book" className="book-nav mt-3 flex gap-5 border-b border-paper/15 text-[15px]">
           {VIEWS.map((item) => {
             const current = active === item.id;
             return (
@@ -184,7 +184,7 @@ export function ClosepathApp({ initial, email }: { initial: Workspace; email: st
                 type="button"
                 aria-current={current ? "page" : undefined}
                 onClick={() => go(item.id)}
-                className={`-mb-px border-b pb-1.5 ${current ? "border-paper text-paper" : "border-transparent text-paper/45 hover:text-paper"}`}
+                className={`book-tab -mb-px border-b pb-1.5 ${current ? "border-paper text-paper" : "border-transparent text-paper/45 hover:text-paper"}`}
               >
                 {item.label}
               </button>
@@ -193,11 +193,11 @@ export function ClosepathApp({ initial, email }: { initial: Workspace; email: st
         </nav>
 
         {offerSamples ? (
-          <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-paper/15 py-2 text-[14px] leading-snug">
-            <p className="max-w-xl text-paper/70">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-b border-paper/15 py-1 text-[14px] leading-snug sm:items-baseline sm:py-2">
+            <p className="min-w-0 max-w-xl text-paper/70">
               Two sample files are ready: 1842 Maple Street and 910 Cedar Avenue. Not your clients. Fake 555 numbers and .test emails.
             </p>
-            <span className="flex gap-4">
+            <span className="flex flex-wrap gap-x-4">
               <button
                 type="button"
                 className="book-quiet text-paper"
@@ -228,8 +228,8 @@ export function ClosepathApp({ initial, email }: { initial: Workspace; email: st
         ) : null}
 
         {hasExamples ? (
-          <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-[14px]">
-            <p className="text-paper/50">Sample files are marked Example.</p>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 text-[14px] sm:items-baseline">
+            <p className="min-w-0 text-paper/50">Sample files are marked Example.</p>
             <button
               type="button"
               className="book-quiet"

@@ -41,7 +41,7 @@ export function FileList({
     <div className="mt-3">
       {files.length ? (
         <>
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <table className="w-full border-collapse text-left text-[14px]">
               <thead>
                 <tr className="border-b border-paper/15 text-[12px] text-paper/45">
@@ -77,24 +77,22 @@ export function FileList({
               </tbody>
             </table>
           </div>
-          <ul className="border-t border-paper/15 md:hidden">
+          <ul className="border-t border-paper/15 lg:hidden">
             {files.map((file) => {
               const mark = attention(file, today);
               return (
                 <li key={file.id} className="border-b border-paper/12">
-                  <button type="button" onClick={() => onOpen(file.id)} className="flex w-full items-baseline justify-between gap-3 py-2 text-left">
+                  <button type="button" onClick={() => onOpen(file.id)} className="flex min-h-11 w-full items-start justify-between gap-3 py-2.5 text-left active:bg-paper/[0.04]">
                     <span className="min-w-0">
-                      <span className="block truncate text-[15px] tracking-[-0.02em]">
+                      <span className="block text-[15px] leading-snug tracking-[-0.02em]">
                         {file.address || "No address yet"}
                         {file.example ? <span className="ml-2 text-[12px] text-paper/40">Example</span> : null}
                       </span>
-                      <span className="block truncate text-[13px] text-paper/55">
-                        {file.client || "No client"}
-                        {file.status ? ` · ${file.status}` : ""}
-                        {mark.what ? ` · ${mark.what}` : ""}
+                      <span className="mt-0.5 block text-[13px] leading-snug text-paper/55">
+                        {[file.client || "No client", file.status, mark.what].filter(Boolean).join(" · ")}
                       </span>
                     </span>
-                    <span className={`shrink-0 text-[14px] font-semibold tabular-nums ${mark.tone}`}>{mark.when}</span>
+                    <span className={`shrink-0 pt-0.5 text-right text-[14px] font-semibold tabular-nums ${mark.tone}`}>{mark.when}</span>
                   </button>
                 </li>
               );
