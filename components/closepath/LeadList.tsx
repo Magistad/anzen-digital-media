@@ -26,7 +26,7 @@ export function LeadList({
           {leads.map((lead) => (
             <li key={lead.id} className="border-b border-paper/12 py-2">
               {lead.example ? <p className="text-[12px] text-paper/40">Example</p> : null}
-              <div className="grid gap-x-3 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid min-w-0 gap-x-3 gap-y-3 sm:grid-cols-2 sm:gap-y-2 lg:grid-cols-4">
                 <TextField id={`${lead.id}-name`} label="Name" value={lead.name} onChange={(name) => onChange({ ...lead, name })} />
                 <TextField id={`${lead.id}-phone`} label="Phone" type="tel" maxLength={LIMITS.phone} value={lead.phone} onChange={(phone) => onChange({ ...lead, phone })} />
                 <TextField id={`${lead.id}-email`} label="Email" type="email" maxLength={LIMITS.email} value={lead.email} onChange={(email) => onChange({ ...lead, email })} />
@@ -37,8 +37,8 @@ export function LeadList({
                 <DateField id={`${lead.id}-next`} label="Next follow-up" value={lead.nextFollowUp} onChange={(nextFollowUp) => onChange({ ...lead, nextFollowUp })} />
                 <SelectField id={`${lead.id}-status`} label="Status" value={lead.status} options={LEAD_STATUSES} onChange={(status) => onChange({ ...lead, status: status as LooseLead["status"] })} />
               </div>
-              <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <button type="button" className="book-quiet" onClick={() => onStartFile(lead.id)}>
+              <div className="mt-1 flex flex-col items-start sm:mt-2 sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-4 sm:gap-y-1">
+                <button type="button" className="book-quiet max-w-full whitespace-normal text-left" onClick={() => onStartFile(lead.id)}>
                   Start a file{lead.nextFollowUp ? ` · next ${formatDate(lead.nextFollowUp)}` : ""}
                 </button>
                 <button type="button" className="book-quiet" onClick={() => onRemove(lead.id)}>

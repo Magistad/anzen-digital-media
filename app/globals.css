@@ -189,6 +189,8 @@ button:disabled {
 
 .book-input {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   border: 0;
   border-bottom: 1px solid rgba(244, 240, 230, 0.22);
   background: transparent;
@@ -197,6 +199,10 @@ button:disabled {
   font: inherit;
   letter-spacing: -0.01em;
   color-scheme: dark;
+}
+
+input[type="date"].book-input {
+  display: block;
 }
 
 textarea.book-input {
@@ -238,4 +244,79 @@ select.book-input {
 
 .book-quiet:hover {
   color: var(--paper);
+}
+
+.book-email {
+  color: rgba(244, 240, 230, 0.35);
+}
+
+@media (min-width: 640px) {
+  .book-email {
+    margin-left: 0.75rem;
+  }
+}
+
+/* Phone book: thumb targets and a sticky Morning / Files / Leads bar.
+   From 640px up, the desktop book is unchanged. */
+@media (max-width: 639px) {
+  .book-email {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .book-nav {
+    position: sticky;
+    top: 61px;
+    z-index: 40;
+    margin-top: 0.35rem;
+    margin-inline: -1.25rem;
+    gap: 0;
+    background: var(--ink);
+    padding-inline: 0.45rem;
+  }
+
+  .book-tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.7rem;
+  }
+
+  .book-tab:not([aria-current="page"]) {
+    color: rgba(244, 240, 230, 0.72);
+  }
+
+  .book-input {
+    font-size: 16px;
+    min-height: 44px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.4rem;
+  }
+
+  textarea.book-input {
+    min-height: 4.75rem;
+    padding-top: 0.55rem;
+  }
+
+  .book-action {
+    min-height: 44px;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .book-quiet,
+  .book-tap {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .book-quiet {
+    max-width: 100%;
+    padding-inline: 0.1rem;
+    white-space: normal;
+    text-align: left;
+  }
 }
