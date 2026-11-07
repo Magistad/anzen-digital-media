@@ -23,7 +23,6 @@ function maple(): DealFile {
   file.appraisalDeadline = "2026-11-16";
   file.loanContingency = "2026-11-18";
   file.closeDate = "2026-11-30";
-  file.funded = "No";
   file.dateNotes = "Example — delete this row. Inspection is the next date. Order the appraiser the day it is scheduled.";
   file.salePrice = 418000;
   file.ratePercent = 3;
@@ -74,7 +73,6 @@ function cedar(): DealFile {
   file.appraisalDeadline = "2026-11-17";
   file.loanContingency = "2026-11-20";
   file.closeDate = "2026-12-04";
-  file.funded = "No";
   file.dateNotes = "Example — delete this row. Buyer side. The roof clause is the inspection focus.";
   file.salePrice = 380000;
   file.ratePercent = 3;

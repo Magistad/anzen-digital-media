@@ -153,16 +153,16 @@ function buildStart(workbook: ExcelJS.Workbook) {
       height: 32,
     },
     {
-      text: "6. Deals — one row per property. The same address is the deal on every sheet.",
+      text: "6. Deals — one row per property. The same address is the deal on every sheet. Outcome is Open, Closed, or Did not close. Closed means the deal funded. The file stays in the book either way.",
       size: 12,
-      height: 32,
+      height: 48,
     },
     { text: "", size: 12, height: 12 },
     { text: "Morning check", size: 16, bold: true, height: 24 },
     {
-      text: "Open Critical dates before you open your inbox. Anything at three days or under gets done today. Write every deadline the day the contract is ratified, not the night before it expires.",
+      text: "Open Critical dates before you open your inbox. Anything at three days or under gets done today. Closed and did not close files stay out of that morning list. Write every deadline the day the contract is ratified, not the night before it expires.",
       size: 12,
-      height: 36,
+      height: 48,
     },
     { text: "", size: 12, height: 12 },
     { text: "Examples", size: 16, bold: true, height: 24 },
@@ -192,6 +192,7 @@ function buildDeals(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
     "Side",
     "Client",
     "Status",
+    "Outcome",
     "List price",
     "Contract price",
     "Next date to watch",
@@ -200,16 +201,17 @@ function buildDeals(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
     "Commission expected",
     "Notes",
   ];
-  styleHeader(sheet, headers, [28, 14, 22, 20, 16, 18, 22, 24, 16, 22, 42]);
+  styleHeader(sheet, headers, [28, 14, 22, 20, 18, 16, 18, 22, 24, 16, 22, 42]);
   const lastRow = sheetLimit(rows.length);
   rows.forEach((row) => {
-    const written = writeRow(sheet, cells(row, [6, 8]), row.example);
-    applyMoney(written, [5, 6, 10]);
-    applyDates(written, [7, 9]);
+    const written = writeRow(sheet, cells(row, [7, 9]), row.example);
+    applyMoney(written, [6, 7, 11]);
+    applyDates(written, [8, 10]);
   });
   blank(sheet, lastRow, rows.length);
   applyList(sheet, 2, "Listing,Buyer", lastRow);
-  applyList(sheet, 4, "Prospect,Showing,Offer out,Under contract,Clear to close,Closed,Funded,Fell through", lastRow);
+  applyList(sheet, 4, "Prospect,Showing,Offer out,Under contract,Clear to close", lastRow);
+  applyList(sheet, 5, "Open,Closed,Did not close", lastRow);
 }
 
 function buildLeads(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
@@ -280,10 +282,10 @@ function buildCriticalDates(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
     "Days to loan contingency",
     "Close date",
     "Days to close",
-    "Funded",
+    "Outcome",
     "Notes",
   ];
-  styleHeader(sheet, headers, [28, 20, 12, 16, 20, 18, 20, 18, 18, 24, 16, 16, 12, 46]);
+  styleHeader(sheet, headers, [28, 20, 12, 16, 20, 18, 20, 18, 18, 24, 16, 16, 18, 46]);
   sheet.getCell("F1").note =
     "Blank until you enter the deadline. Warm when the date is inside three days. Red after it passes.";
   const lastRow = sheetLimit(rows.length);
@@ -313,7 +315,7 @@ function buildCriticalDates(workbook: ExcelJS.Workbook, rows: SheetRow[]) {
   }
 
   applyList(sheet, 3, "Listing,Buyer", lastRow);
-  applyList(sheet, 13, "Yes,No", lastRow);
+  applyList(sheet, 13, "Open,Closed,Did not close", lastRow);
   sheet.addConditionalFormatting({
     ref: `F2:L${lastRow}`,
     rules: [
@@ -399,7 +401,7 @@ export async function closepathWorkbook(data: WorkbookData): Promise<Buffer> {
   workbook.company = "Anzen Digital Media LLC";
   workbook.title = "Closepath";
   workbook.subject = "Listing-to-close book for a solo residential agent";
-  workbook.description = "A copy of a Closepath book: files, dates, and commissions from listing to funded.";
+  workbook.description = "A copy of a Closepath book: files, dates, outcomes, and commissions from listing to close.";
   workbook.calcProperties.fullCalcOnLoad = true;
 
   buildStart(workbook);
