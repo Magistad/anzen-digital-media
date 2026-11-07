@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { loadWorkspace } from "./closepath-account";
+import { accountAccess } from "./closepath-access";
 import { readSession, sessionCookie, tokenFromRequest, clearSessionCookie } from "./closepath-auth";
 import { parseIsoDate, todayIso } from "./closepath-model";
 import { projectWorkspace } from "./closepath-project";
@@ -42,6 +43,8 @@ function exportToday(requested: string | null): string {
 export async function exportBook(req: Request): Promise<NextResponse> {
   const session = sessionFromRequest(req);
   if (!session) return redirectTo(req, "/closepath/sign-in");
+  const access = await accountAccess(session.email);
+  if (access.state !== "open") return redirectTo(req, "/closepath");
   const today = exportToday(new URL(req.url).searchParams.get("today"));
   const workspace = await loadWorkspace(session.email);
   const file = await closepathWorkbook(projectWorkspace(workspace, today));

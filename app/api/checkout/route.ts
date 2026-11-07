@@ -3,6 +3,7 @@ import {
   CLOSEPATH_PRODUCT,
   closepathIntegrationIdentifier,
   closepathPriceId,
+  isClosepathMonthlyPrice,
 } from "../../../lib/closepath";
 import { requestOrigin } from "../../../lib/request-origin";
 import { getStripe } from "../../../lib/stripe";
@@ -28,18 +29,29 @@ export async function POST(req: Request) {
     }
   }
 
+  const priceId = closepathPriceId();
+  if (!priceId) {
+    console.error("Closepath checkout failed", "STRIPE_PRICE_ID is not set");
+    return unavailable(origin);
+  }
+
   try {
+    const price = await stripe.prices.retrieve(priceId);
+    if (!isClosepathMonthlyPrice(price)) {
+      console.error("Closepath checkout failed", "STRIPE_PRICE_ID is not the $9.99 monthly Closepath price");
+      return unavailable(origin);
+    }
+
     const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items: [{ price: closepathPriceId(), quantity: 1 }],
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${origin}/products/closepath/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/products/closepath`,
       client_reference_id: "closepath",
       integration_identifier: closepathIntegrationIdentifier(),
-      customer_creation: "always",
       metadata: { product: CLOSEPATH_PRODUCT },
-      payment_intent_data: {
-        description: "Closepath — one purchase",
+      subscription_data: {
+        description: "Closepath — $9.99 a month",
         metadata: { product: CLOSEPATH_PRODUCT },
       },
     });

@@ -1,15 +1,35 @@
-import { isCheckoutSessionId, isClosepathSession, isPaidClosepathDownload } from "./closepath-order";
+import {
+  checkoutCustomerId,
+  checkoutSubscriptionId,
+  isCheckoutSessionId,
+  isClosepathSession,
+  isPaidClosepathCheckout,
+  isPaidClosepathSubscription,
+  subscriptionGrantsBook,
+} from "./closepath-order";
+import { findAccount } from "./closepath-account";
 import { getStripe } from "./stripe";
 
 export type ClosepathAccess =
   | { state: "unconfigured" }
   | { state: "invalid" }
   | { state: "unpaid" }
-  | { state: "paid"; email: string | null };
+  | {
+      state: "paid";
+      email: string | null;
+      plan: "monthly" | "retired";
+      subscriptionId: string | null;
+      customerId: string | null;
+    };
 
-export async function closepathDownloadAccess(
-  sessionId: string | undefined,
-): Promise<ClosepathAccess> {
+const ENTITLEMENT_TTL_MS = 60_000;
+const entitlementCache = new Map<string, { state: "open" | "ended"; at: number }>();
+
+export function clearEntitlementCache(): void {
+  entitlementCache.clear();
+}
+
+export async function closepathDownloadAccess(sessionId: string | undefined): Promise<ClosepathAccess> {
   if (!sessionId || !isCheckoutSessionId(sessionId)) return { state: "invalid" };
 
   const stripe = getStripe();
@@ -20,9 +40,73 @@ export async function closepathDownloadAccess(
       expand: ["line_items"],
     });
     if (!isClosepathSession(session)) return { state: "invalid" };
-    if (!isPaidClosepathDownload(session)) return { state: "unpaid" };
-    return { state: "paid", email: session.customer_details?.email ?? null };
+    if (!isPaidClosepathCheckout(session)) return { state: "unpaid" };
+    const monthly = isPaidClosepathSubscription(session);
+    return {
+      state: "paid",
+      email: session.customer_details?.email ?? null,
+      plan: monthly ? "monthly" : "retired",
+      subscriptionId: monthly ? checkoutSubscriptionId(session) : null,
+      customerId: checkoutCustomerId(session),
+    };
   } catch {
     return { state: "invalid" };
   }
+}
+
+function isMissingSubscription(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const record = error as { statusCode?: number; code?: string };
+  return record.statusCode === 404 || record.code === "resource_missing";
+}
+
+/** Live Stripe status for a stored subscription. Accounts opened before the monthly price have no subscription id and stay open. */
+export async function subscriptionEntitlement(
+  subscriptionId: string | null,
+  fresh = false,
+): Promise<"open" | "ended" | "unknown"> {
+  if (!subscriptionId) return "open";
+  const now = Date.now();
+  if (!fresh) {
+    const hit = entitlementCache.get(subscriptionId);
+    if (hit && now - hit.at < ENTITLEMENT_TTL_MS) return hit.state;
+  }
+
+  const stripe = getStripe();
+  if (!stripe) return "unknown";
+
+  try {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const state = subscriptionGrantsBook(subscription.status) ? "open" : "ended";
+    entitlementCache.set(subscriptionId, { state, at: now });
+    return state;
+  } catch (error) {
+    if (isMissingSubscription(error)) {
+      entitlementCache.set(subscriptionId, { state: "ended", at: now });
+      return "ended";
+    }
+    console.error(
+      "Closepath subscription check failed",
+      error instanceof Error ? error.message : "unknown",
+    );
+    return "unknown";
+  }
+}
+
+export async function accountAccess(
+  email: string,
+  fresh = false,
+): Promise<{ state: "open"; customerId: string | null } | { state: "ended" } | { state: "unknown" }> {
+  let account: Awaited<ReturnType<typeof findAccount>>;
+  try {
+    account = await findAccount(email);
+  } catch (error) {
+    console.error("Closepath account read failed", error instanceof Error ? error.message : "unknown");
+    return { state: "unknown" };
+  }
+  if (!account) return { state: "open", customerId: null };
+  const entitlement = await subscriptionEntitlement(account.stripeSubscriptionId, fresh);
+  if (entitlement === "open") return { state: "open", customerId: account.stripeCustomerId };
+  if (entitlement === "ended") return { state: "ended" };
+  return { state: "unknown" };
 }

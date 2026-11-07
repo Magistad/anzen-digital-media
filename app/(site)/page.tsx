@@ -13,7 +13,7 @@ export default function Page() {
         <div className="frame relative">
           <h1 className="max-w-[10em] text-balance text-[clamp(2.7rem,8.8vw,8.6rem)] font-semibold leading-[0.86] tracking-[-0.058em]">
             <span className="rise block" style={{ animationDelay: "60ms" }}>
-              Tools you buy once and use every day.
+              Tools you open in the browser and use every day.
             </span>
           </h1>
           <p
@@ -35,22 +35,22 @@ export default function Page() {
             href="/products/closepath"
             className="group block border border-paper/15 px-6 py-10 transition-colors duration-500 hover:border-paper/55 sm:px-10 sm:py-14 lg:px-16 lg:py-16"
           >
-            <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex flex-col gap-8 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
               <h2 className="text-[clamp(3.4rem,8vw,7.25rem)] font-semibold leading-[0.86] tracking-[-0.055em]">
                 Closepath
               </h2>
               <p className="text-[clamp(3.4rem,8vw,7.25rem)] font-semibold leading-[0.86] tracking-[-0.06em]">
-                <span className="sr-only">$59</span>
+                <span className="sr-only">$9.99 a month</span>
                 <span aria-hidden className="flex items-start">
                   <span className="mt-[0.14em] text-[0.42em] font-medium">$</span>
-                  59
+                  9.99
                 </span>
               </p>
             </div>
             <p className="mt-10 max-w-[34rem] text-lg leading-snug tracking-[-0.02em] text-paper/75 md:mt-14 md:text-[1.35rem]">
               A listing-to-close system for solo residential agents. Leads,
               showings, offers, critical dates, and commissions in the
-              browser. One purchase, no monthly fee.
+              browser. $9.99 a month. Cancel anytime.
             </p>
             <span className="mt-12 inline-flex items-center gap-3 border border-paper/30 px-5 py-3 text-[15px] tracking-[-0.015em] text-paper transition-colors duration-300 group-hover:border-paper group-hover:bg-paper group-hover:text-ink md:mt-16">
               See Closepath

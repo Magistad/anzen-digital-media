@@ -1,11 +1,11 @@
 import type Stripe from "stripe";
 import { CLOSEPATH_PRODUCT } from "./closepath";
+import { checkoutPaymentIntentId, checkoutSubscriptionId } from "./closepath-order";
 
-function paymentIntentId(session: Stripe.Checkout.Session): string | null {
-  if (!session.payment_intent) return null;
-  return typeof session.payment_intent === "string"
-    ? session.payment_intent
-    : session.payment_intent.id;
+export function fulfillmentAnchor(session: Stripe.Checkout.Session): "payment_intent" | "subscription" | null {
+  if (checkoutSubscriptionId(session)) return "subscription";
+  if (checkoutPaymentIntentId(session)) return "payment_intent";
+  return null;
 }
 
 async function writeFulfillment(
@@ -13,8 +13,15 @@ async function writeFulfillment(
   session: Stripe.Checkout.Session,
   fulfillment: "unlocked" | "failed",
 ): Promise<void> {
-  const intentId = paymentIntentId(session);
+  const intentId = checkoutPaymentIntentId(session);
+  const subscriptionId = checkoutSubscriptionId(session);
+  if (!intentId && !subscriptionId) return;
+
   const metadata = { product: CLOSEPATH_PRODUCT, fulfillment };
+
+  if (subscriptionId) {
+    await stripe.subscriptions.update(subscriptionId, { metadata });
+  }
 
   if (intentId) {
     await stripe.paymentIntents.update(intentId, { metadata });
@@ -31,7 +38,7 @@ async function writeFulfillment(
   try {
     await stripe.checkout.sessions.update(session.id, { metadata });
   } catch {
-    // A completed session may reject metadata edits. The PaymentIntent record remains.
+    // A completed session may reject metadata edits. The subscription or payment record remains.
   }
 }
 
@@ -39,9 +46,8 @@ export async function unlockClosepathFulfillment(
   stripe: Stripe,
   session: Stripe.Checkout.Session,
 ): Promise<void> {
-  const intentId = paymentIntentId(session);
-  if (!intentId) {
-    throw new Error("Closepath session has no payment intent to unlock");
+  if (!fulfillmentAnchor(session)) {
+    throw new Error("Closepath session has no subscription or payment to unlock");
   }
   await writeFulfillment(stripe, session, "unlocked");
 }
@@ -50,5 +56,6 @@ export async function failClosepathFulfillment(
   stripe: Stripe,
   session: Stripe.Checkout.Session,
 ): Promise<void> {
+  if (!fulfillmentAnchor(session)) return;
   await writeFulfillment(stripe, session, "failed");
 }
