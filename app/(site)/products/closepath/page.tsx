@@ -67,6 +67,34 @@ const shots: { src: string; alt: string; label: string; caption: string }[] = [
   },
 ];
 
+function ProductFilm() {
+  return (
+    <section className="pt-16 md:pt-24" aria-labelledby="closepath-film">
+      <div className="frame">
+        <h2
+          id="closepath-film"
+          className="text-[15px] font-normal tracking-[-0.02em] text-paper/60"
+        >
+          The film
+        </h2>
+        <video
+          className="mt-8 block aspect-video h-auto w-full max-w-full border border-paper/15 bg-ink"
+          controls
+          playsInline
+          preload="metadata"
+          poster="/closepath/ad-poster.jpg"
+          width={1920}
+          height={1080}
+          aria-label="Closepath product film"
+          title="Closepath product film"
+        >
+          <source src="/closepath/ad.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </section>
+  );
+}
+
 function BookShot({
   src,
   alt,
@@ -139,6 +167,8 @@ export default function ClosepathPage({
           </div>
         </div>
       </section>
+
+      <ProductFilm />
 
       <section className="py-16 md:py-20" aria-labelledby="closepath-book">
         <div className="frame">
