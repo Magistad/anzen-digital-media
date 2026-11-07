@@ -2,7 +2,7 @@
   "name": "anzen-digital-media",
   "private": true,
   "version": "1.0.0",
-  "description": "Anzen Digital Media LLC — The AI House",
+  "description": "Anzen Digital Media LLC — downloadable systems for working professionals.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,9 +10,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "exceljs": "^4.4.0",
     "next": "14",
     "react": "18",
-    "react-dom": "18"
+    "react-dom": "18",
+    "stripe": "^23.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",

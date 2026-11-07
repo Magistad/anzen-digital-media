@@ -1,49 +1,73 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
+import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
-import { Inter } from "next/font/google";
-import CRTOverlay from "../components/CRTOverlay";
+import { SiteFooter } from "../components/SiteFooter";
+import { SiteNav } from "../components/SiteNav";
 
-const inter = Inter({ subsets: ["latin"] });
+const sans = Instrument_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
+
+const description =
+  "Tools you buy once and use every day. Anzen builds downloadable systems for working professionals who get paid when the details don’t slip.";
 
 export const metadata: Metadata = {
-  title: "Anzen Digital Media LLC — The AI House",
-  description:
-    "The AI House for modern operations. Compliance, Automation, Assistance, Development.",
+  title: {
+    default: "Anzen Digital Media",
+    template: "%s — Anzen",
+  },
+  description,
   metadataBase: new URL("https://anzendigitalmedia.com"),
   openGraph: {
-    title: "Anzen — The AI House",
-    description:
-      "Production AI across compliance, automation, assistance, and development.",
+    title: "Anzen Digital Media",
+    description,
     url: "https://anzendigitalmedia.com",
-    siteName: "Anzen Digital Media LLC",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Anzen — The AI House" }],
+    siteName: "Anzen Digital Media",
     locale: "en_US",
-    type: "website"
+    type: "website",
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Anzen — The AI House",
-    description:
-      "Production AI across compliance, automation, assistance, and development.",
-    images: ["/og.png"]
+    card: "summary",
+    title: "Anzen Digital Media",
+    description,
   },
-  icons: { icon: "/icon.svg" }
+};
+
+export const viewport: Viewport = {
+  themeColor: "#070708",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-[#12100d] text-zinc-100`}>
-        {children}
-        <CRTOverlay />
+    <html lang="en" className={sans.variable}>
+      <body className="bg-ink font-sans text-paper antialiased">
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-0"
+        >
+          <div className="wash drift absolute -left-[18%] top-[-10%] h-[70vh] w-[70vw]" />
+          <div className="vignette absolute inset-0" />
+        </div>
+        <div className="relative z-10">
+          <a
+            href="#content"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-paper focus:px-3 focus:py-2 focus:text-ink"
+          >
+            Skip to content
+          </a>
+          <SiteNav />
+          {children}
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );
 }
-
-
-
