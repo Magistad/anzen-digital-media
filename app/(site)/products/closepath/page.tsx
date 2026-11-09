@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BuyClosepath } from "../../../../components/BuyClosepath";
+import { CLOSEPATH_OFFER } from "../../../../lib/closepath";
 import { isStripeConfigured } from "../../../../lib/env";
 
 export const dynamic = "force-dynamic";
 
 const description =
-  "Closepath is a listing-to-close system for solo residential real estate agents. It supplements the tools you already use. Open it in the browser on a computer or phone. $9.99 a month. Cancel anytime.";
+  `Closepath is a listing-to-close system for solo residential real estate agents. It supplements the tools you already use. Open it in the browser on a computer or phone. ${CLOSEPATH_OFFER}`;
 
 export const metadata: Metadata = {
   title: "Closepath",
@@ -182,8 +183,7 @@ export default function ClosepathPage({
           >
             Closepath is a listing-to-close system for solo residential real
             estate agents. It supplements the tools you already use. You open
-            it in the browser on a computer or phone. $9.99 a month. Cancel
-            anytime.
+            it in the browser on a computer or phone. {CLOSEPATH_OFFER}
           </p>
           <div className="rise mt-6 sm:mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
             <BuyClosepath
@@ -208,7 +208,7 @@ export default function ClosepathPage({
             One address. The dates first.
           </p>
           <p className="mt-4 max-w-[38rem] text-[15px] leading-snug tracking-[-0.015em] text-paper/70 md:text-base">
-            This is Closepath after you subscribe. The rows are samples: 1842 Maple Street, Elena Vasquez, and 910 Cedar Avenue, Marcus Hale. Not real clients.
+            This is Closepath after checkout. The rows are samples: 1842 Maple Street, Elena Vasquez, and 910 Cedar Avenue, Marcus Hale. Not real clients.
           </p>
           <div className="mt-8 space-y-8">
             {shots.map((shot) => (
@@ -283,9 +283,9 @@ export default function ClosepathPage({
           </h2>
           <p className="mt-6 max-w-full border-l border-paper/25 pl-4 text-[clamp(1.25rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 sm:mt-8 sm:max-w-[22em] sm:pl-6 sm:text-[clamp(1.4rem,2.45vw,2.15rem)] md:mt-12 md:pl-8">
             Not a Follow Up Boss or BoldTrail replacement. Those are full
-            CRMs. Closepath is the book underneath — $9.99 a month, cancel
-            anytime — and one place that holds the transaction from listing to
-            funded.
+            CRMs. Closepath is the book underneath — 7 days free, then $9.99 a
+            month, cancel anytime — and one place that holds the transaction
+            from listing to funded.
           </p>
         </div>
       </section>
@@ -296,14 +296,14 @@ export default function ClosepathPage({
             Price
           </h2>
           <p className="mt-4 max-w-full text-[clamp(4.5rem,16vw,11rem)] font-semibold leading-[0.8] tracking-[-0.065em] sm:mt-6">
-            <span className="sr-only">$9.99 a month</span>
+            <span className="sr-only">{CLOSEPATH_OFFER}</span>
             <span aria-hidden className="flex items-start">
               <span className="mt-[0.12em] text-[0.38em] font-medium">$</span>
               9.99
             </span>
           </p>
-          <p className="mt-4 text-lg tracking-[-0.02em] text-paper/70 md:text-xl">
-            a month. Cancel anytime.
+          <p className="mt-4 text-lg tracking-[-0.02em] text-paper/70 md:text-xl" aria-hidden>
+            {CLOSEPATH_OFFER}
           </p>
           <div className="mt-8 sm:mt-10 md:mt-14">
             <BuyClosepath

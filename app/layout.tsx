@@ -4,6 +4,7 @@ import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteNav } from "../components/SiteNav";
+import { CLOSEPATH_OFFER } from "../lib/closepath";
 
 const sans = Instrument_Sans({
   subsets: ["latin"],
@@ -13,7 +14,7 @@ const sans = Instrument_Sans({
 
 const title = "Closepath — Anzen Digital Media";
 const description =
-  "Closepath is a listing-to-close organization book for solo residential agents. Open it in the browser. $9.99 a month. Cancel anytime.";
+  `Closepath is a listing-to-close organization book for solo residential agents. Open it in the browser. ${CLOSEPATH_OFFER}`;
 
 export const metadata: Metadata = {
   title: {

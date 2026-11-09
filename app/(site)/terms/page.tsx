@@ -109,17 +109,22 @@ export default function TermsPage() {
       <LegalSection id="fees" title="7. Fees and billing">
         <p>
           The fee is $9.99 USD per month, billed through Stripe Checkout on the Anzen Digital Media Stripe
-          account. Anzen does not store card numbers. Stripe processes payment and sends the receipt. The
-          subscription is not a lifetime license.
+          account. Checkout starts a 7-day trial on that price. A card is required at signup. Stripe does not
+          charge the card during the trial. Unless the subscription is canceled before the trial ends, Stripe
+          charges $9.99 USD when the trial ends and on each monthly renewal after that. Anzen does not store
+          card numbers. Stripe processes payment and sends the receipt. The subscription is not a lifetime
+          license.
         </p>
         <p>
           You may cancel at any time. While you are signed in, Billing in the Service opens Stripe’s
           customer portal, and cancellation through that portal takes effect at the end of the current
-          period. You may also cancel by emailing{" "}
+          period. During a trial, that period ends when the trial ends, and canceling before then means the
+          monthly price is not charged. You may also cancel by emailing{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
           Cancellation stops subsequent monthly charges. It does not, by itself, refund a charge already
           paid. Access continues through the end of the period covered by the current charge unless that
-          charge is refunded. If a charge is refunded, access for that period ends.
+          charge is refunded. During a trial, before any charge, access continues through the end of the
+          trial. If a charge is refunded, access for that period ends.
         </p>
         <p>
           Refunds are described in the <LegalLink href="/refunds">Refund Policy</LegalLink>. You may request

@@ -14,19 +14,34 @@ const SUBSCRIPTION_ID = /^sub_[A-Za-z0-9]+$/;
 const CUSTOMER_ID = /^cus_[A-Za-z0-9]+$/;
 const PAYMENT_INTENT_ID = /^pi_[A-Za-z0-9]+$/;
 
-/** Statuses that still include the book. `past_due` is Stripe’s retry window. */
-const OPEN_SUBSCRIPTION_STATUSES = new Set(["active", "trialing", "past_due"]);
-
 export function isCheckoutSessionId(value: string): boolean {
   return value.length <= 255 && SESSION_ID.test(value);
 }
 
-export function isClosepathSession(session: Stripe.Checkout.Session): boolean {
-  return session.metadata?.product === CLOSEPATH_PRODUCT;
+export function isClosepathProduct(metadata: { product?: string | null } | null | undefined): boolean {
+  return metadata?.product === CLOSEPATH_PRODUCT;
 }
 
-export function subscriptionGrantsBook(status: string): boolean {
-  return OPEN_SUBSCRIPTION_STATUSES.has(status);
+export function isClosepathSession(session: Stripe.Checkout.Session): boolean {
+  return isClosepathProduct(session.metadata);
+}
+
+/**
+ * Statuses that still include the book.
+ * `trialing` stays open when the Customer Portal sets cancel-at-period-end.
+ * Stripe keeps that status until the trial ends, then cancels without a charge.
+ * `past_due` is the retry window after a collected charge. A trial that ends
+ * without one does not keep the book.
+ */
+export function subscriptionGrantsBook(
+  status: string,
+  options?: { paidNonZeroInvoice?: boolean; cancelAtPeriodEnd?: boolean },
+): boolean {
+  // Period-end cancellation does not close the book early.
+  void options?.cancelAtPeriodEnd;
+  if (status === "active" || status === "trialing") return true;
+  if (status === "past_due") return options?.paidNonZeroInvoice !== false;
+  return false;
 }
 
 export function normalizeStoredSubscriptionId(value: unknown): string | null {
@@ -87,15 +102,12 @@ function productMatches(session: Stripe.Checkout.Session): boolean {
   return !productId || productId === CLOSEPATH_PRODUCT_ID;
 }
 
-/** Paid monthly Closepath subscription: $9.99, quantity 1, usd, STRIPE_PRICE_ID. */
-export function isPaidClosepathSubscription(session: Stripe.Checkout.Session): boolean {
+function isClosepathMonthlyLine(session: Stripe.Checkout.Session): boolean {
   const priceId = closepathPriceId();
   const price = linePrice(session);
   if (!priceId || !price) return false;
   if (session.mode !== "subscription") return false;
-  if (session.payment_status !== "paid") return false;
   if (session.currency !== CLOSEPATH_CURRENCY) return false;
-  if (session.amount_subtotal !== CLOSEPATH_AMOUNT_CENTS) return false;
   if (!isClosepathSession(session)) return false;
   if (!checkoutSubscriptionId(session)) return false;
   if (price.id !== priceId) return false;
@@ -104,6 +116,28 @@ export function isPaidClosepathSubscription(session: Stripe.Checkout.Session): b
   if (price.recurring?.interval !== "month") return false;
   if ((price.recurring.interval_count ?? 1) !== 1) return false;
   return lineProductId(session) === CLOSEPATH_PRODUCT_ID;
+}
+
+/** Collected monthly charge: $9.99 due, quantity 1, usd, STRIPE_PRICE_ID. A $0 trial is not this. */
+export function isPaidClosepathSubscription(session: Stripe.Checkout.Session): boolean {
+  if (!isClosepathMonthlyLine(session)) return false;
+  if (session.payment_status !== "paid") return false;
+  if (session.amount_subtotal !== CLOSEPATH_AMOUNT_CENTS) return false;
+  if (session.amount_total === 0) return false;
+  return true;
+}
+
+/**
+ * Completed Checkout on the monthly price with nothing due today.
+ * A card-on-file trial reports `no_payment_required`. A $0 trial invoice can also be `paid`.
+ */
+export function isTrialingClosepathCheckout(session: Stripe.Checkout.Session): boolean {
+  if (session.status !== "complete") return false;
+  if (!isClosepathMonthlyLine(session)) return false;
+  if (session.amount_total !== 0) return false;
+  const subtotal = session.amount_subtotal;
+  if (subtotal != null && subtotal !== 0 && subtotal !== CLOSEPATH_AMOUNT_CENTS) return false;
+  return session.payment_status === "no_payment_required" || session.payment_status === "paid";
 }
 
 /**
@@ -121,10 +155,14 @@ export function isRetiredClosepathPayment(session: Stripe.Checkout.Session): boo
 }
 
 export function isPaidClosepathCheckout(session: Stripe.Checkout.Session): boolean {
-  return isPaidClosepathSubscription(session) || isRetiredClosepathPayment(session);
+  return (
+    isPaidClosepathSubscription(session) ||
+    isTrialingClosepathCheckout(session) ||
+    isRetiredClosepathPayment(session)
+  );
 }
 
-/** Webhook unlock rule: a paid monthly subscription, or an already-paid retired one-time session. */
+/** Webhook unlock rule: a paid or trialing monthly subscription, or an already-paid retired one-time session. */
 export function shouldUnlockFulfillment(session: Stripe.Checkout.Session): boolean {
   return isPaidClosepathCheckout(session);
 }

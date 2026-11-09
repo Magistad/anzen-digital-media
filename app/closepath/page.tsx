@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ClosepathApp } from "../../components/closepath/ClosepathApp";
+import { CLOSEPATH_TRIAL_BUTTON } from "../../lib/closepath";
 import { accountAccess } from "../../lib/closepath-access";
 import { loadWorkspace } from "../../lib/closepath-account";
 import { readSession, SESSION_COOKIE } from "../../lib/closepath-auth";
@@ -33,7 +34,7 @@ function ClosedBook({ title, detail }: { title: string; detail: string }) {
         <p className="mt-6 max-w-md text-[15px] leading-snug text-paper/70">{detail}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href="/products/closepath" className={linkClass}>
-            Subscribe
+            {CLOSEPATH_TRIAL_BUTTON}
           </Link>
           <form action="/api/closepath/sign-out" method="post">
             <button type="submit" className={linkClass}>
@@ -59,7 +60,7 @@ export default async function ClosepathPage({
     return (
       <ClosedBook
         title="This subscription isn’t active."
-        detail="The book stays closed. Subscribe again with the same email and the files stay."
+        detail="The book stays closed. Start a trial with the same email and the files stay."
       />
     );
   }

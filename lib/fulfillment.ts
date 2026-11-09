@@ -52,6 +52,22 @@ export async function unlockClosepathFulfillment(
   await writeFulfillment(stripe, session, "unlocked");
 }
 
+export async function setSubscriptionFulfillment(
+  stripe: Stripe,
+  subscription: Stripe.Subscription,
+  fulfillment: "unlocked" | "failed",
+): Promise<void> {
+  if (
+    subscription.metadata?.product === CLOSEPATH_PRODUCT &&
+    subscription.metadata.fulfillment === fulfillment
+  ) {
+    return;
+  }
+  await stripe.subscriptions.update(subscription.id, {
+    metadata: { product: CLOSEPATH_PRODUCT, fulfillment },
+  });
+}
+
 export async function failClosepathFulfillment(
   stripe: Stripe,
   session: Stripe.Checkout.Session,

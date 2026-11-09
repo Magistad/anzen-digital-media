@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import {
-  CLOSEPATH_PRODUCT,
+  closepathCheckoutSessionFields,
   closepathIntegrationIdentifier,
   closepathPriceId,
   isClosepathMonthlyPrice,
@@ -43,17 +43,8 @@ export async function POST(req: Request) {
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/products/closepath/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/products/closepath`,
-      client_reference_id: "closepath",
+      ...closepathCheckoutSessionFields(priceId, origin),
       integration_identifier: closepathIntegrationIdentifier(),
-      metadata: { product: CLOSEPATH_PRODUCT },
-      subscription_data: {
-        description: "Closepath — $9.99 a month",
-        metadata: { product: CLOSEPATH_PRODUCT },
-      },
     });
 
     if (!session.url || !session.url.startsWith("https://checkout.stripe.com/")) {
