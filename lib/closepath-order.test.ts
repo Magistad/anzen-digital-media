@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type Stripe from "stripe";
+import { ownerMayManageBilling } from "./closepath-access";
 import { fulfillmentAnchor } from "./fulfillment";
 import {
   CLOSEPATH_PRODUCT_ID,
@@ -72,6 +73,15 @@ test("a trial stays open through cancel-at-period-end and closes if it ends with
   assert.equal(subscriptionGrantsBook("unpaid", { paidNonZeroInvoice: false }), false);
   assert.equal(subscriptionGrantsBook("incomplete", { paidNonZeroInvoice: false }), false);
   assert.equal(subscriptionGrantsBook("past_due", { paidNonZeroInvoice: true }), true);
+});
+
+test("a failed first charge keeps the book closed and still allows billing", () => {
+  assert.equal(subscriptionGrantsBook("past_due", { paidNonZeroInvoice: false }), false);
+  assert.equal(subscriptionGrantsBook("active"), true);
+  assert.equal(subscriptionGrantsBook("trialing"), true);
+  assert.equal(ownerMayManageBilling({ signedIn: true, customerId: "cus_owner" }), true);
+  assert.equal(ownerMayManageBilling({ signedIn: true, customerId: null }), false);
+  assert.equal(ownerMayManageBilling({ signedIn: false, customerId: "cus_owner" }), false);
 });
 
 test("checkout adds a 7-day trial on the existing price and collects a card", () => {

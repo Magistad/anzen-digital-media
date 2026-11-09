@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { QuestionsLine } from "../../../../../components/QuestionsLine";
 import { CLOSEPATH_OFFER } from "../../../../../lib/closepath";
 import { closepathDownloadAccess } from "../../../../../lib/closepath-access";
-import { findAccount } from "../../../../../lib/closepath-account";
-import { sessionSecret } from "../../../../../lib/closepath-auth";
+import { checkoutMayResetExistingAccount, findAccount } from "../../../../../lib/closepath-account";
+import { readSession, SESSION_COOKIE, sessionSecret } from "../../../../../lib/closepath-auth";
 import { normalizeEmail } from "../../../../../lib/closepath-model";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ const errors: Record<string, string> = {
   short: "Use at least 8 characters.",
   mismatch: "Those passwords don’t match.",
   email: "Use the email from checkout.",
-  exists: "This email already has a password. Sign in, or set a new one below.",
+  exists: "This email already has a password. Sign in. Checkout does not change it.",
   unpaid: "This subscription isn’t active yet.",
   failed: "Closepath couldn’t open the book. Try again.",
   unconfigured: "Closepath can’t open accounts right now.",
@@ -111,6 +112,15 @@ export default async function ClosepathSuccessPage({
   }
   const ready = Boolean(sessionSecret()) && storeReady;
   const already = existing || error === "exists";
+  const signedInEmail = readSession(cookies().get(SESSION_COOKIE)?.value)?.email ?? null;
+  const ownerSession =
+    Boolean(checkoutEmail) &&
+    checkoutMayResetExistingAccount({
+      accountEmail: checkoutEmail,
+      checkoutEmail,
+      signedInEmail,
+      emailVerified: false,
+    });
   const message = error ? errors[error] : undefined;
 
   return (
@@ -124,27 +134,32 @@ export default async function ClosepathSuccessPage({
                 Sign in to your book.
               </h1>
               <p className="mt-8 max-w-[36rem] text-lg leading-snug tracking-[-0.02em] text-paper/75">
-                This email already has a Closepath password. Your files are where you left them.
+                This email already has a Closepath password. Your files are where you left them. Checkout does
+                not change that password.
               </p>
               {message ? (
                 <p className="mt-4 max-w-md text-sm text-paper/70" role="alert">
                   {message}
                 </p>
               ) : null}
-              <Link href="/closepath/sign-in" className={`${linkClass} mt-8`}>
-                Sign in
-              </Link>
-              <h2 className="mt-12 text-[15px] text-paper/60">Forgot it?</h2>
-              <p className="mt-3 max-w-md text-[15px] leading-snug text-paper/70">
-                {access.plan === "monthly"
-                  ? "Set a new password with this subscription. The files stay."
-                  : "Set a new password. The files stay."}
-              </p>
-              {ready ? (
-                <PasswordForm sessionId={sessionId} email={checkoutEmail} locked={Boolean(checkoutEmail)} reset />
-              ) : (
-                <p className="mt-6 text-[15px] text-paper/70">Closepath can’t open accounts right now.</p>
+              {ownerSession ? null : (
+                <Link href="/closepath/sign-in" className={`${linkClass} mt-8`}>
+                  Sign in
+                </Link>
               )}
+              {ownerSession ? (
+                <>
+                  <h2 className="mt-12 text-[15px] text-paper/60">Change the password</h2>
+                  <p className="mt-3 max-w-md text-[15px] leading-snug text-paper/70">
+                    You are signed in on this account. Set a new password. The files stay.
+                  </p>
+                  {ready ? (
+                    <PasswordForm sessionId={sessionId} email={checkoutEmail} locked={Boolean(checkoutEmail)} reset />
+                  ) : (
+                    <p className="mt-6 text-[15px] text-paper/70">Closepath can’t open accounts right now.</p>
+                  )}
+                </>
+              ) : null}
               <p className="mt-6 max-w-md text-sm text-paper/60">
                 {checkoutEmail
                   ? `Stripe sends the receipt to ${checkoutEmail}.`

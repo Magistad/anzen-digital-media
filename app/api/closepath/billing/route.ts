@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { accountAccess } from "../../../../lib/closepath-access";
+import { ownerMayManageBilling } from "../../../../lib/closepath-access";
 import { findAccount } from "../../../../lib/closepath-account";
 import { redirectTo, sessionFromRequest } from "../../../../lib/closepath-response";
 import { requestOrigin, sameOrigin } from "../../../../lib/request-origin";
@@ -15,11 +15,10 @@ export async function POST(req: Request) {
 
   const stripe = getStripe();
   const account = await findAccount(session.email).catch(() => null);
-  const customerId = account?.stripeCustomerId;
-  if (!stripe || !customerId) return redirectTo(req, "/closepath?billing=unavailable");
-
-  const access = await accountAccess(session.email, true);
-  if (access.state !== "open") return redirectTo(req, "/closepath");
+  const customerId = account?.stripeCustomerId ?? null;
+  if (!stripe || !customerId || !ownerMayManageBilling({ signedIn: true, customerId })) {
+    return redirectTo(req, "/closepath?billing=unavailable");
+  }
 
   try {
     const portal = await stripe.billingPortal.sessions.create({

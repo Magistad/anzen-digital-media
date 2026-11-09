@@ -23,7 +23,17 @@ function one(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function ClosedBook({ title, detail }: { title: string; detail: string }) {
+function ClosedBook({
+  title,
+  detail,
+  canManageBilling,
+  billingNote,
+}: {
+  title: string;
+  detail: string;
+  canManageBilling: boolean;
+  billingNote?: string;
+}) {
   return (
     <main id="content" className="pb-16 pt-28">
       <div className="frame">
@@ -32,7 +42,19 @@ function ClosedBook({ title, detail }: { title: string; detail: string }) {
           {title}
         </h1>
         <p className="mt-6 max-w-md text-[15px] leading-snug text-paper/70">{detail}</p>
+        {billingNote ? (
+          <p className="mt-4 max-w-md text-sm text-paper/70" role="status">
+            {billingNote}
+          </p>
+        ) : null}
         <div className="mt-8 flex flex-wrap gap-3">
+          {canManageBilling ? (
+            <form action="/api/closepath/billing" method="post">
+              <button type="submit" className={linkClass}>
+                Manage subscription
+              </button>
+            </form>
+          ) : null}
           <Link href="/products/closepath" className={linkClass}>
             {CLOSEPATH_TRIAL_BUTTON}
           </Link>
@@ -55,12 +77,22 @@ export default async function ClosepathPage({
   const session = readSession(cookies().get(SESSION_COOKIE)?.value);
   if (!session) redirect("/closepath/sign-in");
 
+  const billingNote =
+    one(searchParams?.billing) === "unavailable" ? "Subscription management is unavailable right now." : undefined;
+
   const access = await accountAccess(session.email, true);
   if (access.state === "ended") {
+    const canManageBilling = Boolean(access.customerId);
     return (
       <ClosedBook
         title="This subscription isn’t active."
-        detail="The book stays closed. Start a trial with the same email and the files stay."
+        detail={
+          canManageBilling
+            ? "The book stays closed. Manage the subscription to update the card or cancel. The files stay with this email."
+            : "The book stays closed. The files stay with this email."
+        }
+        canManageBilling={canManageBilling}
+        billingNote={billingNote}
       />
     );
   }
@@ -69,12 +101,11 @@ export default async function ClosepathPage({
       <ClosedBook
         title="The book can’t be opened right now."
         detail="Closepath can’t confirm this subscription. Wait a moment and reload."
+        canManageBilling={Boolean(access.customerId)}
+        billingNote={billingNote}
       />
     );
   }
-
-  const billingNote =
-    one(searchParams?.billing) === "unavailable" ? "Subscription management is unavailable right now." : undefined;
 
   try {
     const workspace = await loadWorkspace(session.email);

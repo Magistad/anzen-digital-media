@@ -120,20 +120,30 @@ export async function subscriptionEntitlement(
   }
 }
 
+/** Signed-in owners can open Stripe billing even when the book is closed. */
+export function ownerMayManageBilling(input: { signedIn: boolean; customerId: string | null }): boolean {
+  return input.signedIn && Boolean(input.customerId);
+}
+
 export async function accountAccess(
   email: string,
   fresh = false,
-): Promise<{ state: "open"; customerId: string | null } | { state: "ended" } | { state: "unknown" }> {
+): Promise<
+  | { state: "open"; customerId: string | null }
+  | { state: "ended"; customerId: string | null }
+  | { state: "unknown"; customerId: string | null }
+> {
   let account: Awaited<ReturnType<typeof findAccount>>;
   try {
     account = await findAccount(email);
   } catch (error) {
     console.error("Closepath account read failed", error instanceof Error ? error.message : "unknown");
-    return { state: "unknown" };
+    return { state: "unknown", customerId: null };
   }
   if (!account) return { state: "open", customerId: null };
   const entitlement = await subscriptionEntitlement(account.stripeSubscriptionId, fresh);
-  if (entitlement === "open") return { state: "open", customerId: account.stripeCustomerId };
-  if (entitlement === "ended") return { state: "ended" };
-  return { state: "unknown" };
+  const customerId = account.stripeCustomerId;
+  if (entitlement === "open") return { state: "open", customerId };
+  if (entitlement === "ended") return { state: "ended", customerId };
+  return { state: "unknown", customerId };
 }
