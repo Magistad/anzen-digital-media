@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { QuestionsLine } from "../../../../../components/QuestionsLine";
 import { CLOSEPATH_OFFER } from "../../../../../lib/closepath";
 import { closepathDownloadAccess } from "../../../../../lib/closepath-access";
 import { checkoutMayResetExistingAccount, findAccount } from "../../../../../lib/closepath-account";
 import { readSession, SESSION_COOKIE, sessionSecret } from "../../../../../lib/closepath-auth";
 import { normalizeEmail } from "../../../../../lib/closepath-model";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../../../lib/native-shell";
 
 export const dynamic = "force-dynamic";
 
@@ -122,6 +123,11 @@ export default async function ClosepathSuccessPage({
       emailVerified: false,
     });
   const message = error ? errors[error] : undefined;
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
+  const trial = access.state === "paid" && access.trial;
+  const confirmed = inApp
+    ? "Your subscription is confirmed. Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone."
+    : `Your subscription is confirmed. ${trial ? CLOSEPATH_OFFER : "$9.99 a month, cancel anytime."} Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone.`;
 
   return (
     <main id="content" className="flex min-h-[100svh] flex-col justify-end pb-20 pt-28 md:pb-28">
@@ -173,7 +179,7 @@ export default async function ClosepathSuccessPage({
               </h1>
               <p className="mt-8 max-w-[36rem] text-lg leading-snug tracking-[-0.02em] text-paper/75">
                 {access.plan === "monthly"
-                  ? `Your subscription is confirmed. ${access.trial ? CLOSEPATH_OFFER : "$9.99 a month, cancel anytime."} Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone.`
+                  ? confirmed
                   : "Payment is confirmed. Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone."}
               </p>
               {message ? (

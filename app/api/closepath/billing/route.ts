@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ownerMayManageBilling } from "../../../../lib/closepath-access";
 import { findAccount } from "../../../../lib/closepath-account";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../../lib/native-shell";
 import { redirectTo, sessionFromRequest } from "../../../../lib/closepath-response";
 import { requestOrigin, sameOrigin } from "../../../../lib/request-origin";
 import { getStripe } from "../../../../lib/stripe";
@@ -9,6 +10,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  if (nativeShellHidesStoreBilling(nativePlatformFromUserAgent(req.headers.get("user-agent")))) {
+    return redirectTo(req, "/closepath/sign-in");
+  }
   if (!sameOrigin(req)) return redirectTo(req, "/");
   const session = sessionFromRequest(req);
   if (!session) return redirectTo(req, "/closepath/sign-in");

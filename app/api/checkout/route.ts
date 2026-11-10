@@ -5,6 +5,7 @@ import {
   closepathPriceId,
   isClosepathMonthlyPrice,
 } from "../../../lib/closepath";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../lib/native-shell";
 import { requestOrigin } from "../../../lib/request-origin";
 import { getStripe } from "../../../lib/stripe";
 
@@ -17,6 +18,9 @@ function unavailable(origin: string) {
 
 export async function POST(req: Request) {
   const origin = requestOrigin(req);
+  if (nativeShellHidesStoreBilling(nativePlatformFromUserAgent(req.headers.get("user-agent")))) {
+    return NextResponse.redirect(new URL("/closepath/sign-in", origin), 303);
+  }
   const stripe = getStripe();
   if (!stripe) return unavailable(origin);
 
