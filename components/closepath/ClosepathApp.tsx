@@ -18,6 +18,7 @@ import {
   todayIso,
 } from "../../lib/closepath-model";
 import { sampleFiles } from "../../lib/closepath-samples";
+import { CalendarFeed } from "./CalendarFeed";
 import { FileList, type FileShow } from "./FileList";
 import { FileView } from "./FileView";
 import { LeadList } from "./LeadList";
@@ -332,7 +333,11 @@ export function ClosepathApp({
         ) : null}
 
         {!file && view === "morning" ? (
-          <MorningList
+          <>
+            <div className="mt-3">
+              <CalendarFeed label="Subscribe to these dates" />
+            </div>
+            <MorningList
             lines={lines}
             closedCount={totals.closed}
             didNotCloseCount={totals.didNotClose}
@@ -346,6 +351,7 @@ export function ClosepathApp({
               router.push(`/closepath?file=${created.id}#dates`);
             }}
           />
+          </>
         ) : null}
 
         {!file && view === "files" ? (
