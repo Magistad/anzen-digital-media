@@ -7,6 +7,7 @@ import {
   type DealFile,
   type LooseLead,
   type Workspace,
+  type DealAttachment,
   emptyFile,
   emptyLead,
   emptyOffer,
@@ -322,6 +323,26 @@ export function ClosepathApp({
                 ...current,
                 files: current.files.map((item) =>
                   item.id === file.id ? { ...item, offers: [...item.offers, emptyOffer()] } : item,
+                ),
+              }));
+            }}
+            onAddAttachment={(attachment: DealAttachment) => {
+              commit((current) => ({
+                ...current,
+                files: current.files.map((item) =>
+                  item.id === file.id && !item.attachments.some((row) => row.id === attachment.id)
+                    ? { ...item, attachments: [...item.attachments, attachment] }
+                    : item,
+                ),
+              }));
+            }}
+            onRemoveAttachment={(attachmentId) => {
+              commit((current) => ({
+                ...current,
+                files: current.files.map((item) =>
+                  item.id === file.id
+                    ? { ...item, attachments: item.attachments.filter((row) => row.id !== attachmentId) }
+                    : item,
                 ),
               }));
             }}

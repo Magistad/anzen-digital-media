@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { DELETE as deleteAttachment, GET as readAttachment } from "../app/api/closepath/attachments/[id]/route";
+import { POST as uploadAttachment } from "../app/api/closepath/attachments/route";
 import { GET as bookGet } from "../app/api/closepath/calendar/book/route";
 import { GET as calendarGet, POST as calendarPost } from "../app/api/closepath/calendar/route";
+import { PUT as saveBook } from "../app/api/closepath/workspace/route";
 import { GET as feedGet } from "../app/closepath/cal/[token]/route";
 import { issueSession } from "./closepath-auth";
 import {
@@ -15,7 +18,7 @@ import {
   saveWorkspace,
 } from "./closepath-account";
 import { emptyFile, emptyWorkspace, type Workspace } from "./closepath-model";
-import { memoryStore, setClosepathStore } from "./closepath-store";
+import { memoryBinaryStore, memoryStore, setClosepathBinaryStore, setClosepathStore } from "./closepath-store";
 
 test.before(() => {
   process.env.CLOSEPATH_SESSION_SECRET = "test-secret-that-is-long-enough";
@@ -23,10 +26,12 @@ test.before(() => {
 
 test.beforeEach(() => {
   setClosepathStore(memoryStore());
+  setClosepathBinaryStore(memoryBinaryStore());
 });
 
 test.after(() => {
   setClosepathStore(null);
+  setClosepathBinaryStore(null);
 });
 
 test("a buyer can sign in and keep a file on another read", async () => {
@@ -69,6 +74,7 @@ test("a buyer can sign in and keep a file on another read", async () => {
         paidDate: null,
         commissionStatus: "",
         commissionNotes: "",
+        attachments: [],
       },
     ],
   };
@@ -223,4 +229,133 @@ test("a private calendar feed follows the book and dies when the link is replace
 
   const status = await calendarGet(sessionRequest("/api/closepath/calendar", token));
   assert.deepEqual(await status.json(), { enabled: false, url: null });
+});
+
+function jpegBytes(): Uint8Array {
+  const bytes = new Uint8Array(16);
+  bytes[0] = 0xff;
+  bytes[1] = 0xd8;
+  bytes[2] = 0xff;
+  bytes[15] = 0xd9;
+  return bytes;
+}
+
+function attachmentRequest(token: string, fileId: string, bytes: Uint8Array, name: string): Request {
+  const form = new FormData();
+  form.set("fileId", fileId);
+  const copy = bytes.slice();
+  form.set("file", new File([copy.buffer], name, { type: "application/octet-stream" }));
+  return new Request("http://localhost:3000/api/closepath/attachments", {
+    method: "POST",
+    headers: {
+      origin: "http://localhost:3000",
+      host: "localhost:3000",
+      cookie: `closepath_session=${token}`,
+    },
+    body: form,
+  });
+}
+
+test("a photo stays on the file and no one else can open it", async () => {
+  await createAccount({ email: "ada@email.test", password: "maple-street", stripeSessionId: "cs_test_123" });
+  await createAccount({ email: "bob@email.test", password: "maple-street", stripeSessionId: "cs_test_456" });
+  const file = emptyFile("file-live1");
+  file.address = "10 Main Street";
+  await saveWorkspace("ada@email.test", { ...emptyWorkspace(), files: [file] });
+  const ada = issueSession("ada@email.test");
+  const bob = issueSession("bob@email.test");
+  assert.ok(ada && bob);
+
+  const html = new TextEncoder().encode("<html><script>no</script></html>");
+  const rejected = await uploadAttachment(attachmentRequest(ada, file.id, html, "note.html"));
+  assert.equal(rejected.status, 415);
+
+  const uploaded = await uploadAttachment(attachmentRequest(ada, file.id, jpegBytes(), "../Earnest check.jpg"));
+  assert.equal(uploaded.status, 200);
+  const attachment = (await uploaded.json()) as { id: string; name: string; contentType: string; size: number; createdAt: string };
+  assert.equal(attachment.name, "Earnest check.jpg");
+  assert.equal(attachment.contentType, "image/jpeg");
+  assert.equal(attachment.size, 16);
+
+  const seen = await readAttachment(new Request(`http://localhost:3000/api/closepath/attachments/${attachment.id}`), {
+    params: { id: attachment.id },
+  });
+  assert.equal(seen.status, 401);
+  const opened = await readAttachment(
+    new Request(`http://localhost:3000/api/closepath/attachments/${attachment.id}`, {
+      headers: { cookie: `closepath_session=${ada}`, host: "localhost:3000" },
+    }),
+    { params: { id: attachment.id } },
+  );
+  assert.equal(opened.status, 200);
+  assert.equal(opened.headers.get("content-type"), "image/jpeg");
+  assert.match(opened.headers.get("content-disposition") ?? "", /inline/);
+  assert.equal((await opened.arrayBuffer()).byteLength, 16);
+  const stolen = await readAttachment(
+    new Request(`http://localhost:3000/api/closepath/attachments/${attachment.id}`, {
+      headers: { cookie: `closepath_session=${bob}`, host: "localhost:3000" },
+    }),
+    { params: { id: attachment.id } },
+  );
+  assert.equal(stolen.status, 404);
+
+  file.attachments = [attachment as typeof file.attachments[number]];
+  const kept = await saveBook(
+    new Request("http://localhost:3000/api/closepath/workspace", {
+      method: "PUT",
+      headers: {
+        origin: "http://localhost:3000",
+        host: "localhost:3000",
+        "content-type": "application/json",
+        cookie: `closepath_session=${ada}`,
+      },
+      body: JSON.stringify({ ...emptyWorkspace(), files: [file] }),
+    }),
+  );
+  assert.equal(kept.status, 200);
+  const removed = { ...file, attachments: [] };
+  const dropped = await saveBook(
+    new Request("http://localhost:3000/api/closepath/workspace", {
+      method: "PUT",
+      headers: {
+        origin: "http://localhost:3000",
+        host: "localhost:3000",
+        "content-type": "application/json",
+        cookie: `closepath_session=${ada}`,
+      },
+      body: JSON.stringify({ ...emptyWorkspace(), files: [removed] }),
+    }),
+  );
+  assert.equal(dropped.status, 200);
+  const after = await readAttachment(
+    new Request(`http://localhost:3000/api/closepath/attachments/${attachment.id}`, {
+      headers: { cookie: `closepath_session=${ada}`, host: "localhost:3000" },
+    }),
+    { params: { id: attachment.id } },
+  );
+  assert.equal(after.status, 404);
+  const book = await loadWorkspace("ada@email.test");
+  assert.equal(book.files[0]?.attachments.length, 0);
+
+  const again = await uploadAttachment(attachmentRequest(ada, file.id, jpegBytes(), "addendum.pdf"));
+  const second = (await again.json()) as { id: string };
+  const deleted = await deleteAttachment(
+    new Request(`http://localhost:3000/api/closepath/attachments/${second.id}`, {
+      method: "DELETE",
+      headers: { origin: "http://localhost:3000", host: "localhost:3000", cookie: `closepath_session=${ada}` },
+    }),
+    { params: { id: second.id } },
+  );
+  assert.equal(deleted.status, 200);
+  assert.equal(
+    (
+      await readAttachment(
+        new Request(`http://localhost:3000/api/closepath/attachments/${second.id}`, {
+          headers: { cookie: `closepath_session=${ada}`, host: "localhost:3000" },
+        }),
+        { params: { id: second.id } },
+      )
+    ).status,
+    404,
+  );
 });
