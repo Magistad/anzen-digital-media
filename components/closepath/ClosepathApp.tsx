@@ -7,6 +7,7 @@ import {
   type DealFile,
   type LooseLead,
   type Workspace,
+  type DealAttachment,
   emptyFile,
   emptyLead,
   emptyOffer,
@@ -18,6 +19,7 @@ import {
   todayIso,
 } from "../../lib/closepath-model";
 import { sampleFiles } from "../../lib/closepath-samples";
+import { CalendarFeed } from "./CalendarFeed";
 import { FileList, type FileShow } from "./FileList";
 import { FileView } from "./FileView";
 import { LeadList } from "./LeadList";
@@ -324,6 +326,26 @@ export function ClosepathApp({
                 ),
               }));
             }}
+            onAddAttachment={(attachment: DealAttachment) => {
+              commit((current) => ({
+                ...current,
+                files: current.files.map((item) =>
+                  item.id === file.id && !item.attachments.some((row) => row.id === attachment.id)
+                    ? { ...item, attachments: [...item.attachments, attachment] }
+                    : item,
+                ),
+              }));
+            }}
+            onRemoveAttachment={(attachmentId) => {
+              commit((current) => ({
+                ...current,
+                files: current.files.map((item) =>
+                  item.id === file.id
+                    ? { ...item, attachments: item.attachments.filter((row) => row.id !== attachmentId) }
+                    : item,
+                ),
+              }));
+            }}
             onRemove={() => {
               commit((current) => ({ ...current, files: current.files.filter((item) => item.id !== file.id) }));
               router.push("/closepath?view=files");
@@ -332,7 +354,11 @@ export function ClosepathApp({
         ) : null}
 
         {!file && view === "morning" ? (
-          <MorningList
+          <>
+            <div className="mt-3">
+              <CalendarFeed label="Subscribe to these dates" />
+            </div>
+            <MorningList
             lines={lines}
             closedCount={totals.closed}
             didNotCloseCount={totals.didNotClose}
@@ -346,6 +372,7 @@ export function ClosepathApp({
               router.push(`/closepath?file=${created.id}#dates`);
             }}
           />
+          </>
         ) : null}
 
         {!file && view === "files" ? (

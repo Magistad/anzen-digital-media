@@ -1,3 +1,4 @@
+import { createHash, randomBytes, timingSafeEqual } from "crypto";
 import {
   dummyPasswordHash,
   hashPassword,
@@ -11,6 +12,9 @@ import {
   sanitizeWorkspace,
 } from "./closepath-model";
 import { getClosepathStore } from "./closepath-store";
+
+/** 32 bytes, base64url, no padding. */
+const FEED_TOKEN = /^[A-Za-z0-9_-]{43}$/;
 
 const LOCK_AFTER = 8;
 const LOCK_MS = 15 * 60 * 1000;
@@ -26,8 +30,18 @@ export type ClosepathAccount = {
   updatedAt: string;
   failedSignIns: number;
   lockedUntil: string | null;
+  /** Secret for the private calendar feed. Null until the agent turns it on. */
+  calendarFeedToken: string | null;
   workspace: Workspace;
 };
+
+function feedToken(value: unknown): string | null {
+  return typeof value === "string" && FEED_TOKEN.test(value) ? value : null;
+}
+
+function feedIndex(token: string): string {
+  return `calendar-feed:${createHash("sha256").update(token).digest("hex")}`;
+}
 
 function keyFor(email: string): string {
   return `account:${email}`;
@@ -44,6 +58,7 @@ function parseAccount(raw: string | null): ClosepathAccount | null {
       workspace,
       stripeSubscriptionId: normalizeStoredSubscriptionId(value.stripeSubscriptionId),
       stripeCustomerId: normalizeStoredCustomerId(value.stripeCustomerId),
+      calendarFeedToken: feedToken(value.calendarFeedToken),
     };
   } catch {
     return null;
@@ -77,6 +92,7 @@ export async function createAccount(input: {
     updatedAt: now,
     failedSignIns: 0,
     lockedUntil: null,
+    calendarFeedToken: null,
     workspace: emptyWorkspace(),
   };
   await writeAccount(account);
@@ -180,4 +196,67 @@ export async function saveWorkspace(email: string, workspace: Workspace): Promis
   account.workspace = workspace;
   account.updatedAt = new Date().toISOString();
   await writeAccount(account);
+}
+
+async function requireAccount(email: string): Promise<ClosepathAccount> {
+  const account = await findAccount(email);
+  if (!account) throw new Error("Closepath account is missing");
+  return account;
+}
+
+async function storeFeedToken(account: ClosepathAccount, previous: string | null): Promise<string> {
+  const token = randomBytes(32).toString("base64url");
+  const store = getClosepathStore();
+  await store.set(feedIndex(token), account.email);
+  account.calendarFeedToken = token;
+  account.updatedAt = new Date().toISOString();
+  await writeAccount(account);
+  if (previous && previous !== token && FEED_TOKEN.test(previous)) await store.delete(feedIndex(previous));
+  return token;
+}
+
+export async function calendarFeedTokenFor(email: string): Promise<string | null> {
+  const account = await findAccount(email);
+  return feedToken(account?.calendarFeedToken);
+}
+
+/** Creates the private feed token, or returns the one this book already has. */
+export async function enableCalendarFeed(email: string): Promise<string> {
+  const account = await requireAccount(email);
+  const existing = feedToken(account.calendarFeedToken);
+  if (existing) {
+    await getClosepathStore().set(feedIndex(existing), account.email);
+    return existing;
+  }
+  return storeFeedToken(account, null);
+}
+
+/** Replaces the feed token. Calendar apps that subscribed to the old link stop updating. */
+export async function rotateCalendarFeed(email: string): Promise<string> {
+  const account = await requireAccount(email);
+  return storeFeedToken(account, account.calendarFeedToken);
+}
+
+export async function revokeCalendarFeed(email: string): Promise<void> {
+  const account = await requireAccount(email);
+  const previous = feedToken(account.calendarFeedToken);
+  account.calendarFeedToken = null;
+  account.updatedAt = new Date().toISOString();
+  await writeAccount(account);
+  if (previous) await getClosepathStore().delete(feedIndex(previous));
+}
+
+/** Maps a feed token back to the account email. Null when the link is unknown or revoked. */
+export async function emailForCalendarToken(token: string): Promise<string | null> {
+  if (!FEED_TOKEN.test(token)) return null;
+  const stored = await getClosepathStore().get(feedIndex(token));
+  const email = stored ? normalizeEmail(stored) : null;
+  if (!email) return null;
+  const account = await findAccount(email);
+  const actual = account?.calendarFeedToken;
+  if (!actual || !FEED_TOKEN.test(actual)) return null;
+  const got = Buffer.from(token);
+  const expected = Buffer.from(actual);
+  if (got.length !== expected.length || !timingSafeEqual(got, expected)) return null;
+  return account.email;
 }
