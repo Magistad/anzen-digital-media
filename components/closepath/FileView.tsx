@@ -25,6 +25,9 @@ import {
   formatMoneyAuto,
   urgency,
 } from "../../lib/closepath-model";
+import { type CalendarEvent, calendarFilename, fileCalendarEvents } from "../../lib/closepath-calendar";
+import { CalendarFeed } from "./CalendarFeed";
+import { CalendarMenu } from "./CalendarMenu";
 import { AreaField, DateField, MoneyField, PercentField, SelectField, TextField } from "./Fields";
 
 function DayState({ iso, today, quiet }: { iso: string | null; today: string | null; quiet?: boolean }) {
@@ -45,10 +48,12 @@ function DayState({ iso, today, quiet }: { iso: string | null; today: string | n
 
 function ShowingRow({
   showing,
+  event,
   onChange,
   onRemove,
 }: {
   showing: Showing;
+  event: CalendarEvent | null;
   onChange: (showing: Showing) => void;
   onRemove: () => void;
 }) {
@@ -62,19 +67,24 @@ function ShowingRow({
         <TextField id={`${showing.id}-feedback`} label="Feedback" value={showing.feedback} maxLength={LIMITS.notes} onChange={(feedback) => onChange({ ...showing, feedback })} />
         <TextField id={`${showing.id}-next`} label="Next step" value={showing.nextStep} maxLength={LIMITS.notes} onChange={(nextStep) => onChange({ ...showing, nextStep })} />
       </div>
-      <button type="button" className="book-quiet mt-1" onClick={onRemove}>
-        Remove
-      </button>
+      <div className="mt-1 flex flex-wrap items-center gap-x-4">
+        <button type="button" className="book-quiet" onClick={onRemove}>
+          Remove
+        </button>
+        {event ? <CalendarMenu events={[event]} filename={calendarFilename("Showing")} /> : null}
+      </div>
     </div>
   );
 }
 
 function OfferRow({
   offer,
+  event,
   onChange,
   onRemove,
 }: {
   offer: Offer;
+  event: CalendarEvent | null;
   onChange: (offer: Offer) => void;
   onRemove: () => void;
 }) {
@@ -90,19 +100,35 @@ function OfferRow({
         <DateField id={`${offer.id}-expires`} label="Expires" value={offer.expires} onChange={(expires) => onChange({ ...offer, expires })} />
         <TextField id={`${offer.id}-notes`} label="Notes" value={offer.notes} maxLength={LIMITS.notes} onChange={(notes) => onChange({ ...offer, notes })} />
       </div>
-      <button type="button" className="book-quiet mt-1" onClick={onRemove}>
-        Remove
-      </button>
+      <div className="mt-1 flex flex-wrap items-center gap-x-4">
+        <button type="button" className="book-quiet" onClick={onRemove}>
+          Remove
+        </button>
+        {event ? <CalendarMenu events={[event]} filename={calendarFilename("Offer expires")} /> : null}
+      </div>
     </div>
   );
 }
 
-function DateLine({ label, state, children }: { label: string; state?: ReactNode; children: ReactNode }) {
+function DateLine({
+  label,
+  state,
+  extra,
+  children,
+}: {
+  label: string;
+  state?: ReactNode;
+  extra?: ReactNode;
+  children: ReactNode;
+}) {
   return (
-    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-3 border-b border-paper/10 py-2 sm:grid-cols-[9.25rem_minmax(0,12rem)_auto] sm:items-center sm:py-1">
-      <span className="min-w-0 text-[14px] leading-snug">{label}</span>
-      <span className="shrink-0 text-right sm:col-start-3">{state}</span>
-      <div className="col-span-2 min-w-0 pt-1 sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:pt-0">{children}</div>
+    <div className="border-b border-paper/10 py-2 sm:py-1">
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-3 sm:grid-cols-[9.25rem_minmax(0,12rem)_auto] sm:items-center">
+        <span className="min-w-0 text-[14px] leading-snug">{label}</span>
+        <span className="shrink-0 text-right sm:col-start-3">{state}</span>
+        <div className="col-span-2 min-w-0 pt-1 sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:pt-0">{children}</div>
+      </div>
+      {extra ? <div className="pt-1 sm:pl-[calc(9.25rem+0.75rem)]">{extra}</div> : null}
     </div>
   );
 }
@@ -163,6 +189,8 @@ export function FileView({
   const [confirming, setConfirming] = useState(false);
   const figures = commissionFigures(file.salePrice, file.ratePercent, file.splitPercent);
   const summaryToday = today ?? "1970-01-01";
+  const calendarEvents = fileCalendarEvents(file);
+  const calendarFor = (key: string) => calendarEvents.find((event) => event.key === key) ?? null;
 
   return (
     <div className="mt-3">
@@ -206,27 +234,45 @@ export function FileView({
         <div className="order-1 min-w-0 lg:order-none lg:col-start-1 lg:row-start-2">
         <Section id="dates" title="Critical dates" detail="Write these the day the contract is ratified.">
           <div className="border-t border-paper/15">
-            <DateLine label="Contract">
+            <DateLine
+              label="Contract"
+              extra={
+                calendarFor("contractDate") ? (
+                  <CalendarMenu
+                    events={calendarEvents.filter((event) => event.key === "contractDate")}
+                    filename={calendarFilename("Contract date")}
+                  />
+                ) : null
+              }
+            >
               <DateField id={`${file.id}-contract-date`} label="Contract date" bare value={file.contractDate} onChange={(contractDate) => onChange({ ...file, contractDate })} />
             </DateLine>
-            {DATE_FIELDS.map((field) => (
-              <DateLine
-                key={field.key}
-                label={field.label}
-                state={<DayState iso={file[field.key]} today={today} quiet={file.outcome !== "Open"} />}
-              >
-                <DateField
-                  id={`${file.id}-${field.key}`}
+            {DATE_FIELDS.map((field) => {
+              const event = calendarFor(field.key);
+              return (
+                <DateLine
+                  key={field.key}
                   label={field.label}
-                  bare
-                  value={file[field.key]}
-                  onChange={(value) => onChange({ ...file, [field.key]: value })}
-                />
-              </DateLine>
-            ))}
+                  state={<DayState iso={file[field.key]} today={today} quiet={file.outcome !== "Open"} />}
+                  extra={event ? <CalendarMenu events={[event]} filename={calendarFilename(field.label)} /> : null}
+                >
+                  <DateField
+                    id={`${file.id}-${field.key}`}
+                    label={field.label}
+                    bare
+                    value={file[field.key]}
+                    onChange={(value) => onChange({ ...file, [field.key]: value })}
+                  />
+                </DateLine>
+              );
+            })}
           </div>
           <div className="mt-2">
             <AreaField id={`${file.id}-date-notes`} label="Date notes" value={file.dateNotes} onChange={(dateNotes) => onChange({ ...file, dateNotes })} />
+          </div>
+          <div className="mt-3 flex flex-col items-start gap-2">
+            <CalendarMenu events={calendarEvents} label="Add all dates" filename={calendarFilename(file.address || "dates")} note />
+            <CalendarFeed />
           </div>
         </Section>
         </div>
@@ -274,6 +320,7 @@ export function FileView({
               <ShowingRow
                 key={showing.id}
                 showing={showing}
+                event={calendarFor(`showing:${showing.id}`)}
                 onChange={(next) => onChange({ ...file, showings: file.showings.map((row) => (row.id === showing.id ? next : row)) })}
                 onRemove={() => onChange({ ...file, showings: file.showings.filter((row) => row.id !== showing.id) })}
               />
@@ -292,6 +339,7 @@ export function FileView({
               <OfferRow
                 key={offer.id}
                 offer={offer}
+                event={calendarFor(`offer:${offer.id}`)}
                 onChange={(next) => onChange({ ...file, offers: file.offers.map((row) => (row.id === offer.id ? next : row)) })}
                 onRemove={() => onChange({ ...file, offers: file.offers.filter((row) => row.id !== offer.id) })}
               />

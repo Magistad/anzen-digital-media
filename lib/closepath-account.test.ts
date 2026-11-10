@@ -1,7 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { authenticate, createAccount, findAccount, loadWorkspace, resetAccountPassword, saveWorkspace } from "./closepath-account";
-import { emptyWorkspace, type Workspace } from "./closepath-model";
+import { GET as bookGet } from "../app/api/closepath/calendar/book/route";
+import { GET as calendarGet, POST as calendarPost } from "../app/api/closepath/calendar/route";
+import { GET as feedGet } from "../app/closepath/cal/[token]/route";
+import { issueSession } from "./closepath-auth";
+import {
+  authenticate,
+  calendarFeedTokenFor,
+  createAccount,
+  emailForCalendarToken,
+  findAccount,
+  loadWorkspace,
+  resetAccountPassword,
+  saveWorkspace,
+} from "./closepath-account";
+import { emptyFile, emptyWorkspace, type Workspace } from "./closepath-model";
 import { memoryStore, setClosepathStore } from "./closepath-store";
 
 test.before(() => {
@@ -125,4 +138,89 @@ test("eight wrong passwords lock the book for fifteen minutes", async () => {
   assert.deepEqual(locked, { ok: false, reason: "locked" });
   const later = await authenticate("ada@email.test", "maple-street", now + 16 * 60 * 1000);
   assert.equal(later.ok, true);
+});
+
+function sessionRequest(path: string, token: string | null, body?: string): Request {
+  const headers = new Headers({
+    origin: "http://localhost:3000",
+    host: "localhost:3000",
+    "content-type": "application/json",
+  });
+  if (token) headers.set("cookie", `closepath_session=${token}`);
+  return new Request(`http://localhost:3000${path}`, {
+    method: body === undefined ? "GET" : "POST",
+    headers,
+    body,
+  });
+}
+
+test("a private calendar feed follows the book and dies when the link is replaced", async () => {
+  await createAccount({ email: "ada@email.test", password: "maple-street", stripeSessionId: "cs_test_123" });
+  const file = emptyFile("file-live1");
+  file.address = "10 Main Street";
+  file.client = "Ada Lane";
+  file.phone = "555-0100";
+  file.inspectionDeadline = "2026-11-12";
+  file.outcome = "Open";
+  const sample = emptyFile("sample-maple");
+  sample.example = true;
+  sample.address = "1842 Maple Street";
+  sample.inspectionDeadline = "2026-11-09";
+  await saveWorkspace("ada@email.test", { ...emptyWorkspace(), files: [file, sample] });
+  const token = issueSession("ada@email.test");
+  assert.ok(token);
+
+  const denied = await calendarPost(sessionRequest("/api/closepath/calendar", null, JSON.stringify({ action: "enable" })));
+  assert.equal(denied.status, 401);
+  const foreign = sessionRequest("/api/closepath/calendar", token, JSON.stringify({ action: "enable" }));
+  foreign.headers.set("origin", "https://evil.example");
+  const blocked = await calendarPost(foreign);
+  assert.equal(blocked.status, 403);
+
+  const created = await calendarPost(sessionRequest("/api/closepath/calendar", token, JSON.stringify({ action: "enable" })));
+  assert.equal(created.status, 200);
+  const body = (await created.json()) as { enabled: boolean; url: string };
+  assert.equal(body.enabled, true);
+  assert.match(body.url, /^http:\/\/localhost:3000\/closepath\/cal\/[A-Za-z0-9_-]{43}\.ics$/);
+  const feedToken = body.url.split("/").pop()?.replace(/\.ics$/, "") ?? "";
+  assert.equal(await emailForCalendarToken(feedToken), "ada@email.test");
+
+  const feed = await feedGet(new Request(body.url), { params: { token: `${feedToken}.ics` } });
+  assert.equal(feed.status, 200);
+  assert.match(feed.headers.get("content-type") ?? "", /text\/calendar/);
+  const ics = await feed.text();
+  assert.match(ics, /DTSTART;VALUE=DATE:20261112/);
+  assert.match(ics, /10 Main Street/);
+  assert.doesNotMatch(ics, /Maple Street/);
+  assert.doesNotMatch(ics, /555-0100/);
+
+  file.inspectionDeadline = "2026-11-18";
+  await saveWorkspace("ada@email.test", { ...emptyWorkspace(), files: [file, sample] });
+  assert.equal(await calendarFeedTokenFor("ada@email.test"), feedToken);
+  const updated = await feedGet(new Request(body.url), { params: { token: feedToken } });
+  assert.match(await updated.text(), /DTSTART;VALUE=DATE:20261118/);
+
+  const book = await bookGet(sessionRequest("/api/closepath/calendar/book", token));
+  assert.equal(book.status, 200);
+  assert.match(book.headers.get("content-disposition") ?? "", /attachment/);
+  assert.match(await book.text(), /20261118/);
+  const signedOut = await bookGet(sessionRequest("/api/closepath/calendar/book", null));
+  assert.equal(signedOut.status, 303);
+
+  const rotated = await calendarPost(sessionRequest("/api/closepath/calendar", token, JSON.stringify({ action: "rotate" })));
+  const next = (await rotated.json()) as { url: string };
+  const nextToken = next.url.split("/").pop()?.replace(/\.ics$/, "") ?? "";
+  assert.notEqual(nextToken, feedToken);
+  assert.equal((await feedGet(new Request(body.url), { params: { token: `${feedToken}.ics` } })).status, 404);
+  assert.equal((await feedGet(new Request(next.url), { params: { token: `${nextToken}.ics` } })).status, 200);
+
+  const stopped = await calendarPost(sessionRequest("/api/closepath/calendar", token, JSON.stringify({ action: "revoke" })));
+  const after = (await stopped.json()) as { enabled: boolean; url: string | null };
+  assert.equal(after.enabled, false);
+  assert.equal(after.url, null);
+  assert.equal((await feedGet(new Request(next.url), { params: { token: `${nextToken}.ics` } })).status, 404);
+  assert.equal((await feedGet(new Request("http://localhost:3000/closepath/cal/nope.ics"), { params: { token: "nope.ics" } })).status, 404);
+
+  const status = await calendarGet(sessionRequest("/api/closepath/calendar", token));
+  assert.deepEqual(await status.json(), { enabled: false, url: null });
 });
