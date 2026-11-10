@@ -30,6 +30,7 @@ import { type CalendarEvent, calendarFilename, fileCalendarEvents } from "../../
 import { CalendarFeed } from "./CalendarFeed";
 import { CalendarMenu } from "./CalendarMenu";
 import { FileDocuments } from "./FileDocuments";
+import { ShareDeal } from "./ShareDeal";
 import { AreaField, DateField, MoneyField, PercentField, SelectField, TextField } from "./Fields";
 
 function DayState({ iso, today, quiet }: { iso: string | null; today: string | null; quiet?: boolean }) {
@@ -217,6 +218,7 @@ export function FileView({
         {file.example ? <span className="text-paper/45">Example. Not a client. </span> : null}
         {today ? fileSummary(file, today) : fileSummary(file, summaryToday)}
       </p>
+      <ShareDeal file={file} />
       <OutcomeActions outcome={file.outcome} onOutcome={(outcome) => onChange({ ...file, outcome })} />
 
       <nav aria-label="In this file" className="mt-3 flex flex-wrap border-b border-paper/15 text-[14px] lg:hidden">
