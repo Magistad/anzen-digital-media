@@ -24,7 +24,14 @@ export const LIMITS = {
   notes: 2000,
   email: 200,
   phone: 40,
+  /** Photos and PDFs on one file. Bytes live in blob storage, not in the book. */
+  attachments: 20,
+  attachmentBytes: 4_500_000,
 } as const;
+
+export const ATTACHMENT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/avif", "application/pdf"] as const;
+
+export type AttachmentType = (typeof ATTACHMENT_TYPES)[number];
 
 export type Side = (typeof SIDES)[number];
 export type DealStatus = (typeof DEAL_STATUSES)[number];
@@ -55,6 +62,15 @@ export type Offer = {
   status: OfferStatus | "";
   expires: string | null;
   notes: string;
+};
+
+/** A photo or PDF stored for one file. The bytes are not in the book. */
+export type DealAttachment = {
+  id: string;
+  name: string;
+  contentType: AttachmentType;
+  size: number;
+  createdAt: string;
 };
 
 /** One property. Dates, showings, offers, and commission hang off this file. */
@@ -91,6 +107,7 @@ export type DealFile = {
   paidDate: string | null;
   commissionStatus: CommissionStatus | "";
   commissionNotes: string;
+  attachments: DealAttachment[];
 };
 
 /** A person who is not a file yet. A file starts when there is a property. */
@@ -186,6 +203,7 @@ export function emptyFile(id = newId()): DealFile {
     paidDate: null,
     commissionStatus: "",
     commissionNotes: "",
+    attachments: [],
   };
 }
 
@@ -555,7 +573,36 @@ function sanitizeFile(value: unknown): DealFile | null {
     paidDate: iso(row.paidDate),
     commissionStatus: oneOf(row.commissionStatus, COMMISSION_STATUSES),
     commissionNotes: text(row.commissionNotes, LIMITS.notes),
+    attachments: sanitizeAttachments(row.attachments),
   };
+}
+
+function sanitizeAttachments(value: unknown): DealAttachment[] {
+  if (!Array.isArray(value)) return [];
+  const kept: DealAttachment[] = [];
+  for (const item of value) {
+    if (kept.length >= LIMITS.attachments) break;
+    const next = sanitizeAttachment(item);
+    if (next && !kept.some((row) => row.id === next.id)) kept.push(next);
+  }
+  return kept;
+}
+
+function sanitizeAttachment(value: unknown): DealAttachment | null {
+  if (!value || typeof value !== "object") return null;
+  const row = value as Record<string, unknown>;
+  if (typeof row.id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(row.id)) {
+    return null;
+  }
+  const contentType = oneOf(row.contentType, ATTACHMENT_TYPES);
+  if (!contentType) return null;
+  if (typeof row.size !== "number" || !Number.isInteger(row.size) || row.size < 1 || row.size > LIMITS.attachmentBytes) {
+    return null;
+  }
+  const name = text(row.name, 80);
+  if (!name) return null;
+  if (typeof row.createdAt !== "string" || !Number.isFinite(Date.parse(row.createdAt))) return null;
+  return { id: row.id, name, contentType, size: row.size, createdAt: row.createdAt };
 }
 
 function sanitizeLead(value: unknown): LooseLead | null {

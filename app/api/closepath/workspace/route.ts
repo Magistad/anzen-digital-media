@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { accountAccess } from "../../../../lib/closepath-access";
-import { saveWorkspace } from "../../../../lib/closepath-account";
+import { loadWorkspace, saveWorkspace } from "../../../../lib/closepath-account";
+import { deleteUnreferencedAttachments } from "../../../../lib/closepath-attachments";
 import { sanitizeWorkspace } from "../../../../lib/closepath-model";
 import { sessionFromRequest } from "../../../../lib/closepath-response";
 import { sameOrigin } from "../../../../lib/request-origin";
@@ -34,11 +35,18 @@ export async function PUT(req: Request) {
   const workspace = sanitizeWorkspace(parsed);
   if (!workspace) return NextResponse.json({ error: "Book could not be saved." }, { status: 400 });
 
+  let previous;
   try {
+    previous = await loadWorkspace(session.email);
     await saveWorkspace(session.email, workspace);
   } catch (error) {
     console.error("Closepath save failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "Book could not be saved." }, { status: 503 });
+  }
+  try {
+    await deleteUnreferencedAttachments(session.email, previous, workspace);
+  } catch (error) {
+    console.error("Closepath attachment cleanup failed", error instanceof Error ? error.message : "unknown");
   }
   return NextResponse.json({ ok: true });
 }

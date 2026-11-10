@@ -12,6 +12,7 @@ import {
   SHOWING_RESULTS,
   SIDES,
   YES_NO,
+  type DealAttachment,
   type DealFile,
   type FileOutcome,
   type Offer,
@@ -28,6 +29,7 @@ import {
 import { type CalendarEvent, calendarFilename, fileCalendarEvents } from "../../lib/closepath-calendar";
 import { CalendarFeed } from "./CalendarFeed";
 import { CalendarMenu } from "./CalendarMenu";
+import { FileDocuments } from "./FileDocuments";
 import { AreaField, DateField, MoneyField, PercentField, SelectField, TextField } from "./Fields";
 
 function DayState({ iso, today, quiet }: { iso: string | null; today: string | null; quiet?: boolean }) {
@@ -135,6 +137,7 @@ function DateLine({
 
 const FILE_JUMPS = [
   ["dates", "Dates"],
+  ["documents", "Photos"],
   ["client", "Client"],
   ["showings", "Showings"],
   ["offers", "Offers"],
@@ -177,6 +180,8 @@ export function FileView({
   onChange,
   onAddShowing,
   onAddOffer,
+  onAddAttachment,
+  onRemoveAttachment,
   onRemove,
 }: {
   file: DealFile;
@@ -184,6 +189,8 @@ export function FileView({
   onChange: (file: DealFile) => void;
   onAddShowing: () => void;
   onAddOffer: () => void;
+  onAddAttachment: (attachment: DealAttachment) => void;
+  onRemoveAttachment: (id: string) => void;
   onRemove: () => void;
 }) {
   const [confirming, setConfirming] = useState(false);
@@ -277,7 +284,7 @@ export function FileView({
         </Section>
         </div>
 
-        <div className="order-6 min-w-0 lg:order-none lg:col-start-2 lg:row-start-2">
+        <div className="order-7 min-w-0 lg:order-none lg:col-start-2 lg:row-start-2">
         <Section id="commission" title="Commission" detail="Sale price times your rate, then your split. Mark it paid only when the money is in your account.">
           {file.salePrice === null && file.contractPrice !== null ? (
             <button type="button" className="book-quiet mb-2" onClick={() => onChange({ ...file, salePrice: file.contractPrice })}>
@@ -351,7 +358,13 @@ export function FileView({
         </Section>
         </div>
 
-        <div className="order-3 min-w-0 lg:order-none lg:col-span-2 lg:col-start-1 lg:row-start-5">
+        <div className="order-6 min-w-0 lg:order-none lg:col-span-2 lg:col-start-1 lg:row-start-5">
+        <Section id="documents" title="Photos and documents" detail="Earnest money, an addendum, a lockbox code. Only you can open these.">
+          <FileDocuments file={file} onAdd={onAddAttachment} onRemove={onRemoveAttachment} />
+        </Section>
+        </div>
+
+        <div className="order-3 min-w-0 lg:order-none lg:col-span-2 lg:col-start-1 lg:row-start-6">
         <Section id="client" title="Client" detail="Where they came from, and the next time you will contact them.">
           <div className="grid min-w-0 gap-x-3 gap-y-3 sm:grid-cols-2 sm:gap-y-2 lg:grid-cols-4">
             <TextField id={`${file.id}-phone`} label="Phone" type="tel" maxLength={LIMITS.phone} value={file.phone} onChange={(phone) => onChange({ ...file, phone })} />
