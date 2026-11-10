@@ -1,8 +1,13 @@
 import { closepathDownloadAccess } from "../../../../lib/closepath-access";
-import { createAccount, findAccount, resetAccountPassword } from "../../../../lib/closepath-account";
+import {
+  checkoutAccountAction,
+  createAccount,
+  findAccount,
+  resetAccountPassword,
+} from "../../../../lib/closepath-account";
 import { issueSession, sessionSecret } from "../../../../lib/closepath-auth";
 import { normalizeEmail } from "../../../../lib/closepath-model";
-import { redirectTo, withSession } from "../../../../lib/closepath-response";
+import { redirectTo, sessionFromRequest, withSession } from "../../../../lib/closepath-response";
 import { sameOrigin } from "../../../../lib/request-origin";
 
 export const runtime = "nodejs";
@@ -38,9 +43,16 @@ export async function POST(req: Request) {
       stripeCustomerId: access.customerId,
     };
     const existing = await findAccount(email);
-    if (existing && !reset) return back(req, sessionId, "exists");
-    if (existing && reset) {
-      if (!checkoutEmail || checkoutEmail !== email) return back(req, sessionId, "email");
+    const action = checkoutAccountAction({
+      accountExists: Boolean(existing),
+      accountEmail: existing?.email ?? email,
+      checkoutEmail,
+      signedInEmail: sessionFromRequest(req)?.email ?? null,
+      emailVerified: false,
+      resetRequested: reset,
+    });
+    if (action === "refuse") return back(req, sessionId, "exists");
+    if (action === "reset") {
       await resetAccountPassword(email, password, sessionId, billing);
     } else {
       await createAccount({ email, password, stripeSessionId: sessionId, ...billing });

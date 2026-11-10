@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CLOSEPATH_OFFER, CLOSEPATH_TRIAL_BUTTON } from "../../lib/closepath";
 
 export default function Page() {
   return (
@@ -40,7 +41,7 @@ export default function Page() {
                 Closepath
               </h2>
               <p className="text-[clamp(3.4rem,8vw,7.25rem)] font-semibold leading-[0.86] tracking-[-0.06em]">
-                <span className="sr-only">$9.99 a month</span>
+                <span className="sr-only">{CLOSEPATH_OFFER}</span>
                 <span aria-hidden className="flex items-start">
                   <span className="mt-[0.14em] text-[0.42em] font-medium">$</span>
                   9.99
@@ -51,10 +52,10 @@ export default function Page() {
               A listing-to-close system for solo residential agents. It
               supplements the tools you already use. Leads, showings, offers,
               critical dates, and commissions, in the browser on a computer or
-              phone. $9.99 a month. Cancel anytime.
+              phone. {CLOSEPATH_OFFER}
             </p>
             <span className="mt-12 inline-flex items-center gap-3 border border-paper/30 px-5 py-3 text-[15px] tracking-[-0.015em] text-paper transition-colors duration-300 group-hover:border-paper group-hover:bg-paper group-hover:text-ink md:mt-16">
-              See Closepath
+              {CLOSEPATH_TRIAL_BUTTON}
               <span
                 aria-hidden
                 className="inline-block transition-transform duration-300 group-hover:translate-x-1.5"

@@ -34,15 +34,17 @@ export default function PrivacyPage() {
           We do not require a client’s information to create the account.
         </p>
         <p>
-          Payment. Closepath is $9.99 USD per month. Checkout and later charges run through Stripe, on the
-          Anzen Digital Media Stripe account. The card form is on Stripe’s domain, checkout.stripe.com.
-          Stripe collects the payment details and the email you enter there, and Stripe keeps the card number
-          and the billing record for the subscription. We do not receive or store the card number. We keep
-          the checkout session id, and the email associated with that session, so we can confirm that the
-          subscription charge succeeded and open the book. Stripe sends the receipt. Cancellation is available
-          from Billing in the book, which opens Stripe’s customer portal, or by email, as described in the{" "}
-          <LegalLink href="/terms">Terms of Service</LegalLink>. Cancellation takes effect at the end of the
-          current period.
+          Payment. Closepath is $9.99 USD per month after a 7-day trial. A card is required at checkout.
+          Checkout and later charges run through Stripe, on the Anzen Digital Media Stripe account. The card
+          form is on Stripe’s domain, checkout.stripe.com. Stripe collects the payment details and the email
+          you enter there, and Stripe keeps the card number and the billing record for the subscription. We
+          do not receive or store the card number. We keep the checkout session id, and the email associated
+          with that session, so we can confirm the subscription, including during the trial, and open the
+          book. Stripe does not charge the card during the trial. Unless the subscription is canceled before
+          the trial ends, Stripe charges $9.99 when the trial ends. Stripe sends the receipt. Cancellation is
+          available from Billing in the book, which opens Stripe’s customer portal, or by email, as described
+          in the <LegalLink href="/terms">Terms of Service</LegalLink>. Cancellation takes effect at the end
+          of the current period. During the trial, that period is the trial.
         </p>
         <p>
           Email you send us. If you write to{" "}

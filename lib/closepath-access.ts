@@ -1,3 +1,4 @@
+import type Stripe from "stripe";
 import {
   checkoutCustomerId,
   checkoutSubscriptionId,
@@ -5,6 +6,7 @@ import {
   isClosepathSession,
   isPaidClosepathCheckout,
   isPaidClosepathSubscription,
+  isTrialingClosepathCheckout,
   subscriptionGrantsBook,
 } from "./closepath-order";
 import { findAccount } from "./closepath-account";
@@ -18,6 +20,7 @@ export type ClosepathAccess =
       state: "paid";
       email: string | null;
       plan: "monthly" | "retired";
+      trial: boolean;
       subscriptionId: string | null;
       customerId: string | null;
     };
@@ -41,11 +44,13 @@ export async function closepathDownloadAccess(sessionId: string | undefined): Pr
     });
     if (!isClosepathSession(session)) return { state: "invalid" };
     if (!isPaidClosepathCheckout(session)) return { state: "unpaid" };
-    const monthly = isPaidClosepathSubscription(session);
+    const trial = isTrialingClosepathCheckout(session);
+    const monthly = isPaidClosepathSubscription(session) || trial;
     return {
       state: "paid",
       email: session.customer_details?.email ?? null,
       plan: monthly ? "monthly" : "retired",
+      trial,
       subscriptionId: monthly ? checkoutSubscriptionId(session) : null,
       customerId: checkoutCustomerId(session),
     };
@@ -58,6 +63,28 @@ function isMissingSubscription(error: unknown): boolean {
   if (!error || typeof error !== "object") return false;
   const record = error as { statusCode?: number; code?: string };
   return record.statusCode === 404 || record.code === "resource_missing";
+}
+
+/** True when a paid invoice on this subscription collected a non-zero amount. The $0 trial invoice does not count. */
+export async function collectedNonZeroCharge(stripe: Stripe, subscriptionId: string): Promise<boolean> {
+  const invoices = await stripe.invoices.list({
+    subscription: subscriptionId,
+    status: "paid",
+    limit: 20,
+  });
+  return invoices.data.some((invoice) => invoice.amount_paid > 0);
+}
+
+export async function subscriptionKeepsBook(
+  stripe: Stripe,
+  subscription: { id: string; status: string; cancel_at_period_end?: boolean },
+): Promise<boolean> {
+  const cancelAtPeriodEnd = subscription.cancel_at_period_end;
+  if (subscription.status !== "past_due") {
+    return subscriptionGrantsBook(subscription.status, { cancelAtPeriodEnd });
+  }
+  const paidNonZeroInvoice = await collectedNonZeroCharge(stripe, subscription.id);
+  return subscriptionGrantsBook(subscription.status, { paidNonZeroInvoice, cancelAtPeriodEnd });
 }
 
 /** Live Stripe status for a stored subscription. Accounts opened before the monthly price have no subscription id and stay open. */
@@ -77,7 +104,7 @@ export async function subscriptionEntitlement(
 
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-    const state = subscriptionGrantsBook(subscription.status) ? "open" : "ended";
+    const state = (await subscriptionKeepsBook(stripe, subscription)) ? "open" : "ended";
     entitlementCache.set(subscriptionId, { state, at: now });
     return state;
   } catch (error) {
@@ -93,20 +120,30 @@ export async function subscriptionEntitlement(
   }
 }
 
+/** Signed-in owners can open Stripe billing even when the book is closed. */
+export function ownerMayManageBilling(input: { signedIn: boolean; customerId: string | null }): boolean {
+  return input.signedIn && Boolean(input.customerId);
+}
+
 export async function accountAccess(
   email: string,
   fresh = false,
-): Promise<{ state: "open"; customerId: string | null } | { state: "ended" } | { state: "unknown" }> {
+): Promise<
+  | { state: "open"; customerId: string | null }
+  | { state: "ended"; customerId: string | null }
+  | { state: "unknown"; customerId: string | null }
+> {
   let account: Awaited<ReturnType<typeof findAccount>>;
   try {
     account = await findAccount(email);
   } catch (error) {
     console.error("Closepath account read failed", error instanceof Error ? error.message : "unknown");
-    return { state: "unknown" };
+    return { state: "unknown", customerId: null };
   }
   if (!account) return { state: "open", customerId: null };
   const entitlement = await subscriptionEntitlement(account.stripeSubscriptionId, fresh);
-  if (entitlement === "open") return { state: "open", customerId: account.stripeCustomerId };
-  if (entitlement === "ended") return { state: "ended" };
-  return { state: "unknown" };
+  const customerId = account.stripeCustomerId;
+  if (entitlement === "open") return { state: "open", customerId };
+  if (entitlement === "ended") return { state: "ended", customerId };
+  return { state: "unknown", customerId };
 }

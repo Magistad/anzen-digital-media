@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CLOSEPATH_TRIAL_BUTTON } from "../lib/closepath";
 
 const buttonClass =
   "inline-flex items-center border border-paper/30 bg-transparent px-5 py-3 text-[15px] tracking-[-0.015em] text-paper";
@@ -43,7 +44,7 @@ export function BuyClosepath({
           aria-describedby={noteId}
           className={`${buttonClass} cursor-not-allowed opacity-100`}
         >
-          Subscribe
+          {CLOSEPATH_TRIAL_BUTTON}
         </button>
         <p id={noteId} className="mt-4 max-w-xs text-sm text-paper/60">
           Checkout coming soon.
@@ -60,7 +61,7 @@ export function BuyClosepath({
           type="submit"
           className={`${buttonClass} cursor-pointer transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink`}
         >
-          Subscribe
+          {CLOSEPATH_TRIAL_BUTTON}
         </button>
       </form>
       {unavailable ? (

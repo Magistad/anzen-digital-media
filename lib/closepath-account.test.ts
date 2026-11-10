@@ -10,6 +10,8 @@ import { issueSession } from "./closepath-auth";
 import {
   authenticate,
   calendarFeedTokenFor,
+  checkoutAccountAction,
+  checkoutMayResetExistingAccount,
   createAccount,
   emailForCalendarToken,
   findAccount,
@@ -88,6 +90,62 @@ test("unknown email cannot sign in", async () => {
   const result = await authenticate("nobody@email.test", "maple-street");
   assert.deepEqual(result, { ok: false, reason: "invalid" });
   assert.equal(await findAccount("nobody@email.test"), null);
+});
+
+test("a checkout session cannot reset or rebind an existing account", () => {
+  const existing = {
+    accountEmail: "ada@email.test",
+    checkoutEmail: "ada@email.test",
+    signedInEmail: null,
+    emailVerified: false,
+  };
+  assert.equal(checkoutMayResetExistingAccount(existing), false);
+  assert.equal(checkoutAccountAction({ ...existing, accountExists: true, resetRequested: true }), "refuse");
+  assert.equal(
+    checkoutAccountAction({ ...existing, accountExists: true, resetRequested: false }),
+    "refuse",
+  );
+  assert.equal(
+    checkoutMayResetExistingAccount({ ...existing, signedInEmail: "other@email.test" }),
+    false,
+  );
+  assert.equal(
+    checkoutAccountAction({
+      ...existing,
+      accountExists: true,
+      resetRequested: true,
+      signedInEmail: "Ada@email.test",
+    }),
+    "reset",
+  );
+  assert.equal(
+    checkoutAccountAction({
+      ...existing,
+      accountExists: true,
+      resetRequested: true,
+      emailVerified: true,
+    }),
+    "reset",
+  );
+  assert.equal(
+    checkoutMayResetExistingAccount({
+      accountEmail: "ada@email.test",
+      checkoutEmail: "other@email.test",
+      signedInEmail: "ada@email.test",
+      emailVerified: true,
+    }),
+    false,
+  );
+  assert.equal(
+    checkoutAccountAction({
+      accountExists: false,
+      accountEmail: "new@email.test",
+      checkoutEmail: "new@email.test",
+      signedInEmail: null,
+      resetRequested: true,
+    }),
+    "create",
+  );
 });
 
 test("a subscription id stays on the account and a password reset can replace it", async () => {

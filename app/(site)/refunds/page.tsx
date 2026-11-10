@@ -12,23 +12,35 @@ export default function RefundsPage() {
     <LegalDocument title="Refund Policy">
       <LegalSection id="scope" title="Subscription">
         <p>
-          Closepath is a subscription of $9.99 USD per month from Anzen Digital Media, LLC. It is not a
-          lifetime license. The <LegalLink href="/terms">Terms of Service</LegalLink> govern the
-          subscription. This page describes cancellation and refunds.
+          Closepath is a subscription of $9.99 USD per month from Anzen Digital Media, LLC, after a 7-day
+          trial. It is not a lifetime license. The <LegalLink href="/terms">Terms of Service</LegalLink>{" "}
+          govern the subscription. This page describes the trial, cancellation, and refunds.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="trial" title="Trial">
+        <p>
+          Checkout starts a 7-day trial. A card is required at signup. Stripe does not charge the card during
+          the trial. Unless the subscription is canceled before the trial ends, Stripe charges $9.99 USD per
+          month starting when the trial ends. Cancellation in the customer portal takes effect at the end of
+          the current period. During the trial, that period is the trial, and canceling before it ends means
+          the monthly price is not charged. A trial with no charge has no monthly charge to refund.
         </p>
       </LegalSection>
 
       <LegalSection id="cancel" title="Cancellation">
         <p>
           While you are signed in, Billing in the book opens Stripe’s customer portal. Cancellation through
-          that portal takes effect at the end of the current period. You may also cancel by emailing{" "}
+          that portal takes effect at the end of the current period. During a trial, that period is the
+          trial. You may also cancel by emailing{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
           Include the email on the subscription. Cancellation stops subsequent monthly charges and does not,
           by itself, refund a charge already paid.
         </p>
         <p>
           Access continues through the end of the period covered by the current charge, and then ends, unless
-          that charge is refunded. If a charge is refunded, access for that period ends. When access ends,
+          that charge is refunded. During a trial, before any charge, access continues through the end of the
+          trial. If a charge is refunded, access for that period ends. When access ends,
           Anzen may close the account and delete the book. A spreadsheet export is available while the
           account is open.
         </p>

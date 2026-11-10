@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export const LEGAL_UPDATED = "November 6, 2026";
+export const LEGAL_UPDATED = "November 9, 2026";
 
 const proseLinkClass =
   "text-paper underline decoration-paper/40 underline-offset-[3px] transition-colors duration-300 hover:decoration-paper";

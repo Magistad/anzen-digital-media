@@ -99,6 +99,39 @@ export async function createAccount(input: {
   return account;
 }
 
+/**
+ * Checkout collects an email. It does not prove the person owns it.
+ * An existing account can be reset or rebound only from that account's signed-in
+ * session, or when the email was verified some other way.
+ */
+export function checkoutMayResetExistingAccount(input: {
+  accountEmail: string;
+  checkoutEmail: string | null;
+  signedInEmail: string | null;
+  emailVerified?: boolean;
+}): boolean {
+  const account = normalizeEmail(input.accountEmail);
+  const checkout = input.checkoutEmail ? normalizeEmail(input.checkoutEmail) : null;
+  const signedIn = input.signedInEmail ? normalizeEmail(input.signedInEmail) : null;
+  if (!account || !checkout || account !== checkout) return false;
+  if (input.emailVerified) return true;
+  return signedIn === account;
+}
+
+/** New checkout accounts are allowed. An existing account is refused unless reset is authorized. */
+export function checkoutAccountAction(input: {
+  accountExists: boolean;
+  accountEmail: string;
+  checkoutEmail: string | null;
+  signedInEmail: string | null;
+  emailVerified?: boolean;
+  resetRequested: boolean;
+}): "create" | "reset" | "refuse" {
+  if (!input.accountExists) return "create";
+  if (input.resetRequested && checkoutMayResetExistingAccount(input)) return "reset";
+  return "refuse";
+}
+
 export async function resetAccountPassword(
   email: string,
   password: string,

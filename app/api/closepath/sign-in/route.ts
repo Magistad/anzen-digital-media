@@ -23,8 +23,7 @@ export async function POST(req: Request) {
     const result = await authenticate(email, password);
     if (!result.ok) return back(req, result.reason);
     const access = await accountAccess(result.email, true);
-    if (access.state === "ended") return back(req, "inactive");
-    if (access.state !== "open") return back(req, "billing");
+    if (access.state === "unknown") return back(req, "billing");
     const token = issueSession(result.email);
     if (!token) return back(req, "unconfigured");
     return withSession(redirectTo(req, "/closepath"), token, req);

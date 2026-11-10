@@ -74,7 +74,7 @@ export default function SignInPage({
           </button>
         </form>
         <p className="mt-5 max-w-md text-sm leading-snug text-paper/60 sm:mt-6">
-          Subscribed and never set a password? Use the page Stripe sent you back to after checkout.
+          Checked out and never set a password? Use the page Stripe sent you back to after checkout.
           Questions go to{" "}
           <a
             href="mailto:contact@anzendigitalmedia.com"
