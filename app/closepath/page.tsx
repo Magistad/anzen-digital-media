@@ -3,11 +3,13 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import { ClosepathApp } from "../../components/closepath/ClosepathApp";
 import { CLOSEPATH_TRIAL_BUTTON } from "../../lib/closepath";
 import { accountAccess } from "../../lib/closepath-access";
 import { loadWorkspace } from "../../lib/closepath-account";
 import { readSession, SESSION_COOKIE } from "../../lib/closepath-auth";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../lib/native-shell";
 
 export const dynamic = "force-dynamic";
 
@@ -28,11 +30,13 @@ function ClosedBook({
   detail,
   canManageBilling,
   billingNote,
+  inApp = false,
 }: {
   title: string;
   detail: string;
   canManageBilling: boolean;
   billingNote?: string;
+  inApp?: boolean;
 }) {
   return (
     <main id="content" className="pb-16 pt-28">
@@ -48,16 +52,18 @@ function ClosedBook({
           </p>
         ) : null}
         <div className="mt-8 flex flex-wrap gap-3">
-          {canManageBilling ? (
+          {!inApp && canManageBilling ? (
             <form action="/api/closepath/billing" method="post">
               <button type="submit" className={linkClass}>
                 Manage subscription
               </button>
             </form>
           ) : null}
-          <Link href="/products/closepath" className={linkClass}>
-            {CLOSEPATH_TRIAL_BUTTON}
-          </Link>
+          {inApp ? null : (
+            <Link href="/products/closepath" className={linkClass}>
+              {CLOSEPATH_TRIAL_BUTTON}
+            </Link>
+          )}
           <form action="/api/closepath/sign-out" method="post">
             <button type="submit" className={linkClass}>
               Sign out
@@ -79,6 +85,7 @@ export default async function ClosepathPage({
 
   const billingNote =
     one(searchParams?.billing) === "unavailable" ? "Subscription management is unavailable right now." : undefined;
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
 
   const access = await accountAccess(session.email, true);
   if (access.state === "ended") {
@@ -87,12 +94,15 @@ export default async function ClosepathPage({
       <ClosedBook
         title="This subscription isn’t active."
         detail={
-          canManageBilling
-            ? "The book stays closed. Manage the subscription to update the card or cancel. The files stay with this email."
-            : "The book stays closed. The files stay with this email."
+          inApp
+            ? "This app doesn’t sell or renew a subscription. Use a web browser for the subscription, then sign in here. The files stay with this email."
+            : canManageBilling
+              ? "The book stays closed. Manage the subscription to update the card or cancel. The files stay with this email."
+              : "The book stays closed. The files stay with this email."
         }
         canManageBilling={canManageBilling}
         billingNote={billingNote}
+        inApp={inApp}
       />
     );
   }
@@ -103,6 +113,7 @@ export default async function ClosepathPage({
         detail="Closepath can’t confirm this subscription. Wait a moment and reload."
         canManageBilling={Boolean(access.customerId)}
         billingNote={billingNote}
+        inApp={inApp}
       />
     );
   }
@@ -115,7 +126,7 @@ export default async function ClosepathPage({
           initial={workspace}
           email={session.email}
           billingNote={billingNote}
-          canManageBilling={Boolean(access.customerId)}
+          canManageBilling={Boolean(access.customerId) && !inApp}
         />
       </Suspense>
     );

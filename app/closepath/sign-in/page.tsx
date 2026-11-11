@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { QuestionsLine } from "../../../components/QuestionsLine";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { readSession, SESSION_COOKIE } from "../../../lib/closepath-auth";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../lib/native-shell";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,7 @@ export default function SignInPage({
   const session = readSession(cookies().get(SESSION_COOKIE)?.value);
   if (session) redirect("/closepath");
   const message = errors[one(searchParams?.error) ?? ""];
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
 
   return (
     <main id="content" className="flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-12 pt-24 sm:pb-20 sm:pt-28 md:pb-28">
@@ -74,18 +76,30 @@ export default function SignInPage({
           </button>
         </form>
         <p className="mt-5 max-w-md text-sm leading-snug text-paper/60 sm:mt-6">
-          Checked out and never set a password? Use the page Stripe sent you back to after checkout.
-          Questions go to{" "}
-          <a
-            href="mailto:contact@anzendigitalmedia.com"
-            className="text-paper/80 hover:text-paper"
-          >
-            contact@anzendigitalmedia.com
-          </a>
-          .{" "}
-          <Link href="/products/closepath" className="text-paper/80 hover:text-paper">
-            Back to Closepath
-          </Link>
+          {inApp ? (
+            <>
+              Subscriptions are started in a web browser. This app is for signing in. Questions go to{" "}
+              <a href="mailto:contact@anzendigitalmedia.com" className="text-paper/80 hover:text-paper">
+                contact@anzendigitalmedia.com
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              Checked out and never set a password? Use the page Stripe sent you back to after checkout.
+              Questions go to{" "}
+              <a
+                href="mailto:contact@anzendigitalmedia.com"
+                className="text-paper/80 hover:text-paper"
+              >
+                contact@anzendigitalmedia.com
+              </a>
+              .{" "}
+              <Link href="/products/closepath" className="text-paper/80 hover:text-paper">
+                Back to Closepath
+              </Link>
+            </>
+          )}
         </p>
         <QuestionsLine className="mt-8" />
       </div>

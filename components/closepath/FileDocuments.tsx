@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useNativeShell } from "../NativeShell";
+import { nativeCancelled, nativePickPdf, nativePickPhoto, nativeTakePhoto } from "../../lib/native-bridge";
 import { LIMITS, type DealAttachment, type DealFile } from "../../lib/closepath-model";
 
 function previewable(contentType: string): boolean {
@@ -48,10 +50,30 @@ export function FileDocuments({
   onAdd: (attachment: DealAttachment) => void;
   onRemove: (id: string) => void;
 }) {
+  const shell = useNativeShell();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState<string | null>(null);
   const full = file.attachments.length >= LIMITS.attachments;
+
+  async function capture(kind: "camera" | "photo" | "pdf") {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const item = kind === "camera" ? await nativeTakePhoto() : kind === "photo" ? await nativePickPhoto() : await nativePickPdf();
+      if (item.size > LIMITS.attachmentBytes) {
+        setError("Use a file under 4.5 MB.");
+        return;
+      }
+      onAdd(await postFile(file.id, item));
+    } catch (caught) {
+      if (nativeCancelled(caught)) return;
+      setError(caught instanceof Error ? caught.message : "That file didn’t save.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function upload(list: FileList | null, input: HTMLInputElement) {
     const item = list?.[0];
@@ -142,27 +164,43 @@ export function FileDocuments({
         </p>
       ) : null}
       <div className="mt-3 flex flex-wrap gap-2">
-        <label className={`book-action ${full || busy ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
-          {busy ? "Saving" : "Take a photo"}
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="sr-only"
-            disabled={full || busy}
-            onChange={(event) => void upload(event.target.files, event.target)}
-          />
-        </label>
-        <label className={`book-action ${full || busy ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
-          Upload
-          <input
-            type="file"
-            accept="image/*,application/pdf,.pdf,.heic,.heif"
-            className="sr-only"
-            disabled={full || busy}
-            onChange={(event) => void upload(event.target.files, event.target)}
-          />
-        </label>
+        {shell ? (
+          <>
+            <button type="button" className="book-action" disabled={full || busy} onClick={() => void capture("camera")}>
+              {busy ? "Saving" : "Take a photo"}
+            </button>
+            <button type="button" className="book-action" disabled={full || busy} onClick={() => void capture("photo")}>
+              Choose a photo
+            </button>
+            <button type="button" className="book-action" disabled={full || busy} onClick={() => void capture("pdf")}>
+              Choose a PDF
+            </button>
+          </>
+        ) : (
+          <>
+            <label className={`book-action ${full || busy ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
+              {busy ? "Saving" : "Take a photo"}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="sr-only"
+                disabled={full || busy}
+                onChange={(event) => void upload(event.target.files, event.target)}
+              />
+            </label>
+            <label className={`book-action ${full || busy ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
+              Upload
+              <input
+                type="file"
+                accept="image/*,application/pdf,.pdf,.heic,.heif"
+                className="sr-only"
+                disabled={full || busy}
+                onChange={(event) => void upload(event.target.files, event.target)}
+              />
+            </label>
+          </>
+        )}
       </div>
     </div>
   );

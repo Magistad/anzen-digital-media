@@ -1,0 +1,29 @@
+{
+  "name": "@anzendigitalmedia/closepath-calendar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Opens the phone calendar so a Closepath date can be saved.",
+  "main": "dist/plugin.cjs.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "android/",
+    "dist/",
+    "ios/",
+    "Package.swift",
+    "AnzenClosepathCalendar.podspec"
+  ],
+  "author": "Anzen Digital Media, LLC",
+  "license": "UNLICENSED",
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    },
+    "android": {
+      "src": "android"
+    }
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=8.0.0"
+  }
+}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useNativeShell } from "../NativeShell";
+import { nativeAddCalendarEvent, nativeCancelled } from "../../lib/native-bridge";
 import {
   type CalendarEvent,
   appleEventHref,
@@ -24,9 +26,22 @@ function downloadCalendar(filename: string, ics: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-function EventLinks({ event, filename }: { event: CalendarEvent; filename: string }) {
+function EventLinks({
+  event,
+  filename,
+  onPhone,
+}: {
+  event: CalendarEvent;
+  filename: string;
+  onPhone?: (event: CalendarEvent) => void;
+}) {
   return (
     <>
+      {onPhone ? (
+        <button type="button" className="book-quiet text-paper" onClick={() => onPhone(event)}>
+          Phone calendar
+        </button>
+      ) : null}
       <a href={googleEventUrl(event)} target="_blank" rel="noreferrer" className="book-quiet text-paper">
         Google
       </a>
@@ -51,8 +66,28 @@ export function CalendarMenu({
   filename?: string;
   note?: boolean;
 }) {
+  const shell = useNativeShell();
   const [open, setOpen] = useState(false);
+  const [phoneNote, setPhoneNote] = useState("");
   if (!events.length) return null;
+
+  async function addToPhone(event: CalendarEvent) {
+    setPhoneNote("");
+    try {
+      await nativeAddCalendarEvent({
+        title: event.summary,
+        description: event.description,
+        location: event.location,
+        date: event.date,
+      });
+      setPhoneNote("Opened in your calendar.");
+    } catch (caught) {
+      if (nativeCancelled(caught)) return;
+      setPhoneNote("Couldn’t open the calendar.");
+    }
+  }
+
+  const onPhone = shell ? addToPhone : undefined;
   const file = filename ?? calendarFilename(events.length === 1 ? events[0]?.label ?? label : label);
   if (!open) {
     return (
@@ -66,7 +101,7 @@ export function CalendarMenu({
     <div className="max-w-xl" role="group" aria-label={label}>
       {events.length === 1 && events[0] ? (
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <EventLinks event={events[0]} filename={file} />
+          <EventLinks event={events[0]} filename={file} onPhone={onPhone} />
           <button type="button" className="book-quiet" onClick={() => setOpen(false)}>
             Close
           </button>
@@ -88,7 +123,7 @@ export function CalendarMenu({
                   <span className="text-paper/45"> · {formatCalendarDate(event.date)}</span>
                 </span>
                 <span className="flex flex-wrap gap-x-3">
-                  <EventLinks event={event} filename={calendarFilename(event.label)} />
+                  <EventLinks event={event} filename={calendarFilename(event.label)} onPhone={onPhone} />
                 </span>
               </li>
             ))}
@@ -98,6 +133,11 @@ export function CalendarMenu({
           </button>
         </div>
       )}
+      {phoneNote ? (
+        <p className="mt-1 text-[13px] text-paper/70" role="status">
+          {phoneNote}
+        </p>
+      ) : null}
       {note ? (
         <p className="mt-1 max-w-xl text-[13px] leading-snug text-paper/50">
           Adds a copy of these dates. It stays put if you later move a date. Subscribe to keep the calendar in step.
