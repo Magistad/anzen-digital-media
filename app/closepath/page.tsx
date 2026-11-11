@@ -45,11 +45,7 @@ function ClosedBook({
         <h1 className="mt-4 max-w-[16ch] text-[clamp(2rem,5vw,3.4rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
           {title}
         </h1>
-        <p className="mt-6 max-w-md text-[15px] leading-snug text-paper/70">
-          {inApp
-            ? "This app doesn’t sell or renew a subscription. Use a web browser for the subscription, then sign in here. The files stay with this email."
-            : detail}
-        </p>
+        <p className="mt-6 max-w-md text-[15px] leading-snug text-paper/70">{detail}</p>
         {billingNote ? (
           <p className="mt-4 max-w-md text-sm text-paper/70" role="status">
             {billingNote}
@@ -98,9 +94,11 @@ export default async function ClosepathPage({
       <ClosedBook
         title="This subscription isn’t active."
         detail={
-          canManageBilling
-            ? "The book stays closed. Manage the subscription to update the card or cancel. The files stay with this email."
-            : "The book stays closed. The files stay with this email."
+          inApp
+            ? "This app doesn’t sell or renew a subscription. Use a web browser for the subscription, then sign in here. The files stay with this email."
+            : canManageBilling
+              ? "The book stays closed. Manage the subscription to update the card or cancel. The files stay with this email."
+              : "The book stays closed. The files stay with this email."
         }
         canManageBilling={canManageBilling}
         billingNote={billingNote}

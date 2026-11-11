@@ -16,10 +16,24 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    def keystorePath = System.getenv("ANDROID_KEYSTORE_FILE")
+    if (keystorePath) {
+        signingConfigs {
+            release {
+                storeFile file(keystorePath)
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keystorePath) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
@@ -43,19 +57,6 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
-
-// Release signing is optional. GitHub Actions sets ANDROID_KEYSTORE_FILE from a secret.
-// A debug build never reads these values, and they are not stored in the repo.
-def keystorePath = System.getenv("ANDROID_KEYSTORE_FILE")
-if (keystorePath) {
-    android.signingConfigs.release {
-        storeFile file(keystorePath)
-        storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-        keyAlias System.getenv("ANDROID_KEY_ALIAS")
-        keyPassword System.getenv("ANDROID_KEY_PASSWORD")
-    }
-    android.buildTypes.release.signingConfig android.signingConfigs.release
-}
 
 try {
     def servicesJSON = file('google-services.json')
