@@ -1,5 +1,7 @@
 name: Closepath Android
 
+# Debug runs on push, on a manual debug dispatch, and every Monday.
+# The play job is only the manual play track, so a schedule never signs a bundle.
 on:
   push:
     paths:
