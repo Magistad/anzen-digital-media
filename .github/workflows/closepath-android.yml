@@ -5,6 +5,8 @@ on:
     paths:
       - "mobile/**"
       - ".github/workflows/closepath-android.yml"
+  schedule:
+    - cron: "0 13 * * 1"
   workflow_dispatch:
     inputs:
       track:
@@ -17,7 +19,7 @@ on:
 
 jobs:
   debug:
-    if: github.event_name == 'push' || github.event.inputs.track == 'debug'
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.inputs.track == 'debug'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,9 +32,11 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v4
+      - uses: android-actions/setup-android@v4.0.4
+        with:
+          packages: ""
       - name: Install SDK packages
-        run: sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
+        run: bash mobile/scripts/install-android-sdk.sh
       - name: Install and sync
         working-directory: mobile
         run: |
@@ -79,9 +83,11 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v4
+      - uses: android-actions/setup-android@v4.0.4
+        with:
+          packages: ""
       - name: Install SDK packages
-        run: sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
+        run: bash mobile/scripts/install-android-sdk.sh
       - name: Install and sync
         working-directory: mobile
         run: |

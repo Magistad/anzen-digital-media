@@ -101,7 +101,15 @@ The app asks for the camera, the photo library, and calendar access. Those strin
 
 GitHub Actions builds both apps. No personal computer is required after the workflows are on the default branch.
 
-- `.github/workflows/closepath-android.yml` builds a debug APK on every change under `mobile/`, and a Play App Bundle when you run it by hand with the release track.
+- `.github/workflows/closepath-android.yml` builds a debug APK on every change under `mobile/`, and again every Monday, so a broken Android toolchain shows up before a release. A Play App Bundle is built only when you run the workflow by hand and choose the play track. A scheduled run does not build or sign a Play bundle.
+
+### If the Android SDK setup fails
+
+On 10 November 2026 the debug job died in `android-actions/setup-android@v3` before Gradle ran. That release still ran `sdkmanager tools`. Google no longer publishes the `tools` package, so sdkmanager exited with `Failed to find package 'tools'`.
+
+The workflow now uses `android-actions/setup-android@v4.0.4` and tells it to install no packages. `mobile/scripts/install-android-sdk.sh` then installs only `platform-tools`, `platforms;android-<compileSdkVersion>`, and `build-tools;<buildToolsVersion>`. Those two versions are `compileSdkVersion` and `buildToolsVersion` in `mobile/android/variables.gradle`, and the app module uses the same values. The script stops if a package name is the old `tools` package. Dependabot opens a weekly pull request for GitHub Actions, so a later broken action pin shows up as an update instead of a silent failure. The Monday schedule runs the debug build even when nobody has pushed. GitHub only schedules the workflow that is on the default branch, so that Monday run starts after this change is merged.
+
+If that step fails again, open the debug job log and read the `sdkmanager` line. Do not put `tools` back into the package list. Check that `variables.gradle` still has `compileSdkVersion` and `buildToolsVersion`, then run **Closepath Android** by hand with the debug track. `.github/dependabot.yml` also asks for weekly Gradle updates under `mobile/android` and weekly npm updates for the site.
 - `.github/workflows/closepath-ios.yml` builds an unsigned simulator app on a macOS runner, and an App Store archive when you run it by hand after signing secrets exist.
 
 ### Secret names
