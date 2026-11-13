@@ -1,6 +1,7 @@
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "fs/promises";
 import path from "path";
 import { getStore } from "@netlify/blobs";
+import { readEnv } from "./env";
 
 export type KeyValueStore = {
   get(key: string): Promise<string | null>;
@@ -33,9 +34,18 @@ export function memoryStore(): KeyValueStore {
   };
 }
 
+/**
+ * When set, books stay in this directory and Netlify is not used.
+ * End-to-end tests set it so a run cannot touch a developer’s `.data` books
+ * or a live blob store configured in the environment.
+ */
+function dataRoot(): string {
+  return readEnv("CLOSEPATH_DATA_DIR") ?? path.join(process.cwd(), ".data");
+}
+
 function diskPath(key: string): string {
   const safe = Buffer.from(key, "utf8").toString("base64url");
-  return path.join(process.cwd(), ".data", STORE_NAME, safe);
+  return path.join(dataRoot(), STORE_NAME, safe);
 }
 
 function createDiskStore(): KeyValueStore {
@@ -92,6 +102,10 @@ function netlifyStore(): KeyValueStore {
 
 export function getClosepathStore(): KeyValueStore {
   if (testStore) return testStore;
+  if (readEnv("CLOSEPATH_DATA_DIR")) {
+    diskStore ??= createDiskStore();
+    return diskStore;
+  }
   if (diskStore) return diskStore;
   try {
     return netlifyStore();
@@ -143,7 +157,7 @@ export function memoryBinaryStore(): BinaryStore {
 
 function binaryDiskPath(key: string): string {
   const safe = Buffer.from(key, "utf8").toString("base64url");
-  return path.join(process.cwd(), ".data", `${STORE_NAME}-files`, safe);
+  return path.join(dataRoot(), `${STORE_NAME}-files`, safe);
 }
 
 function createDiskBinaryStore(): BinaryStore {
@@ -175,7 +189,7 @@ function createDiskBinaryStore(): BinaryStore {
       await rm(`${binaryDiskPath(key)}.meta`, { force: true });
     },
     async list(prefix) {
-      const dir = path.join(process.cwd(), ".data", `${STORE_NAME}-files`);
+      const dir = path.join(dataRoot(), `${STORE_NAME}-files`);
       let names: string[];
       try {
         names = await readdir(dir);
@@ -240,6 +254,10 @@ function netlifyBinaryStore(): BinaryStore {
 
 export function getClosepathBinaryStore(): BinaryStore {
   if (testBinary) return testBinary;
+  if (readEnv("CLOSEPATH_DATA_DIR")) {
+    diskBinary ??= createDiskBinaryStore();
+    return diskBinary;
+  }
   if (diskBinary) return diskBinary;
   try {
     return netlifyBinaryStore();

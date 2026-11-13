@@ -1,7 +1,13 @@
-import { expect, test } from "@playwright/test";
+import { rm } from "node:fs/promises";
+import { expect, test, type Page } from "@playwright/test";
 import { TEST_EMAIL, TEST_PASSWORD, TEST_SESSION_ID } from "../constants";
+import { e2eDataDir } from "../e2e-store";
 
-test("a buyer starts checkout, opens the book, signs in, and writes a file", async ({ page }) => {
+test.beforeEach(async () => {
+  await rm(e2eDataDir(), { recursive: true, force: true });
+});
+
+async function buyerJourney(page: Page) {
   await page.route("https://checkout.stripe.com/**", (route) => route.abort());
   await page.goto("/products/closepath");
   const trial = page.getByRole("button", { name: "Start free trial" }).first();
@@ -33,4 +39,10 @@ test("a buyer starts checkout, opens the book, signs in, and writes a file", asy
   await page.getByLabel("Address").fill("18 Test Street");
   await expect(page.getByText("Saved", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Address")).toHaveValue("18 Test Street");
+}
+
+test("a buyer starts checkout, opens the book, signs in, and writes a file", async ({ page }) => {
+  await buyerJourney(page);
+  await rm(e2eDataDir(), { recursive: true, force: true });
+  await buyerJourney(page);
 });
