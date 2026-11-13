@@ -183,35 +183,59 @@ export function snapshotPromotionCode(
   };
 }
 
+function isMissingCoupon(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const record = error as { statusCode?: number; code?: string };
+  return record.statusCode === 404 || record.code === "resource_missing";
+}
+
+function couponId(coupon: string | { id?: string } | null): string | null {
+  if (!coupon) return null;
+  if (typeof coupon === "string") return coupon;
+  return coupon.id ?? null;
+}
+
+/**
+ * Loads the coupon itself. `applies_to` and `currency_options` are separate expands.
+ * Nesting them under the promotion-code list would pass Stripe's expand limit.
+ */
+async function loadCoupon(
+  stripe: Stripe,
+  promo: Stripe.PromotionCode,
+): Promise<Stripe.Coupon | Stripe.DeletedCoupon | null> {
+  const id = couponId(promo.promotion?.coupon ?? null);
+  if (!id) return null;
+  try {
+    return await stripe.coupons.retrieve(id, { expand: ["applies_to", "currency_options"] });
+  } catch (error) {
+    if (isMissingCoupon(error)) return null;
+    throw error;
+  }
+}
+
 /** Looks up the customer-facing code. Stripe matches it without regard to case. */
 export async function resolveClosepathPromotion(
   stripe: Stripe,
   code: string,
   nowMs = Date.now(),
 ): Promise<PromoDecision> {
-  const listed = await stripe.promotionCodes.list({
-    code,
-    limit: 10,
-    expand: ["data.promotion.coupon"],
-  });
+  const listed = await stripe.promotionCodes.list({ code, limit: 10 });
   const snapshots: PromotionSnapshot[] = [];
   for (const promo of listed.data) {
-    let coupon = promo.promotion?.coupon ?? null;
-    if (typeof coupon === "string") {
-      try {
-        coupon = await stripe.coupons.retrieve(coupon);
-      } catch {
-        coupon = null;
-      }
-    }
-    snapshots.push(snapshotPromotionCode(promo, coupon));
+    snapshots.push(snapshotPromotionCode(promo, await loadCoupon(stripe, promo)));
   }
   return decideClosepathPromotion(snapshots, nowMs);
 }
 
-/** A rejected discount is a bad code. Other failures leave checkout unavailable. */
+function mentionsDiscount(value: string | undefined): boolean {
+  if (!value) return false;
+  const text = value.toLowerCase();
+  return text.includes("promotion") || text.includes("coupon") || text.includes("discount");
+}
+
+/** A rejected discount is a bad code. Other Checkout failures leave checkout unavailable. */
 export function promoFailureKind(error: unknown, hadPromo: boolean): "code" | "unavailable" {
   if (!hadPromo || !error || typeof error !== "object") return "unavailable";
-  const type = (error as { type?: string }).type;
-  return type === "StripeInvalidRequestError" ? "code" : "unavailable";
+  const record = error as { code?: string; param?: string };
+  return mentionsDiscount(record.code) || mentionsDiscount(record.param) ? "code" : "unavailable";
 }

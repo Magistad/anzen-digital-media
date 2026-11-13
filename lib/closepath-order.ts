@@ -77,7 +77,7 @@ function couponKeepsZeroInvoice(coupon: CouponFields): boolean {
   return coupon.duration === "repeating" && (coupon.duration_in_months ?? 0) >= 1;
 }
 
-/** True when an expanded discount still covers the monthly price in full. Unexpanded ids do not count. */
+/** True when an expanded discount still covers the monthly price in full. Ids are resolved before this runs. */
 export function subscriptionIsFullyDiscounted(subscription: {
   discounts?: Array<string | DiscountFields> | null;
 }): boolean {

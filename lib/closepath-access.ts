@@ -81,22 +81,39 @@ export async function collectedNonZeroCharge(stripe: Stripe, subscriptionId: str
   return invoices.data.some((invoice) => invoice.amount_paid > 0);
 }
 
+type DiscountList = Parameters<typeof subscriptionIsFullyDiscounted>[0]["discounts"];
+
+function needsDiscountLookup(discounts: DiscountList): boolean {
+  if (!discounts) return true;
+  return discounts.some((discount) => {
+    if (typeof discount === "string" || discount.deleted) return typeof discount === "string";
+    const coupon = discount.source?.coupon;
+    return !coupon || typeof coupon === "string";
+  });
+}
+
 export async function subscriptionKeepsBook(
   stripe: Stripe,
   subscription: {
     id: string;
     status: string;
     cancel_at_period_end?: boolean;
-    discounts?: Parameters<typeof subscriptionIsFullyDiscounted>[0]["discounts"];
+    discounts?: DiscountList;
   },
 ): Promise<boolean> {
-  const fullyDiscounted = subscriptionIsFullyDiscounted(subscription);
-  const cancelAtPeriodEnd = subscription.cancel_at_period_end;
-  if (subscription.status !== "past_due" || fullyDiscounted) {
-    return subscriptionGrantsBook(subscription.status, { cancelAtPeriodEnd, fullyDiscounted });
+  let current = subscription;
+  if (subscription.status === "past_due" && needsDiscountLookup(subscription.discounts)) {
+    current = await stripe.subscriptions.retrieve(subscription.id, {
+      expand: ["discounts.source.coupon"],
+    });
   }
-  const paidNonZeroInvoice = await collectedNonZeroCharge(stripe, subscription.id);
-  return subscriptionGrantsBook(subscription.status, { paidNonZeroInvoice, cancelAtPeriodEnd, fullyDiscounted });
+  const fullyDiscounted = subscriptionIsFullyDiscounted(current);
+  const cancelAtPeriodEnd = current.cancel_at_period_end;
+  if (current.status !== "past_due" || fullyDiscounted) {
+    return subscriptionGrantsBook(current.status, { cancelAtPeriodEnd, fullyDiscounted });
+  }
+  const paidNonZeroInvoice = await collectedNonZeroCharge(stripe, current.id);
+  return subscriptionGrantsBook(current.status, { paidNonZeroInvoice, cancelAtPeriodEnd, fullyDiscounted });
 }
 
 /** Live Stripe status for a stored subscription. Accounts opened before the monthly price have no subscription id and stay open. */

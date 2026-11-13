@@ -7,6 +7,7 @@ import {
   decideClosepathPromotion,
   promoFailureKind,
   readPromoInput,
+  resolveClosepathPromotion,
   snapshotPromotionCode,
   type CouponSnapshot,
   type PromotionSnapshot,
@@ -166,9 +167,77 @@ test("a Stripe promotion code snapshot keeps the coupon that waives the card", (
   );
 });
 
-test("Stripe rejecting a submitted code is a code error, not an outage", () => {
-  assert.equal(promoFailureKind({ type: "StripeInvalidRequestError" }, true), "code");
+test("only a promotion or coupon failure is a code error", () => {
+  assert.equal(
+    promoFailureKind({ type: "StripeInvalidRequestError", param: "discounts[0][promotion_code]" }, true),
+    "code",
+  );
+  assert.equal(promoFailureKind({ code: "coupon_expired" }, true), "code");
+  assert.equal(promoFailureKind({ type: "StripeInvalidRequestError", param: "line_items[0][price]" }, true), "unavailable");
   assert.equal(promoFailureKind({ type: "StripeAuthenticationError" }, true), "unavailable");
-  assert.equal(promoFailureKind({ type: "StripeInvalidRequestError" }, false), "unavailable");
+  assert.equal(promoFailureKind({ param: "discounts[0][promotion_code]" }, false), "unavailable");
   assert.equal(promoFailureKind(new Error("down"), true), "unavailable");
+});
+
+test("a coupon is loaded on its own, and a lookup outage is not an invalid code", async () => {
+  const promo = {
+    id: "promo_loaded",
+    active: true,
+    expires_at: null,
+    max_redemptions: null,
+    times_redeemed: 0,
+    customer: null,
+    customer_account: null,
+    promotion: { coupon: "coupon_loaded", type: "coupon" },
+    restrictions: { first_time_transaction: false, minimum_amount: null, minimum_amount_currency: null },
+  } as Stripe.PromotionCode;
+  let expand: string[] | undefined;
+  const stripe = {
+    promotionCodes: {
+      list: async () => ({ data: [promo] }),
+    },
+    coupons: {
+      retrieve: async (_id: string, params?: { expand?: string[] }) => {
+        expand = params?.expand;
+        return {
+          id: "coupon_loaded",
+          object: "coupon",
+          valid: true,
+          percent_off: null,
+          amount_off: null,
+          currency: null,
+          currency_options: { usd: { amount_off: 999 } },
+          duration: "forever",
+          duration_in_months: null,
+          max_redemptions: null,
+          times_redeemed: 0,
+          redeem_by: null,
+          applies_to: { products: [CLOSEPATH_PRODUCT_ID] },
+        };
+      },
+    },
+  } as unknown as Stripe;
+  const decision = await resolveClosepathPromotion(stripe, "SAVE-100", NOW);
+  assert.deepEqual(expand, ["applies_to", "currency_options"]);
+  assert.deepEqual(decision, { ok: true, promotionCodeId: "promo_loaded", waiveCard: true });
+
+  const missing = {
+    promotionCodes: { list: async () => ({ data: [promo] }) },
+    coupons: {
+      retrieve: async () => {
+        throw Object.assign(new Error("missing"), { statusCode: 404, code: "resource_missing" });
+      },
+    },
+  } as unknown as Stripe;
+  assert.deepEqual(await resolveClosepathPromotion(missing, "SAVE-100", NOW), { ok: false });
+
+  const outage = {
+    promotionCodes: { list: async () => ({ data: [promo] }) },
+    coupons: {
+      retrieve: async () => {
+        throw Object.assign(new Error("slow"), { statusCode: 429, code: "rate_limit" });
+      },
+    },
+  } as unknown as Stripe;
+  await assert.rejects(() => resolveClosepathPromotion(outage, "SAVE-100", NOW));
 });

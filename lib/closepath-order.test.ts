@@ -367,6 +367,46 @@ test("a $0 discounted subscription stays open, and a canceled one closes", async
   );
 });
 
+test("a past_due book stays open once an unexpanded 100% discount is loaded", async () => {
+  let listed = false;
+  const stripe = {
+    subscriptions: {
+      async retrieve() {
+        return {
+          id: "sub_comp",
+          status: "past_due",
+          discounts: [
+            {
+              id: "di_comp",
+              source: {
+                coupon: {
+                  percent_off: 100,
+                  amount_off: null,
+                  currency: null,
+                  duration: "forever",
+                  duration_in_months: null,
+                  valid: true,
+                },
+              },
+            },
+          ],
+        };
+      },
+    },
+    invoices: {
+      list() {
+        listed = true;
+        return { data: [] };
+      },
+    },
+  } as unknown as Stripe;
+  assert.equal(
+    await subscriptionKeepsBook(stripe, { id: "sub_comp", status: "past_due", discounts: ["di_unexpanded"] }),
+    true,
+  );
+  assert.equal(listed, false);
+});
+
 test("a retired one-time payment can still be recognized and is not the checkout price", () => {
   const previous = process.env.STRIPE_PRICE_ID;
   delete process.env.STRIPE_PRICE_ID;
