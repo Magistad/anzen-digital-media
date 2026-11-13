@@ -8,7 +8,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "tsx --test lib/*.test.ts"
+    "typecheck": "node scripts/ensure-next-env.mjs && tsc --noEmit",
+    "test": "tsx --test --test-concurrency=1 lib/*.test.ts test/integration/*.test.ts",
+    "test:e2e": "playwright test",
+    "test:smoke": "SMOKE_ONLY=1 playwright test",
+    "test:perf": "lhci autorun"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.8",
@@ -19,6 +23,8 @@
     "stripe": "^23.1.0"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.16.1",
+    "@playwright/test": "^1.65.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

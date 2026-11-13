@@ -43,3 +43,9 @@ next-env.d.ts
 
 # local Closepath books (Netlify Blobs is used in production)
 .data
+
+# test output
+/test-results/
+/playwright-report/
+/blob-report/
+/.lighthouseci/
