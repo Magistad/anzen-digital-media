@@ -173,7 +173,13 @@ export default async function ClosepathSuccessPage({
               </h1>
               <p className="mt-8 max-w-[36rem] text-lg leading-snug tracking-[-0.02em] text-paper/75">
                 {access.plan === "monthly"
-                  ? `Your subscription is confirmed. ${access.trial ? CLOSEPATH_OFFER : "$9.99 a month, cancel anytime."} Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone.`
+                  ? `Your subscription is confirmed. ${
+                      access.comped
+                        ? "This code covers the monthly price."
+                        : access.trial
+                          ? CLOSEPATH_OFFER
+                          : "$9.99 a month, cancel anytime."
+                    } Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone.`
                   : "Payment is confirmed. Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone."}
               </p>
               {message ? (
@@ -199,7 +205,7 @@ export default async function ClosepathSuccessPage({
               This subscription isn’t active yet.
             </h1>
             <p className="mt-8 max-w-[34rem] text-lg leading-snug tracking-[-0.02em] text-paper/75">
-              If you just checked out, refresh in a moment. Closepath opens when the subscription is active, including during the trial.
+              If you just checked out, refresh in a moment. Closepath opens when the subscription is active, including during the trial and when a code covers the price.
             </p>
             <Link href="/products/closepath" className={`${linkClass} mt-10`}>
               Back to Closepath

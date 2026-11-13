@@ -4,10 +4,12 @@ import {
   checkoutSubscriptionId,
   isCheckoutSessionId,
   isClosepathSession,
+  isFullyDiscountedClosepathCheckout,
   isPaidClosepathCheckout,
   isPaidClosepathSubscription,
   isTrialingClosepathCheckout,
   subscriptionGrantsBook,
+  subscriptionIsFullyDiscounted,
 } from "./closepath-order";
 import { findAccount } from "./closepath-account";
 import { getStripe } from "./stripe";
@@ -21,6 +23,8 @@ export type ClosepathAccess =
       email: string | null;
       plan: "monthly" | "retired";
       trial: boolean;
+      /** A 100% discount covered the price. The success page does not describe this as the 7-day trial. */
+      comped: boolean;
       subscriptionId: string | null;
       customerId: string | null;
     };
@@ -44,13 +48,15 @@ export async function closepathDownloadAccess(sessionId: string | undefined): Pr
     });
     if (!isClosepathSession(session)) return { state: "invalid" };
     if (!isPaidClosepathCheckout(session)) return { state: "unpaid" };
+    const comped = isFullyDiscountedClosepathCheckout(session);
     const trial = isTrialingClosepathCheckout(session);
-    const monthly = isPaidClosepathSubscription(session) || trial;
+    const monthly = isPaidClosepathSubscription(session) || trial || comped;
     return {
       state: "paid",
       email: session.customer_details?.email ?? null,
       plan: monthly ? "monthly" : "retired",
       trial,
+      comped,
       subscriptionId: monthly ? checkoutSubscriptionId(session) : null,
       customerId: checkoutCustomerId(session),
     };
@@ -77,14 +83,20 @@ export async function collectedNonZeroCharge(stripe: Stripe, subscriptionId: str
 
 export async function subscriptionKeepsBook(
   stripe: Stripe,
-  subscription: { id: string; status: string; cancel_at_period_end?: boolean },
+  subscription: {
+    id: string;
+    status: string;
+    cancel_at_period_end?: boolean;
+    discounts?: Parameters<typeof subscriptionIsFullyDiscounted>[0]["discounts"];
+  },
 ): Promise<boolean> {
+  const fullyDiscounted = subscriptionIsFullyDiscounted(subscription);
   const cancelAtPeriodEnd = subscription.cancel_at_period_end;
-  if (subscription.status !== "past_due") {
-    return subscriptionGrantsBook(subscription.status, { cancelAtPeriodEnd });
+  if (subscription.status !== "past_due" || fullyDiscounted) {
+    return subscriptionGrantsBook(subscription.status, { cancelAtPeriodEnd, fullyDiscounted });
   }
   const paidNonZeroInvoice = await collectedNonZeroCharge(stripe, subscription.id);
-  return subscriptionGrantsBook(subscription.status, { paidNonZeroInvoice, cancelAtPeriodEnd });
+  return subscriptionGrantsBook(subscription.status, { paidNonZeroInvoice, cancelAtPeriodEnd, fullyDiscounted });
 }
 
 /** Live Stripe status for a stored subscription. Accounts opened before the monthly price have no subscription id and stay open. */
