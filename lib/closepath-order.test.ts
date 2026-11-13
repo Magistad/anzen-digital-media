@@ -11,13 +11,16 @@ import {
   closepathPriceId,
   isClosepathMonthlyPrice,
 } from "./closepath";
+import { subscriptionKeepsBook } from "./closepath-access";
 import {
+  isFullyDiscountedClosepathCheckout,
   isPaidClosepathCheckout,
   isPaidClosepathSubscription,
   isRetiredClosepathPayment,
   isTrialingClosepathCheckout,
   shouldUnlockFulfillment,
   subscriptionGrantsBook,
+  subscriptionIsFullyDiscounted,
 } from "./closepath-order";
 
 const MONTHLY_PRICE = "price_monthly_test";
@@ -88,6 +91,8 @@ test("checkout adds a 7-day trial on the existing price and collects a card", ()
   const fields = closepathCheckoutSessionFields("price_monthly_test", "https://anzendigitalmedia.com");
   assert.equal(fields.mode, "subscription");
   assert.equal(fields.payment_method_collection, "always");
+  assert.equal(fields.allow_promotion_codes, true);
+  assert.equal(fields.discounts, undefined);
   assert.equal("payment_method_types" in fields, false);
   assert.deepEqual(fields.line_items, [{ price: "price_monthly_test", quantity: 1 }]);
   assert.equal(fields.subscription_data?.trial_period_days, CLOSEPATH_TRIAL_DAYS);
@@ -101,6 +106,33 @@ test("checkout adds a 7-day trial on the existing price and collects a card", ()
     "https://anzendigitalmedia.com/products/closepath/success?session_id={CHECKOUT_SESSION_ID}",
   );
   assert.equal(fields.cancel_url, "https://anzendigitalmedia.com/products/closepath");
+});
+
+test("a full discount skips the card and the trial, and a partial discount keeps both", () => {
+  const full = closepathCheckoutSessionFields("price_monthly_test", "https://anzendigitalmedia.com", {
+    promotionCodeId: "promo_full",
+    waiveCard: true,
+  });
+  assert.equal(full.mode, "subscription");
+  assert.equal(full.payment_method_collection, "if_required");
+  assert.deepEqual(full.discounts, [{ promotion_code: "promo_full" }]);
+  assert.equal(full.allow_promotion_codes, undefined);
+  assert.equal("payment_method_types" in full, false);
+  assert.equal(full.subscription_data?.trial_period_days, undefined);
+  assert.equal(full.subscription_data?.trial_settings, undefined);
+  assert.equal(full.subscription_data?.metadata?.product, "closepath");
+  assert.equal(full.metadata?.product, "closepath");
+  assert.deepEqual(full.line_items, [{ price: "price_monthly_test", quantity: 1 }]);
+
+  const partial = closepathCheckoutSessionFields("price_monthly_test", "https://anzendigitalmedia.com", {
+    promotionCodeId: "promo_partial",
+    waiveCard: false,
+  });
+  assert.equal(partial.payment_method_collection, "always");
+  assert.deepEqual(partial.discounts, [{ promotion_code: "promo_partial" }]);
+  assert.equal(partial.allow_promotion_codes, undefined);
+  assert.equal(partial.subscription_data?.trial_period_days, CLOSEPATH_TRIAL_DAYS);
+  assert.equal(partial.subscription_data?.trial_settings?.end_behavior.missing_payment_method, "cancel");
 });
 
 test("monthly price check is $9.99 usd every month on the Closepath product", () => {
@@ -244,10 +276,135 @@ test("a trial checkout unlocks the book before the first charge", () => {
     });
     assert.equal(isTrialingClosepathCheckout(wrongPrice), false);
     assert.equal(shouldUnlockFulfillment(wrongPrice), false);
+
+    const comped = monthlySession({
+      status: "complete",
+      payment_status: "no_payment_required",
+      amount_subtotal: 999,
+      amount_total: 0,
+      payment_intent: null,
+      total_details: { amount_discount: 999, amount_shipping: 0, amount_tax: 0 },
+    });
+    assert.equal(isFullyDiscountedClosepathCheckout(comped), true);
+    assert.equal(isTrialingClosepathCheckout(comped), false);
+    assert.equal(isPaidClosepathSubscription(comped), false);
+    assert.equal(isPaidClosepathCheckout(comped), true);
+    assert.equal(shouldUnlockFulfillment(comped), true);
+    assert.equal(fulfillmentAnchor(comped), "subscription");
+
+    const compedPaid = monthlySession({
+      status: "complete",
+      payment_status: "paid",
+      amount_subtotal: 999,
+      amount_total: 0,
+      payment_intent: null,
+      total_details: { amount_discount: 999, amount_shipping: 0, amount_tax: 0 },
+    });
+    assert.equal(isFullyDiscountedClosepathCheckout(compedPaid), true);
+    assert.equal(shouldUnlockFulfillment(compedPaid), true);
+    assert.equal(
+      shouldUnlockFulfillment(
+        monthlySession({
+          status: "open",
+          payment_status: "no_payment_required",
+          amount_subtotal: 999,
+          amount_total: 0,
+          total_details: { amount_discount: 999, amount_shipping: 0, amount_tax: 0 },
+        }),
+      ),
+      false,
+    );
   } finally {
     if (previous === undefined) delete process.env.STRIPE_PRICE_ID;
     else process.env.STRIPE_PRICE_ID = previous;
   }
+});
+
+test("a $0 discounted subscription stays open, and a canceled one closes", async () => {
+  const fullDiscount = {
+    id: "di_comp",
+    source: {
+      coupon: {
+        percent_off: 100,
+        amount_off: null,
+        currency: null,
+        duration: "forever",
+        duration_in_months: null,
+        valid: true,
+      },
+    },
+  };
+  const comped = {
+    id: "sub_comp",
+    status: "active",
+    discounts: [fullDiscount],
+  };
+  const stripe = {
+    invoices: {
+      list() {
+        throw new Error("invoice list is not needed while the 100% discount still applies");
+      },
+    },
+  } as unknown as Stripe;
+
+  assert.equal(subscriptionIsFullyDiscounted(comped), true);
+  assert.equal(subscriptionGrantsBook("active", { fullyDiscounted: true }), true);
+  assert.equal(subscriptionGrantsBook("trialing", { fullyDiscounted: true }), true);
+  assert.equal(subscriptionGrantsBook("past_due", { fullyDiscounted: true, paidNonZeroInvoice: false }), true);
+  assert.equal(subscriptionGrantsBook("canceled", { fullyDiscounted: true }), false);
+  assert.equal(await subscriptionKeepsBook(stripe, comped), true);
+  assert.equal(await subscriptionKeepsBook(stripe, { ...comped, status: "trialing" }), true);
+  assert.equal(await subscriptionKeepsBook(stripe, { ...comped, status: "past_due" }), true);
+  assert.equal(await subscriptionKeepsBook(stripe, { ...comped, status: "canceled" }), false);
+  assert.equal(subscriptionIsFullyDiscounted({ discounts: ["di_unexpanded"] }), false);
+  assert.equal(
+    await subscriptionKeepsBook(stripe, { id: "sub_comp", status: "active", discounts: ["di_unexpanded"] }),
+    true,
+  );
+  assert.equal(
+    await subscriptionKeepsBook(stripe, { id: "sub_comp", status: "canceled", discounts: ["di_unexpanded"] }),
+    false,
+  );
+});
+
+test("a past_due book stays open once an unexpanded 100% discount is loaded", async () => {
+  let listed = false;
+  const stripe = {
+    subscriptions: {
+      async retrieve() {
+        return {
+          id: "sub_comp",
+          status: "past_due",
+          discounts: [
+            {
+              id: "di_comp",
+              source: {
+                coupon: {
+                  percent_off: 100,
+                  amount_off: null,
+                  currency: null,
+                  duration: "forever",
+                  duration_in_months: null,
+                  valid: true,
+                },
+              },
+            },
+          ],
+        };
+      },
+    },
+    invoices: {
+      list() {
+        listed = true;
+        return { data: [] };
+      },
+    },
+  } as unknown as Stripe;
+  assert.equal(
+    await subscriptionKeepsBook(stripe, { id: "sub_comp", status: "past_due", discounts: ["di_unexpanded"] }),
+    true,
+  );
+  assert.equal(listed, false);
 });
 
 test("a retired one-time payment can still be recognized and is not the checkout price", () => {

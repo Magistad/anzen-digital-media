@@ -42,29 +42,67 @@ export function closepathPriceId(): string | null {
   return readEnv("STRIPE_PRICE_ID") ?? null;
 }
 
-/** Hosted Checkout for the existing monthly price, with a card collected and a 7-day trial. */
+/**
+ * A code already checked against Stripe.
+ * `waiveCard` is only for a 100% off coupon that lasts forever or for multiple invoices.
+ * Checkout cannot see a code typed on its own page when it decides whether to collect a card.
+ */
+export type ClosepathCheckoutDiscount = {
+  promotionCodeId: string;
+  waiveCard: boolean;
+};
+
+function subscriptionData(waiveCard: boolean): Stripe.Checkout.SessionCreateParams.SubscriptionData {
+  if (waiveCard) {
+    return {
+      description: "Closepath — monthly price covered by a promo code",
+      metadata: { product: CLOSEPATH_PRODUCT },
+    };
+  }
+  return {
+    description: "Closepath — 7 days free, then $9.99 a month",
+    metadata: { product: CLOSEPATH_PRODUCT },
+    trial_period_days: CLOSEPATH_TRIAL_DAYS,
+    trial_settings: {
+      end_behavior: {
+        missing_payment_method: "cancel",
+      },
+    },
+  };
+}
+
+/**
+ * Hosted Checkout for the existing monthly price.
+ * With no pre-checked code, a card is collected up front and the 7-day trial stays.
+ * Stripe Checkout can still accept other codes on that page.
+ * A full discount skips the trial: the trial is set to cancel when it ends without a card,
+ * which would close a $0 subscription after 7 days.
+ */
 export function closepathCheckoutSessionFields(
   priceId: string,
   origin: string,
+  discount?: ClosepathCheckoutDiscount,
 ): Stripe.Checkout.SessionCreateParams {
-  return {
+  const shared: Stripe.Checkout.SessionCreateParams = {
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/products/closepath/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/products/closepath`,
     client_reference_id: CLOSEPATH_PRODUCT,
     metadata: { product: CLOSEPATH_PRODUCT },
-    payment_method_collection: "always",
-    subscription_data: {
-      description: "Closepath — 7 days free, then $9.99 a month",
-      metadata: { product: CLOSEPATH_PRODUCT },
-      trial_period_days: CLOSEPATH_TRIAL_DAYS,
-      trial_settings: {
-        end_behavior: {
-          missing_payment_method: "cancel",
-        },
-      },
-    },
+    subscription_data: subscriptionData(Boolean(discount?.waiveCard)),
+  };
+  if (!discount) {
+    return {
+      ...shared,
+      payment_method_collection: "always",
+      allow_promotion_codes: true,
+    };
+  }
+  return {
+    ...shared,
+    payment_method_collection: discount.waiveCard ? "if_required" : "always",
+    discounts: [{ promotion_code: discount.promotionCodeId }],
   };
 }
 

@@ -32,15 +32,61 @@ export function isClosepathSession(session: Stripe.Checkout.Session): boolean {
  * Stripe keeps that status until the trial ends, then cancels without a charge.
  * `past_due` is the retry window after a collected charge. A trial that ends
  * without one does not keep the book.
+ * A 100% discount that still applies keeps an active, trialing, or past_due subscription open.
+ * Canceled and deleted subscriptions stay closed.
  */
 export function subscriptionGrantsBook(
   status: string,
-  options?: { paidNonZeroInvoice?: boolean; cancelAtPeriodEnd?: boolean },
+  options?: { paidNonZeroInvoice?: boolean; cancelAtPeriodEnd?: boolean; fullyDiscounted?: boolean },
 ): boolean {
   // Period-end cancellation does not close the book early.
   void options?.cancelAtPeriodEnd;
+  if (
+    options?.fullyDiscounted &&
+    (status === "active" || status === "trialing" || status === "past_due")
+  ) {
+    return true;
+  }
   if (status === "active" || status === "trialing") return true;
   if (status === "past_due") return options?.paidNonZeroInvoice !== false;
+  return false;
+}
+
+type CouponFields = {
+  valid?: boolean;
+  percent_off?: number | null;
+  amount_off?: number | null;
+  currency?: string | null;
+  duration?: string | null;
+  duration_in_months?: number | null;
+  deleted?: unknown;
+};
+
+type DiscountFields = {
+  deleted?: unknown;
+  source?: { coupon?: string | CouponFields | null } | null;
+};
+
+function couponKeepsZeroInvoice(coupon: CouponFields): boolean {
+  if (coupon.deleted) return false;
+  if (coupon.valid === false) return false;
+  const percent = coupon.percent_off === 100;
+  const amount = coupon.currency === CLOSEPATH_CURRENCY && (coupon.amount_off ?? 0) >= CLOSEPATH_AMOUNT_CENTS;
+  if (!percent && !amount) return false;
+  if (coupon.duration === "forever") return true;
+  return coupon.duration === "repeating" && (coupon.duration_in_months ?? 0) >= 1;
+}
+
+/** True when an expanded discount still covers the monthly price in full. Ids are resolved before this runs. */
+export function subscriptionIsFullyDiscounted(subscription: {
+  discounts?: Array<string | DiscountFields> | null;
+}): boolean {
+  for (const discount of subscription.discounts ?? []) {
+    if (typeof discount === "string" || discount.deleted) continue;
+    const coupon = discount.source?.coupon;
+    if (!coupon || typeof coupon === "string") continue;
+    if (couponKeepsZeroInvoice(coupon)) return true;
+  }
   return false;
 }
 
@@ -127,17 +173,36 @@ export function isPaidClosepathSubscription(session: Stripe.Checkout.Session): b
   return true;
 }
 
-/**
- * Completed Checkout on the monthly price with nothing due today.
- * A card-on-file trial reports `no_payment_required`. A $0 trial invoice can also be `paid`.
- */
-export function isTrialingClosepathCheckout(session: Stripe.Checkout.Session): boolean {
+function zeroDueCheckout(session: Stripe.Checkout.Session): boolean {
   if (session.status !== "complete") return false;
   if (!isClosepathMonthlyLine(session)) return false;
   if (session.amount_total !== 0) return false;
+  return session.payment_status === "no_payment_required" || session.payment_status === "paid";
+}
+
+/**
+ * Completed Checkout on the monthly price where a discount removed the whole $9.99.
+ * This is the no-card promo path. It is not the 7-day trial.
+ */
+export function isFullyDiscountedClosepathCheckout(session: Stripe.Checkout.Session): boolean {
+  if (!zeroDueCheckout(session)) return false;
+  const discount = session.total_details?.amount_discount ?? 0;
+  if (discount >= CLOSEPATH_AMOUNT_CENTS) return true;
+  const subtotal = session.amount_subtotal ?? 0;
+  return subtotal >= CLOSEPATH_AMOUNT_CENTS && discount >= subtotal;
+}
+
+/**
+ * Completed Checkout on the monthly price with nothing due today.
+ * A card-on-file trial reports `no_payment_required`. A $0 trial invoice can also be `paid`.
+ * A 100% discount is handled separately so the success page does not call it a trial.
+ */
+export function isTrialingClosepathCheckout(session: Stripe.Checkout.Session): boolean {
+  if (isFullyDiscountedClosepathCheckout(session)) return false;
+  if (!zeroDueCheckout(session)) return false;
   const subtotal = session.amount_subtotal;
   if (subtotal != null && subtotal !== 0 && subtotal !== CLOSEPATH_AMOUNT_CENTS) return false;
-  return session.payment_status === "no_payment_required" || session.payment_status === "paid";
+  return true;
 }
 
 /**
@@ -158,11 +223,12 @@ export function isPaidClosepathCheckout(session: Stripe.Checkout.Session): boole
   return (
     isPaidClosepathSubscription(session) ||
     isTrialingClosepathCheckout(session) ||
+    isFullyDiscountedClosepathCheckout(session) ||
     isRetiredClosepathPayment(session)
   );
 }
 
-/** Webhook unlock rule: a paid or trialing monthly subscription, or an already-paid retired one-time session. */
+/** Webhook unlock rule: a paid, trialing, or fully discounted monthly subscription, or an already-paid retired one-time session. */
 export function shouldUnlockFulfillment(session: Stripe.Checkout.Session): boolean {
   return isPaidClosepathCheckout(session);
 }
