@@ -1,0 +1,28 @@
+{
+  "name": "closepath-mobile",
+  "version": "1.0.0",
+  "description": "Closepath iOS and Android shells. Anzen Digital Media, LLC.",
+  "scripts": {
+    "sync": "cap sync",
+    "assets": "capacitor-assets generate --ios --android --iconBackgroundColor \"#070708\" --iconBackgroundColorDark \"#070708\" --splashBackgroundColor \"#070708\" --splashBackgroundColorDark \"#070708\""
+  },
+  "dependencies": {
+    "@anzendigitalmedia/closepath-calendar": "file:plugins/closepath-calendar",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/camera": "^8.2.6",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4",
+    "@capawesome/capacitor-file-picker": "^8.1.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/ios": "^8.6.0",
+    "typescript": "^7.0.2"
+  },
+  "private": true,
+  "type": "module"
+}

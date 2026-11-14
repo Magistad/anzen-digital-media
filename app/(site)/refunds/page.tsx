@@ -1,42 +1,73 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { LegalDocument, LegalLink, LegalSection } from "../../../components/LegalDocument";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../lib/native-shell";
 
-export const metadata: Metadata = {
-  title: "Refund Policy",
-  description:
-    "Refund and cancellation policy for the $9.99 per month Closepath subscription from Anzen Digital Media, LLC.",
-};
+export function generateMetadata(): Metadata {
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
+  return {
+    title: "Refund Policy",
+    description: inApp
+      ? "Refund and cancellation policy for the Closepath subscription from Anzen Digital Media, LLC."
+      : "Refund and cancellation policy for the $9.99 per month Closepath subscription from Anzen Digital Media, LLC.",
+  };
+}
 
 export default function RefundsPage() {
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
   return (
     <LegalDocument title="Refund Policy">
       <LegalSection id="scope" title="Subscription">
-        <p>
-          Closepath is a subscription of $9.99 USD per month from Anzen Digital Media, LLC, after a 7-day
-          trial. It is not a lifetime license. The <LegalLink href="/terms">Terms of Service</LegalLink>{" "}
-          govern the subscription. This page describes the trial, cancellation, and refunds.
-        </p>
+        {inApp ? (
+          <p>
+            Closepath is a subscription from Anzen Digital Media, LLC, started on the website, not in this
+            app. It is not a lifetime license. The <LegalLink href="/terms">Terms of Service</LegalLink>{" "}
+            govern the subscription. This page describes cancellation and refunds.
+          </p>
+        ) : (
+          <p>
+            Closepath is a subscription of $9.99 USD per month from Anzen Digital Media, LLC, after a 7-day
+            trial. It is not a lifetime license. The <LegalLink href="/terms">Terms of Service</LegalLink>{" "}
+            govern the subscription. This page describes the trial, cancellation, and refunds.
+          </p>
+        )}
       </LegalSection>
 
       <LegalSection id="trial" title="Trial">
-        <p>
-          Checkout starts a 7-day trial. A card is required at signup. Stripe does not charge the card during
-          the trial. Unless the subscription is canceled before the trial ends, Stripe charges $9.99 USD per
-          month starting when the trial ends. Cancellation in the customer portal takes effect at the end of
-          the current period. During the trial, that period is the trial, and canceling before it ends means
-          the monthly price is not charged. A trial with no charge has no monthly charge to refund.
-        </p>
+        {inApp ? (
+          <p>
+            A card is collected on the website, not in this app. Cancel from a web browser before a charge
+            if you do not want that charge. A period with no charge has no monthly charge to refund.
+          </p>
+        ) : (
+          <p>
+            Checkout starts a 7-day trial. A card is required at signup. Stripe does not charge the card during
+            the trial. Unless the subscription is canceled before the trial ends, Stripe charges $9.99 USD per
+            month starting when the trial ends. Cancellation in the customer portal takes effect at the end of
+            the current period. During the trial, that period is the trial, and canceling before it ends means
+            the monthly price is not charged. A trial with no charge has no monthly charge to refund.
+          </p>
+        )}
       </LegalSection>
 
       <LegalSection id="cancel" title="Cancellation">
-        <p>
-          While you are signed in, Billing in the book opens Stripe’s customer portal. Cancellation through
-          that portal takes effect at the end of the current period. During a trial, that period is the
-          trial. You may also cancel by emailing{" "}
-          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
-          Include the email on the subscription. Cancellation stops subsequent monthly charges and does not,
-          by itself, refund a charge already paid.
-        </p>
+        {inApp ? (
+          <p>
+            Cancel from a web browser, or by emailing{" "}
+            <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
+            Include the email on the subscription. Cancellation stops subsequent monthly charges and does not,
+            by itself, refund a charge already paid. This app does not open a payment page.
+          </p>
+        ) : (
+          <p>
+            While you are signed in, Billing in the book opens Stripe’s customer portal. Cancellation through
+            that portal takes effect at the end of the current period. During a trial, that period is the
+            trial. You may also cancel by emailing{" "}
+            <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
+            Include the email on the subscription. Cancellation stops subsequent monthly charges and does not,
+            by itself, refund a charge already paid.
+          </p>
+        )}
         <p>
           Access continues through the end of the period covered by the current charge, and then ends, unless
           that charge is refunded. During a trial, before any charge, access continues through the end of the
@@ -57,7 +88,7 @@ export default function RefundsPage() {
       <LegalSection id="window" title="Latest monthly charge">
         <p>
           You may request a refund of the latest monthly charge within 14 days of that charge. We will refund
-          that $9.99 charge.
+          {inApp ? " that monthly charge." : " that $9.99 charge."}
         </p>
       </LegalSection>
 

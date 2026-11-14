@@ -1,13 +1,20 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { LegalDocument, LegalLink, LegalSection } from "../../../components/LegalDocument";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../lib/native-shell";
 
-export const metadata: Metadata = {
-  title: "Terms of Service",
-  description:
-    "Terms of Service for Closepath, the $9.99 per month listing-to-close book from Anzen Digital Media, LLC.",
-};
+export function generateMetadata(): Metadata {
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
+  return {
+    title: "Terms of Service",
+    description: inApp
+      ? "Terms of Service for Closepath from Anzen Digital Media, LLC."
+      : "Terms of Service for Closepath, the $9.99 per month listing-to-close book from Anzen Digital Media, LLC.",
+  };
+}
 
 export default function TermsPage() {
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
   return (
     <LegalDocument title="Terms of Service">
       <LegalSection id="agreement" title="1. Agreement">
@@ -17,11 +24,18 @@ export default function TermsPage() {
           <LegalLink href="https://anzendigitalmedia.com">anzendigitalmedia.com</LegalLink> and Closepath (the
           “Service”).
         </p>
-        <p>
-          By completing Stripe Checkout, creating an account, or using the Service, you agree to these terms
-          and the <LegalLink href="/privacy">Privacy Policy</LegalLink>. If you do not agree, do not use the
-          Service.
-        </p>
+        {inApp ? (
+          <p>
+            By creating an account or using the Service, you agree to these terms and the{" "}
+            <LegalLink href="/privacy">Privacy Policy</LegalLink>. If you do not agree, do not use the Service.
+          </p>
+        ) : (
+          <p>
+            By completing Stripe Checkout, creating an account, or using the Service, you agree to these terms
+            and the <LegalLink href="/privacy">Privacy Policy</LegalLink>. If you do not agree, do not use the
+            Service.
+          </p>
+        )}
       </LegalSection>
 
       <LegalSection id="service" title="2. The Service">
@@ -107,25 +121,46 @@ export default function TermsPage() {
       </LegalSection>
 
       <LegalSection id="fees" title="7. Fees and billing">
-        <p>
-          The fee is $9.99 USD per month, billed through Stripe Checkout on the Anzen Digital Media Stripe
-          account. Checkout starts a 7-day trial on that price. A card is required at signup. Stripe does not
-          charge the card during the trial. Unless the subscription is canceled before the trial ends, Stripe
-          charges $9.99 USD when the trial ends and on each monthly renewal after that. Anzen does not store
-          card numbers. Stripe processes payment and sends the receipt. The subscription is not a lifetime
-          license.
-        </p>
-        <p>
-          You may cancel at any time. While you are signed in, Billing in the Service opens Stripe’s
-          customer portal, and cancellation through that portal takes effect at the end of the current
-          period. During a trial, that period ends when the trial ends, and canceling before then means the
-          monthly price is not charged. You may also cancel by emailing{" "}
-          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
-          Cancellation stops subsequent monthly charges. It does not, by itself, refund a charge already
-          paid. Access continues through the end of the period covered by the current charge unless that
-          charge is refunded. During a trial, before any charge, access continues through the end of the
-          trial. If a charge is refunded, access for that period ends.
-        </p>
+        {inApp ? (
+          <>
+            <p>
+              The subscription is billed on the Anzen website in a web browser. This app does not offer
+              checkout, show a price, or take payment. A card is collected on the website. Anzen does not
+              store card numbers. The payment processor sends the receipt. The subscription is not a lifetime
+              license.
+            </p>
+            <p>
+              You may cancel at any time from a web browser, or by emailing{" "}
+              <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
+              Cancellation stops subsequent monthly charges. It does not, by itself, refund a charge already
+              paid. Access continues through the end of the period covered by the current charge unless that
+              charge is refunded. During a trial, before any charge, access continues through the end of the
+              trial. If a charge is refunded, access for that period ends.
+            </p>
+          </>
+        ) : (
+          <>
+            <p>
+              The fee is $9.99 USD per month, billed through Stripe Checkout on the Anzen Digital Media Stripe
+              account. Checkout starts a 7-day trial on that price. A card is required at signup. Stripe does not
+              charge the card during the trial. Unless the subscription is canceled before the trial ends, Stripe
+              charges $9.99 USD when the trial ends and on each monthly renewal after that. Anzen does not store
+              card numbers. Stripe processes payment and sends the receipt. The subscription is not a lifetime
+              license.
+            </p>
+            <p>
+              You may cancel at any time. While you are signed in, Billing in the Service opens Stripe’s
+              customer portal, and cancellation through that portal takes effect at the end of the current
+              period. During a trial, that period ends when the trial ends, and canceling before then means the
+              monthly price is not charged. You may also cancel by emailing{" "}
+              <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>.
+              Cancellation stops subsequent monthly charges. It does not, by itself, refund a charge already
+              paid. Access continues through the end of the period covered by the current charge unless that
+              charge is refunded. During a trial, before any charge, access continues through the end of the
+              trial. If a charge is refunded, access for that period ends.
+            </p>
+          </>
+        )}
         <p>
           Refunds are described in the <LegalLink href="/refunds">Refund Policy</LegalLink>. You may request
           a refund of the latest monthly charge within 14 days of that charge. If Anzen does not deliver

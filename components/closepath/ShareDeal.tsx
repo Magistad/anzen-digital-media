@@ -1,26 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useNativeShell } from "../NativeShell";
 import type { DealFile } from "../../lib/closepath-model";
+import { nativeCancelled, nativeShareDeal } from "../../lib/native-bridge";
 import { dealSummaryText, mailtoHref, shareSubject, smsHref } from "../../lib/closepath-share";
 
 export function ShareDeal({ file }: { file: DealFile }) {
+  const shell = useNativeShell();
   const [open, setOpen] = useState(false);
-  const [canShare, setCanShare] = useState(false);
+  const [webShare, setWebShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const text = dealSummaryText(file);
   const subject = shareSubject(file);
+  const canShare = shell !== null || webShare;
 
   useEffect(() => {
-    setCanShare(typeof navigator.share === "function");
-  }, []);
+    if (!shell) setWebShare(typeof navigator.share === "function");
+  }, [shell]);
 
   async function share() {
     setError("");
     try {
+      if (shell) {
+        await nativeShareDeal(subject, text);
+        return;
+      }
       await navigator.share({ title: subject, text });
     } catch (caught) {
+      if (nativeCancelled(caught)) return;
       if (caught instanceof DOMException && caught.name === "AbortError") return;
       setError("Couldn’t open the share sheet.");
     }

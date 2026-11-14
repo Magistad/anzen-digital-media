@@ -44,6 +44,24 @@ next-env.d.ts
 # local Closepath books (Netlify Blobs is used in production)
 .data
 
+# Closepath native shells
+/mobile/node_modules
+/mobile/android/.gradle
+/mobile/android/build
+/mobile/android/app/build
+/mobile/android/local.properties
+/mobile/android/captures
+/mobile/ios/App/Pods
+/mobile/ios/App/build
+/mobile/ios/DerivedData
+*.apk
+*.aab
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.p8
+
 # test output
 /test-results/
 /playwright-report/
