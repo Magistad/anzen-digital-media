@@ -4,10 +4,12 @@ import {
   checkoutSubscriptionId,
   isCheckoutSessionId,
   isClosepathSession,
+  isFullyDiscountedClosepathCheckout,
   isPaidClosepathCheckout,
   isPaidClosepathSubscription,
   isTrialingClosepathCheckout,
   subscriptionGrantsBook,
+  subscriptionIsFullyDiscounted,
 } from "./closepath-order";
 import { findAccount } from "./closepath-account";
 import { getStripe } from "./stripe";
@@ -21,6 +23,8 @@ export type ClosepathAccess =
       email: string | null;
       plan: "monthly" | "retired";
       trial: boolean;
+      /** A 100% discount covered the price. The success page does not describe this as the 7-day trial. */
+      comped: boolean;
       subscriptionId: string | null;
       customerId: string | null;
     };
@@ -44,13 +48,15 @@ export async function closepathDownloadAccess(sessionId: string | undefined): Pr
     });
     if (!isClosepathSession(session)) return { state: "invalid" };
     if (!isPaidClosepathCheckout(session)) return { state: "unpaid" };
+    const comped = isFullyDiscountedClosepathCheckout(session);
     const trial = isTrialingClosepathCheckout(session);
-    const monthly = isPaidClosepathSubscription(session) || trial;
+    const monthly = isPaidClosepathSubscription(session) || trial || comped;
     return {
       state: "paid",
       email: session.customer_details?.email ?? null,
       plan: monthly ? "monthly" : "retired",
       trial,
+      comped,
       subscriptionId: monthly ? checkoutSubscriptionId(session) : null,
       customerId: checkoutCustomerId(session),
     };
@@ -75,16 +81,39 @@ export async function collectedNonZeroCharge(stripe: Stripe, subscriptionId: str
   return invoices.data.some((invoice) => invoice.amount_paid > 0);
 }
 
+type DiscountList = Parameters<typeof subscriptionIsFullyDiscounted>[0]["discounts"];
+
+function needsDiscountLookup(discounts: DiscountList): boolean {
+  if (!discounts) return true;
+  return discounts.some((discount) => {
+    if (typeof discount === "string" || discount.deleted) return typeof discount === "string";
+    const coupon = discount.source?.coupon;
+    return !coupon || typeof coupon === "string";
+  });
+}
+
 export async function subscriptionKeepsBook(
   stripe: Stripe,
-  subscription: { id: string; status: string; cancel_at_period_end?: boolean },
+  subscription: {
+    id: string;
+    status: string;
+    cancel_at_period_end?: boolean;
+    discounts?: DiscountList;
+  },
 ): Promise<boolean> {
-  const cancelAtPeriodEnd = subscription.cancel_at_period_end;
-  if (subscription.status !== "past_due") {
-    return subscriptionGrantsBook(subscription.status, { cancelAtPeriodEnd });
+  let current = subscription;
+  if (subscription.status === "past_due" && needsDiscountLookup(subscription.discounts)) {
+    current = await stripe.subscriptions.retrieve(subscription.id, {
+      expand: ["discounts.source.coupon"],
+    });
   }
-  const paidNonZeroInvoice = await collectedNonZeroCharge(stripe, subscription.id);
-  return subscriptionGrantsBook(subscription.status, { paidNonZeroInvoice, cancelAtPeriodEnd });
+  const fullyDiscounted = subscriptionIsFullyDiscounted(current);
+  const cancelAtPeriodEnd = current.cancel_at_period_end;
+  if (current.status !== "past_due" || fullyDiscounted) {
+    return subscriptionGrantsBook(current.status, { cancelAtPeriodEnd, fullyDiscounted });
+  }
+  const paidNonZeroInvoice = await collectedNonZeroCharge(stripe, current.id);
+  return subscriptionGrantsBook(current.status, { paidNonZeroInvoice, cancelAtPeriodEnd, fullyDiscounted });
 }
 
 /** Live Stripe status for a stored subscription. Accounts opened before the monthly price have no subscription id and stay open. */

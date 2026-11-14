@@ -47,6 +47,42 @@ test("native shells cannot start Stripe checkout", async () => {
   }
 });
 
+test("a promo code does not let a native shell start checkout", async () => {
+  for (const ua of [IOS, ANDROID]) {
+    const res = await checkout(
+      new Request("https://anzendigitalmedia.com/api/checkout", {
+        method: "POST",
+        headers: {
+          "user-agent": ua,
+          origin: "https://anzendigitalmedia.com",
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: "promo=SAVE100",
+      }),
+    );
+    const location = new URL(res.headers.get("location") ?? "");
+    assert.equal(res.status, 303);
+    assert.equal(location.pathname, "/closepath/sign-in");
+    assert.equal(location.search, "");
+  }
+
+  const browser = await checkout(
+    new Request("https://anzendigitalmedia.com/api/checkout", {
+      method: "POST",
+      headers: {
+        "user-agent": BROWSER,
+        origin: "https://anzendigitalmedia.com",
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: "promo=SAVE100",
+    }),
+  );
+  const browserLocation = new URL(browser.headers.get("location") ?? "");
+  assert.equal(browser.status, 303);
+  assert.equal(browserLocation.pathname, "/products/closepath");
+  assert.notEqual(browserLocation.pathname, "/closepath/sign-in");
+});
+
 test("a browser checkout request is not sent to the app sign-in", async () => {
   const res = await checkout(
     new Request("https://anzendigitalmedia.com/api/checkout", {

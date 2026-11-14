@@ -159,7 +159,9 @@ export default function ClosepathPage({
   searchParams?: { checkout?: string | string[] };
 }) {
   const checkoutReady = isStripeConfigured();
-  const unavailable = one(searchParams?.checkout) === "unavailable";
+  const checkout = one(searchParams?.checkout);
+  const unavailable = checkout === "unavailable";
+  const codeError = checkout === "code";
 
   return (
     <main id="content" className="overflow-x-clip">
@@ -190,6 +192,7 @@ export default function ClosepathPage({
               noteId="closepath-checkout-hero"
               enabled={checkoutReady}
               unavailable={unavailable}
+              codeError={codeError}
             />
             <AlreadySubscribed />
             <Questions />
@@ -310,6 +313,7 @@ export default function ClosepathPage({
               noteId="closepath-checkout-price"
               enabled={checkoutReady}
               unavailable={unavailable}
+              codeError={codeError}
             />
             <AlreadySubscribed />
             <Questions />
