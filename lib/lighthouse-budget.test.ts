@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
+import { createRequire } from "node:module";
 import test from "node:test";
-import config from "../lighthouserc.cjs";
+
+const require = createRequire(import.meta.url);
+const config = require("../lighthouserc.cjs") as {
+  ci: {
+    collect: { numberOfRuns: number };
+    assert: {
+      assertions: Record<string, [string, { minScore?: number; aggregationMethod?: string }]>;
+    };
+  };
+};
 
 test("performance budgets use the median of several local runs", () => {
   assert.ok(config.ci.collect.numberOfRuns >= 3);
