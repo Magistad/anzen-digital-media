@@ -1,7 +1,7 @@
 /**
  * Lightweight budgets for the pages a buyer hits before checkout.
- * Scores are floors with room for CI noise. They fail on a real regression,
- * not on a few points of variance.
+ * Scores are floors. One Lighthouse run moves a few points between CI machines,
+ * so the median of three runs is what has to clear the floor.
  */
 module.exports = {
   ci: {
@@ -13,7 +13,7 @@ module.exports = {
         "http://127.0.0.1:4173/products/closepath",
         "http://127.0.0.1:4173/closepath/sign-in",
       ],
-      numberOfRuns: 1,
+      numberOfRuns: 3,
       settings: {
         onlyCategories: ["performance", "accessibility"],
         chromeFlags: "--no-sandbox --disable-gpu --headless=new",
@@ -21,10 +21,10 @@ module.exports = {
     },
     assert: {
       assertions: {
-        "categories:performance": ["error", { minScore: 0.8 }],
-        "categories:accessibility": ["error", { minScore: 0.9 }],
-        "largest-contentful-paint": ["error", { maxNumericValue: 4000 }],
-        "cumulative-layout-shift": ["error", { maxNumericValue: 0.1 }],
+        "categories:performance": ["error", { minScore: 0.8, aggregationMethod: "median" }],
+        "categories:accessibility": ["error", { minScore: 0.9, aggregationMethod: "median" }],
+        "largest-contentful-paint": ["error", { maxNumericValue: 4000, aggregationMethod: "median" }],
+        "cumulative-layout-shift": ["error", { maxNumericValue: 0.1, aggregationMethod: "median" }],
       },
     },
     upload: {
