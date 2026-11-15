@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PROJECTS, projectBySlug } from "../../../../lib/projects";
-import { STUDIO_EMAIL } from "../../../../lib/studio";
 
 type Params = { slug: string };
 
@@ -42,13 +41,6 @@ export default function ReleasePage({ params }: { params: Params }) {
         ) : (
           <p className="mt-4 max-w-xl text-sm leading-snug text-paper/60">This project is part of the studio catalog.</p>
         )}
-        <p className="mt-8 text-sm text-paper/70">
-          Questions go to{" "}
-          <a className="text-signal underline decoration-signal/40 underline-offset-4" href={`mailto:${STUDIO_EMAIL}`}>
-            {STUDIO_EMAIL}
-          </a>
-          .
-        </p>
         <div className="mt-10 flex flex-wrap gap-3 font-display text-[12px] uppercase tracking-[0.16em]">
           <Link href="/projects" className="hud-signin">
             All projects

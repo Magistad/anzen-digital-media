@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ProjectGrid } from "../../../components/studio/ProjectGrid";
 
 const description =
@@ -16,9 +17,12 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main id="content" className="bg-black px-4 pb-20 pt-24 font-display text-paper sm:px-8 md:pt-28">
+    <main id="content" className="bg-black px-4 pb-20 pt-12 font-display text-paper sm:px-8 md:pt-16">
       <div className="mx-auto w-full max-w-5xl">
-        <p className="hud-kicker">Field catalog</p>
+        <Link href="/" className="hud-tab">
+          Studio
+        </Link>
+        <p className="hud-kicker mt-8">Field catalog</p>
         <h1 className="hud-releases-title">Projects</h1>
         <p className="hud-releases-lead">
           Small apps from the studio. Open a live one, or read what is still on the bench.

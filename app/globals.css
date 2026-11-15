@@ -334,7 +334,7 @@ select.book-input {
   --open: 0.58;
   position: relative;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1fr auto;
   min-height: 100svh;
   background: #000;
   color: var(--paper);
@@ -575,7 +575,7 @@ select.book-input {
     "right";
   align-items: center;
   gap: 0.85rem 1rem;
-  padding: 0.5rem 1.15rem 0.75rem;
+  padding: 2.4rem 1.15rem 0.75rem;
 }
 
 .hud-copy { grid-area: copy; text-align: center; }
@@ -596,13 +596,20 @@ select.book-input {
 }
 
 .hud-title {
-  margin: 0.45rem 0 0;
+  margin: 0;
   color: #f5f7f6;
   font-size: clamp(2rem, 8.4vw, 5.15rem);
   font-weight: 300;
   letter-spacing: 0.045em;
   line-height: 0.92;
   text-transform: uppercase;
+}
+
+.hud-title-plain {
+  margin-inline: auto;
+  max-width: 11ch;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .hud-portal {
@@ -675,11 +682,11 @@ select.book-input {
 }
 
 .hud-portal-name {
-  margin: 0.3rem 0 0;
-  font-size: clamp(1.6rem, 4vw, 2.6rem);
-  font-weight: 300;
-  letter-spacing: 0.28em;
-  line-height: 1;
+  margin: 0;
+  font-size: clamp(0.95rem, 2.2vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 
@@ -1174,4 +1181,73 @@ select.book-input {
 
 @keyframes project-edge {
   to { --edge-angle: 360deg; }
+}
+
+.contact-form {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.contact-form label {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.contact-form label span {
+  color: var(--signal);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(93, 242, 220, 0.45);
+  background: transparent;
+  color: var(--paper);
+  font: inherit;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  padding: 0.55rem 0;
+}
+
+.contact-form textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-bottom-color: var(--signal);
+  box-shadow: 0 8px 18px -14px rgba(0, 205, 171, 0.9);
+}
+
+.contact-form button {
+  justify-self: start;
+  margin-top: 0.4rem;
+  cursor: pointer;
+}
+
+.contact-hp {
+  position: absolute;
+  left: -10000px;
+  height: 0;
+  overflow: hidden;
+}
+
+.contact-success {
+  margin-top: 2rem;
+  max-width: 24rem;
+  border: 1px solid rgba(93, 242, 220, 0.45);
+  padding: 1.25rem 1.1rem;
+  color: var(--paper);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-transform: none;
 }

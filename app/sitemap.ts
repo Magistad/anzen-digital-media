@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: origin },
     { url: `${origin}/projects` },
+    { url: `${origin}/contact` },
     ...PROJECTS.map((project) => ({ url: `${origin}${project.href}` })),
     { url: `${origin}/terms` },
     { url: `${origin}/privacy` },

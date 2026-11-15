@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { STUDIO_EMAIL } from "../../lib/studio";
-import { StudioNav } from "./StudioNav";
 
 const OCTAGON = "30 3 70 3 97 30 97 70 70 97 30 97 3 70 3 30";
 
@@ -63,7 +61,6 @@ export function StudioHero() {
       ref={heroRef}
       className="hud-hero"
       data-grain={grain ? "on" : "off"}
-      aria-label="Anzen Digital Media"
     >
       <div className="hud-grain" aria-hidden="true" />
       <div className="hud-scan" aria-hidden="true" />
@@ -77,15 +74,9 @@ export function StudioHero() {
       <span className="hud-tick hud-tick-bl" aria-hidden="true" />
       <span className="hud-tick hud-tick-br" aria-hidden="true" />
 
-      <StudioNav placement="hero" />
-
       <div className="hud-stage">
         <div className="hud-copy hud-rise">
-          <p className="hud-kicker">Independent studio</p>
-          <h1 className="hud-title">
-            <span className="block">Strange little things</span>
-            <span className="block">people actually use</span>
-          </h1>
+          <h1 className="hud-title hud-title-plain">We make cool shit</h1>
         </div>
 
         <Link href="/projects" className="hud-side hud-side-left">
@@ -101,8 +92,11 @@ export function StudioHero() {
             <div className="hud-door hud-door-left" aria-hidden="true" />
             <div className="hud-door hud-door-right" aria-hidden="true" />
             <div className="hud-portal-label">
-              <p className="hud-kicker">Studio</p>
-              <p className="hud-portal-name">Anzen</p>
+              <p className="hud-portal-name">
+                <span className="block">Anzen</span>
+                <span className="block">Digital</span>
+                <span className="block">Media</span>
+              </p>
             </div>
           </div>
           <svg className="hud-portal-svg" viewBox="0 0 100 100" aria-hidden="true">
@@ -114,17 +108,15 @@ export function StudioHero() {
           <span className="hud-cross hud-cross-y" aria-hidden="true" />
         </div>
 
-        <a className="hud-side hud-side-right" href={`mailto:${STUDIO_EMAIL}`}>
+        <Link href="/contact" className="hud-side hud-side-right">
           <span className="hud-side-kicker">Contact</span>
           <span className="hud-action">
             Reach out <span aria-hidden="true">›</span>
           </span>
-        </a>
+        </Link>
       </div>
 
       <footer className="hud-foot">
-        <p>Anzen Digital Media LLC</p>
-        <a href={`mailto:${STUDIO_EMAIL}`}>{STUDIO_EMAIL}</a>
         <nav aria-label="Legal" className="hud-legal">
           <Link href="/terms">Terms</Link>
           <Link href="/privacy">Privacy</Link>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Contact form</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <!-- Static copy so Netlify Forms can see the fields in the build output. -->
+    <form name="contact" method="POST" action="/contact?sent=1" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input name="bot-field" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </body>
+</html>

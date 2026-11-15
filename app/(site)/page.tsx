@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { StudioHero } from "../../components/studio/StudioHero";
 
 const description =
-  "Anzen Digital Media is an independent studio. We build and release small apps people actually use.";
+  "We make cool shit.";
 
 export const metadata: Metadata = {
   title: { absolute: "Anzen Digital Media" },

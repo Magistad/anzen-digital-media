@@ -8,7 +8,7 @@ const linkClass = "transition-colors duration-150 hover:text-signal";
 
 export function SiteFooter() {
   const path = usePathname();
-  if (path === "/") return null;
+  if (path === "/" || path === "/projects" || path === "/contact") return null;
 
   return (
     <footer className="border-t border-signal/30 px-5 py-4 font-display text-[11px] uppercase tracking-[0.18em] text-paper/70 sm:px-8">
