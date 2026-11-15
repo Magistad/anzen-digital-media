@@ -380,7 +380,8 @@ select.book-input {
 .hud-hero[data-grain="off"] .hud-grain,
 .hud-hero[data-grain="off"] .hud-scan,
 .hud-hero[data-grain="off"] .hud-sweep {
-  opacity: 0;
+  display: none;
+  animation: none;
 }
 
 .hud-frame {
@@ -1032,4 +1033,145 @@ select.book-input {
 @keyframes hud-scan-drift {
   from { background-position: 0 0; }
   to { background-position: 0 12px; }
+}
+
+@property --edge-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card {
+  position: relative;
+  display: flex;
+  min-height: 18.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 1.35rem 1.25rem 1.2rem;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(0, 205, 171, 0.08), transparent 42%),
+    #000;
+  color: var(--paper);
+  text-decoration: none;
+  clip-path: polygon(
+    16px 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% calc(100% - 16px),
+    calc(100% - 16px) 100%,
+    16px 100%,
+    0 calc(100% - 16px),
+    0 16px
+  );
+  transition: background-color 180ms ease, filter 180ms ease;
+}
+
+.project-card:hover {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0, 205, 171, 0.2), transparent 58%),
+    #000;
+  filter: drop-shadow(0 0 14px rgba(0, 205, 171, 0.35));
+}
+
+.project-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.project-frame polygon {
+  fill: none;
+  stroke: rgba(93, 242, 220, 0.55);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.project-card:hover .project-frame polygon {
+  stroke: var(--signal);
+}
+
+.project-edge {
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: conic-gradient(from var(--edge-angle, 0deg), transparent 0 72%, rgba(93, 242, 220, 0.95) 84%, transparent 94%);
+  pointer-events: none;
+  clip-path: inherit;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.project-mark {
+  width: 3.25rem;
+  height: 3.25rem;
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 1.4;
+}
+
+.project-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(244, 240, 230, 0.78);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.project-status-live { color: var(--signal); }
+
+.project-name {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.project-tagline {
+  max-width: 28rem;
+  color: rgba(244, 240, 230, 0.74);
+  font-size: 0.95rem;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+.project-action {
+  margin-top: auto;
+  color: var(--signal);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 720px) {
+  .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-edge { animation: project-edge 7.5s linear infinite; }
+  .project-card:hover .project-edge { animation-duration: 2.8s; }
+}
+
+@keyframes project-edge {
+  to { --edge-angle: 360deg; }
 }

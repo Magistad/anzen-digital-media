@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { RELEASES } from "../lib/releases";
+import { PROJECTS } from "../lib/projects";
 
 const origin = "https://anzendigitalmedia.com";
 
@@ -7,7 +7,8 @@ const origin = "https://anzendigitalmedia.com";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: origin },
-    ...RELEASES.map((release) => ({ url: `${origin}${release.href}` })),
+    { url: `${origin}/projects` },
+    ...PROJECTS.map((project) => ({ url: `${origin}${project.href}` })),
     { url: `${origin}/terms` },
     { url: `${origin}/privacy` },
     { url: `${origin}/refunds` },

@@ -6,16 +6,18 @@ import { STUDIO_EMAIL } from "../../lib/studio";
 
 const TABS = [
   { id: "studio", href: "/", label: "Studio" },
-  { id: "releases", href: "/#releases", label: "Releases" },
-  { id: "closepath", href: "/products/closepath", label: "Closepath" },
+  { id: "projects", href: "/projects", label: "Projects" },
+  { id: "contact", href: `mailto:${STUDIO_EMAIL}`, label: "Contact" },
 ] as const;
 
 function activeId(path: string): string {
   if (path === "/") return "studio";
-  if (path.startsWith("/products/closepath")) return "closepath";
-  if (path.startsWith("/products/")) return "releases";
-  if (path.startsWith("/closepath")) return "signin";
+  if (path === "/projects" || path.startsWith("/products/")) return "projects";
   return "";
+}
+
+function showSignIn(path: string): boolean {
+  return path.startsWith("/products/closepath") || path.startsWith("/closepath");
 }
 
 function Tabs({ active }: { active: string }) {
@@ -23,13 +25,16 @@ function Tabs({ active }: { active: string }) {
     <nav aria-label="Primary" className="hud-tabs">
       {TABS.map((tab) => {
         const on = active === tab.id;
+        const className = on ? "hud-tab hud-tab-on" : "hud-tab";
+        if (tab.href.startsWith("mailto:")) {
+          return (
+            <a key={tab.id} href={tab.href} className={className}>
+              {tab.label}
+            </a>
+          );
+        }
         return (
-          <Link
-            key={tab.id}
-            href={tab.href}
-            aria-current={on ? "page" : undefined}
-            className={on ? "hud-tab hud-tab-on" : "hud-tab"}
-          >
+          <Link key={tab.id} href={tab.href} aria-current={on ? "page" : undefined} className={className}>
             {tab.label}
           </Link>
         );
@@ -38,15 +43,17 @@ function Tabs({ active }: { active: string }) {
   );
 }
 
-function Tools() {
+function Tools({ signIn }: { signIn: boolean }) {
   return (
     <div className="hud-tools">
       <a className="hud-mail" href={`mailto:${STUDIO_EMAIL}`}>
         {STUDIO_EMAIL}
       </a>
-      <Link href="/closepath/sign-in" className="hud-signin">
-        Sign in
-      </Link>
+      {signIn ? (
+        <Link href="/closepath/sign-in" className="hud-signin">
+          Sign in
+        </Link>
+      ) : null}
     </div>
   );
 }
@@ -54,6 +61,7 @@ function Tools() {
 export function StudioNav({ placement }: { placement: "hero" | "bar" }) {
   const path = usePathname() || "/";
   const active = activeId(path);
+  const signIn = showSignIn(path);
 
   if (placement === "bar") {
     return (
@@ -62,7 +70,7 @@ export function StudioNav({ placement }: { placement: "hero" | "bar" }) {
           Anzen
         </Link>
         <Tabs active={active} />
-        <Tools />
+        <Tools signIn={signIn} />
       </div>
     );
   }
@@ -74,7 +82,7 @@ export function StudioNav({ placement }: { placement: "hero" | "bar" }) {
         <span className="hud-mark-name">Anzen</span>
         <span className="hud-mark-sub">Digital Media</span>
       </Link>
-      <Tools />
+      <Tools signIn={signIn} />
     </div>
   );
 }

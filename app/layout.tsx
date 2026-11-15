@@ -20,7 +20,7 @@ const display = Barlow_Condensed({
 
 const title = "Anzen Digital Media";
 const description =
-  "Anzen Digital Media is an independent studio. We build and release small apps people actually use. Closepath is live. Countdown is coming soon.";
+  "Anzen Digital Media is an independent studio. We build and release small apps people actually use.";
 
 export const metadata: Metadata = {
   title: {

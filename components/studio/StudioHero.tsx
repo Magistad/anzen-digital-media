@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { featuredRelease } from "../../lib/releases";
 import { STUDIO_EMAIL } from "../../lib/studio";
 import { StudioNav } from "./StudioNav";
 
@@ -11,7 +10,6 @@ const OCTAGON = "30 3 70 3 97 30 97 70 70 97 30 97 3 70 3 30";
 export function StudioHero() {
   const heroRef = useRef<HTMLElement>(null);
   const [grain, setGrain] = useState(true);
-  const featured = featuredRelease();
 
   useEffect(() => {
     const root = heroRef.current;
@@ -90,8 +88,8 @@ export function StudioHero() {
           </h1>
         </div>
 
-        <Link href="/#releases" className="hud-side hud-side-left">
-          <span className="hud-side-kicker">Releases</span>
+        <Link href="/projects" className="hud-side hud-side-left">
+          <span className="hud-side-kicker">Projects</span>
           <span className="hud-action">
             View <span aria-hidden="true">›</span>
           </span>
@@ -116,14 +114,12 @@ export function StudioHero() {
           <span className="hud-cross hud-cross-y" aria-hidden="true" />
         </div>
 
-        {featured ? (
-          <Link href={featured.href} className="hud-side hud-side-right">
-            <span className="hud-side-kicker">{featured.name}</span>
-            <span className="hud-action">
-              {featured.action} <span aria-hidden="true">›</span>
-            </span>
-          </Link>
-        ) : null}
+        <a className="hud-side hud-side-right" href={`mailto:${STUDIO_EMAIL}`}>
+          <span className="hud-side-kicker">Contact</span>
+          <span className="hud-action">
+            Reach out <span aria-hidden="true">›</span>
+          </span>
+        </a>
       </div>
 
       <footer className="hud-foot">

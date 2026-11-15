@@ -1,17 +1,17 @@
-export type ReleaseStatus = "live" | "soon";
+export type ProjectStatus = "live" | "soon";
 
-/** One catalog row. The homepage list and the product route both read this. */
-export type Release = {
+/** One catalog row. The projects grid and the product route both read this. */
+export type Project = {
   slug: string;
   name: string;
   href: string;
   summary: string;
-  status: ReleaseStatus;
+  status: ProjectStatus;
   statusLabel: string;
   action: string;
 };
 
-export const RELEASES: readonly Release[] = [
+export const PROJECTS: readonly Project[] = [
   {
     slug: "closepath",
     name: "Closepath",
@@ -32,11 +32,6 @@ export const RELEASES: readonly Release[] = [
   },
 ];
 
-export function releaseBySlug(slug: string): Release | undefined {
-  return RELEASES.find((item) => item.slug === slug);
-}
-
-/** The release the HUD treats as the one you can open today. */
-export function featuredRelease(): Release | undefined {
-  return RELEASES.find((item) => item.status === "live") ?? RELEASES[0];
+export function projectBySlug(slug: string): Project | undefined {
+  return PROJECTS.find((item) => item.slug === slug);
 }
