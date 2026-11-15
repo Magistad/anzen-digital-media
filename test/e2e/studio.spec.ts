@@ -5,7 +5,9 @@ const EMAIL = "contact@anzendigitalmedia.com";
 test.describe("studio homepage", () => {
   test("keeps one path to projects and one path to the form", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { level: 1, name: "We make cool shit" })).toBeVisible();
+    await expect(page).toHaveTitle("Anzen Digital Media");
+    await expect(page.getByText("We make cool shit")).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 1, name: "Anzen Digital Media" })).toBeVisible();
     await expect(page.locator(".hud-portal-name")).toContainText("Anzen");
     await expect(page.locator(".hud-portal-name")).toContainText("Digital");
     await expect(page.locator(".hud-portal-name")).toContainText("Media");
@@ -83,7 +85,7 @@ test.describe("studio homepage", () => {
   test("mobile layout shows projects and contact once", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    const heading = page.getByRole("heading", { level: 1, name: "We make cool shit" });
+    const heading = page.getByRole("heading", { level: 1, name: "Anzen Digital Media" });
     await expect(heading).toBeVisible();
     const box = await heading.boundingBox();
     expect(box).not.toBeNull();
@@ -119,9 +121,10 @@ test.describe("studio homepage", () => {
 test.describe("studio homepage with reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 
-  test("headline and project cards stay visible without the intro", async ({ page }) => {
+  test("portal name and project cards stay visible without the intro", async ({ page }) => {
     await page.goto("/");
-    const heading = page.getByRole("heading", { level: 1 });
+    await expect(page.getByText("We make cool shit")).toHaveCount(0);
+    const heading = page.getByRole("heading", { level: 1, name: "Anzen Digital Media" });
     await expect(heading).toBeVisible();
     const opacity = await heading.evaluate((element) => getComputedStyle(element).opacity);
     expect(Number(opacity)).toBeGreaterThan(0.9);

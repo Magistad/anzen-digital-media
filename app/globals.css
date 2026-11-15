@@ -569,13 +569,14 @@ select.book-input {
   z-index: 4;
   display: grid;
   grid-template-areas:
-    "copy"
     "portal"
     "left"
     "right";
+  align-content: center;
   align-items: center;
+  height: 100%;
   gap: 0.85rem 1rem;
-  padding: 2.4rem 1.15rem 0.75rem;
+  padding: 1.25rem 1.15rem;
 }
 
 .hud-copy { grid-area: copy; text-align: center; }
@@ -919,11 +920,9 @@ select.book-input {
 
   .hud-stage {
     grid-template-columns: minmax(7.5rem, 1fr) minmax(16rem, 28rem) minmax(7.5rem, 1fr);
-    grid-template-areas:
-      "copy copy copy"
-      "left portal right";
+    grid-template-areas: "left portal right";
     gap: 0.5rem 1.25rem;
-    padding: 0.25rem 2.4rem 0.5rem;
+    padding: 1.25rem 2.4rem;
   }
 
   .hud-side { min-height: 100%; padding-inline: 0.4rem; }

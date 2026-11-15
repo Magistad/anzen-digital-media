@@ -19,8 +19,7 @@ const display = Barlow_Condensed({
 });
 
 const title = "Anzen Digital Media";
-const description =
-  "We make cool shit.";
+const description = "Anzen Digital Media is an independent studio.";
 
 export const metadata: Metadata = {
   title: {

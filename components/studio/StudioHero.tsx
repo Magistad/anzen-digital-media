@@ -75,10 +75,6 @@ export function StudioHero() {
       <span className="hud-tick hud-tick-br" aria-hidden="true" />
 
       <div className="hud-stage">
-        <div className="hud-copy hud-rise">
-          <h1 className="hud-title hud-title-plain">We make cool shit</h1>
-        </div>
-
         <Link href="/projects" className="hud-side hud-side-left">
           <span className="hud-side-kicker">Projects</span>
           <span className="hud-action">
@@ -92,11 +88,11 @@ export function StudioHero() {
             <div className="hud-door hud-door-left" aria-hidden="true" />
             <div className="hud-door hud-door-right" aria-hidden="true" />
             <div className="hud-portal-label">
-              <p className="hud-portal-name">
+              <h1 className="hud-portal-name">
                 <span className="block">Anzen</span>
                 <span className="block">Digital</span>
                 <span className="block">Media</span>
-              </p>
+              </h1>
             </div>
           </div>
           <svg className="hud-portal-svg" viewBox="0 0 100 100" aria-hidden="true">
