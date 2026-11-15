@@ -11,9 +11,11 @@ const config: Config = {
       colors: {
         ink: "#070708",
         paper: "#f4f0e6",
+        signal: "#5df2dc",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
     },
   },

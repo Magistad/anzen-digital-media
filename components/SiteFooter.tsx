@@ -1,22 +1,23 @@
-import Link from "next/link";
+"use client";
 
-const linkClass = "text-paper/80 transition-colors duration-300 hover:text-paper";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { STUDIO_EMAIL } from "../lib/studio";
+
+const linkClass = "transition-colors duration-150 hover:text-signal";
 
 export function SiteFooter() {
+  const path = usePathname();
+  if (path === "/") return null;
+
   return (
-    <footer className="frame py-10 text-sm tracking-[-0.01em] text-paper/60 md:py-14">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between">
-        <div>
-          <p>Anzen Digital Media LLC</p>
-          <p className="mt-2">
-            Questions go to{" "}
-            <a href="mailto:contact@anzendigitalmedia.com" className={linkClass}>
-              contact@anzendigitalmedia.com
-            </a>
-            .
-          </p>
-        </div>
-        <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
+    <footer className="border-t border-signal/30 px-5 py-4 font-display text-[11px] uppercase tracking-[0.18em] text-paper/70 sm:px-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p>Anzen Digital Media LLC</p>
+        <a className={linkClass} href={`mailto:${STUDIO_EMAIL}`}>
+          {STUDIO_EMAIL}
+        </a>
+        <nav aria-label="Legal" className="flex flex-wrap gap-x-4 gap-y-2">
           <Link href="/terms" className={linkClass}>
             Terms
           </Link>
