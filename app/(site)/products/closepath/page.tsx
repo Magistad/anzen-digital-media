@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { BuyClosepath } from "../../../../components/BuyClosepath";
 import { CLOSEPATH_OFFER } from "../../../../lib/closepath";
@@ -16,11 +17,20 @@ export const metadata: Metadata = {
     title: "Closepath",
     description,
     url: "/products/closepath",
+    images: [
+      {
+        url: "/closepath/og.webp",
+        width: 1200,
+        height: 630,
+        alt: "An open blank book.",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Closepath",
     description,
+    images: ["/closepath/og.webp"],
   },
 };
 
@@ -204,6 +214,15 @@ export default function ClosepathPage({
 
       <section className="py-16 md:py-20" aria-labelledby="closepath-book">
         <div className="frame">
+          <div className="relative mb-10 aspect-[2432/1792] w-full overflow-hidden border border-paper/15 md:mb-14">
+            <Image
+              src="/closepath/feature.webp"
+              alt="An open blank book."
+              fill
+              sizes="(min-width: 1024px) 84rem, 92vw"
+              className="object-cover"
+            />
+          </div>
           <h2 id="closepath-book" className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
             The book
           </h2>
