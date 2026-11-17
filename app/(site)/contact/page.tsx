@@ -21,7 +21,7 @@ export default function ContactPage({
   const sent = searchParams?.sent === "1" || (Array.isArray(searchParams?.sent) && searchParams.sent[0] === "1");
 
   return (
-    <main id="content" className="bg-black px-4 pb-16 pt-12 font-display text-paper sm:px-8 md:pt-16">
+    <main id="content" className="brand-wash min-h-[100svh] bg-black px-4 pb-16 pt-12 font-display text-paper sm:px-8 md:pt-16">
       <div className="mx-auto w-full max-w-xl">
         <Link href="/" className="hud-tab">
           Studio

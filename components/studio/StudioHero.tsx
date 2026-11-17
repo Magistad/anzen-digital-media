@@ -63,6 +63,7 @@ export function StudioHero() {
       data-grain={grain ? "on" : "off"}
     >
       <div className="hud-grain" aria-hidden="true" />
+      <div className="hud-texture" aria-hidden="true" />
       <div className="hud-scan" aria-hidden="true" />
       <div className="hud-sweep" aria-hidden="true" />
       <svg className="hud-frame" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">

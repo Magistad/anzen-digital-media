@@ -336,12 +336,17 @@ select.book-input {
   display: grid;
   grid-template-rows: 1fr auto;
   min-height: 100svh;
-  background: #000;
+  background-color: #000;
+  background-image: url("/brand/hero.webp");
+  background-repeat: no-repeat;
+  background-position: center 58%;
+  background-size: cover;
   color: var(--paper);
   isolation: isolate;
 }
 
 .hud-grain,
+.hud-texture,
 .hud-scan,
 .hud-sweep,
 .hud-frame {
@@ -352,10 +357,19 @@ select.book-input {
 
 .hud-grain {
   z-index: 1;
-  opacity: 0.2;
+  opacity: 0.08;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
   background-size: 180px 180px;
   mix-blend-mode: soft-light;
+}
+
+.hud-texture {
+  z-index: 1;
+  opacity: 0.18;
+  background-image: url("/brand/texture-overlay.webp");
+  background-repeat: repeat;
+  background-size: 512px 512px;
+  mix-blend-mode: screen;
 }
 
 .hud-scan {
@@ -378,6 +392,7 @@ select.book-input {
 }
 
 .hud-hero[data-grain="off"] .hud-grain,
+.hud-hero[data-grain="off"] .hud-texture,
 .hud-hero[data-grain="off"] .hud-scan,
 .hud-hero[data-grain="off"] .hud-sweep {
   display: none;
@@ -926,8 +941,25 @@ select.book-input {
   }
 
   .hud-side { min-height: 100%; padding-inline: 0.4rem; }
-  .hud-side-left { text-align: left; }
-  .hud-side-right { text-align: right; }
+  .hud-side-left,
+  .hud-side-right {
+    background-repeat: repeat, no-repeat;
+    background-size: auto, auto 100%;
+  }
+  .hud-side-left {
+    text-align: left;
+    background-image:
+      repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(93, 242, 220, 0.045) 5px, rgba(93, 242, 220, 0.045) 6px),
+      url("/brand/projects-panel.webp");
+    background-position: 0 0, left center;
+  }
+  .hud-side-right {
+    text-align: right;
+    background-image:
+      repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(93, 242, 220, 0.045) 5px, rgba(93, 242, 220, 0.045) 6px),
+      url("/brand/contact-panel.webp");
+    background-position: 0 0, right center;
+  }
 
   .hud-releases { padding-inline: 2.5rem; }
 
@@ -1237,6 +1269,27 @@ select.book-input {
   left: -10000px;
   height: 0;
   overflow: hidden;
+}
+
+.brand-wash {
+  position: relative;
+  isolation: isolate;
+  background-color: #000;
+}
+
+.brand-wash::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url("/brand/contact-wash.webp") left center / auto min(100%, 42rem) no-repeat;
+  opacity: 0.9;
+}
+
+.brand-wash > * {
+  position: relative;
+  z-index: 1;
 }
 
 .contact-success {
