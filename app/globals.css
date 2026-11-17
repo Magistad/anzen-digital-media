@@ -95,6 +95,14 @@ button:disabled {
   );
 }
 
+/* Marketing pages only. The tile is already black-pointed to the ink. */
+.paper-texture {
+  background-image: url("/brand/texture.webp");
+  background-repeat: repeat;
+  background-size: 640px 640px;
+  opacity: 0.5;
+}
+
 @keyframes rise {
   from {
     opacity: 0;

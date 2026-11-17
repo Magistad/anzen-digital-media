@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
+      <div aria-hidden className="paper-texture pointer-events-none fixed inset-0 -z-10" />
       <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
         <div className="wash drift absolute -left-[18%] top-[-10%] h-[70vh] w-[70vw]" />
         <div className="vignette absolute inset-0" />

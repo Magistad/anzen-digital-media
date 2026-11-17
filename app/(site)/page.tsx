@@ -1,15 +1,23 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CLOSEPATH_OFFER, CLOSEPATH_TRIAL_BUTTON } from "../../lib/closepath";
 
 export default function Page() {
   return (
     <main id="content">
-      <section className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-28 md:pb-24">
-        <div aria-hidden className="hero-glow breathe pointer-events-none absolute inset-0" />
+      <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-16 pt-28 md:pb-24">
+        <Image
+          src="/brand/hero.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          quality={90}
+          className="pointer-events-none object-cover object-[center_28%]"
+        />
         <div
           aria-hidden
-          className="horizon horizon-draw pointer-events-none absolute inset-x-[14%] top-[18%] md:inset-x-[18%] md:top-[22%]"
-          style={{ animationDelay: "180ms" }}
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-b from-transparent to-ink"
         />
         <div className="frame relative">
           <h1 className="max-w-[10em] text-balance text-[clamp(2.7rem,8.8vw,8.6rem)] font-semibold leading-[0.86] tracking-[-0.058em]">
@@ -34,8 +42,21 @@ export default function Page() {
         <div className="frame view-rise">
           <Link
             href="/products/closepath"
-            className="group block border border-paper/15 px-6 py-10 transition-colors duration-500 hover:border-paper/55 sm:px-10 sm:py-14 lg:px-16 lg:py-16"
+            className="group block overflow-hidden border border-paper/15 px-6 py-10 transition-colors duration-500 hover:border-paper/55 sm:px-10 sm:py-14 lg:px-16 lg:py-16"
           >
+            <div className="relative -mx-6 -mt-10 mb-10 aspect-[2.4/1] sm:-mx-10 sm:-mt-14 sm:mb-12 md:aspect-[3.2/1] lg:-mx-16 lg:-mt-16 lg:mb-14 lg:aspect-[3.6/1]">
+              <Image
+                src="/closepath/feature.webp"
+                alt=""
+                fill
+                sizes="(min-width: 1024px) 84rem, 92vw"
+                className="object-cover object-[center_34%]"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-b from-transparent to-ink"
+              />
+            </div>
             <div className="flex flex-col gap-8 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
               <h2 className="text-[clamp(3.4rem,8vw,7.25rem)] font-semibold leading-[0.86] tracking-[-0.055em]">
                 Closepath
