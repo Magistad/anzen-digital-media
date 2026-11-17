@@ -7,6 +7,10 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 
+  async redirects() {
+    return [{ source: "/releases", destination: "/projects", permanent: false }];
+  },
+
   async headers() {
     return [
       // Cache Next.js build assets forever

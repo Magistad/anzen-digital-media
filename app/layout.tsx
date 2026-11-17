@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Instrument_Sans } from "next/font/google";
+import { Barlow_Condensed, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteNav } from "../components/SiteNav";
-import { CLOSEPATH_OFFER } from "../lib/closepath";
 
 const sans = Instrument_Sans({
   subsets: ["latin"],
@@ -12,14 +11,20 @@ const sans = Instrument_Sans({
   variable: "--font-sans",
 });
 
-const title = "Closepath — Anzen Digital Media";
-const description =
-  `Closepath is a listing-to-close organization book for solo residential agents. Open it in the browser. ${CLOSEPATH_OFFER}`;
+const display = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["300", "500"],
+  display: "swap",
+  variable: "--font-display",
+});
+
+const title = "Anzen Digital Media";
+const description = "Anzen Digital Media is an independent studio.";
 
 export const metadata: Metadata = {
   title: {
     default: title,
-    template: "%s — Anzen",
+    template: "%s | Anzen",
   },
   description,
   metadataBase: new URL("https://anzendigitalmedia.com"),
@@ -39,7 +44,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070708",
+  themeColor: "#000000",
   colorScheme: "dark",
 };
 
@@ -49,7 +54,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="en" className={sans.variable}>
+    <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <body className="bg-ink font-sans text-paper antialiased">
         <div className="relative z-10">
           <a

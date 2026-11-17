@@ -286,8 +286,8 @@ export default function ClosepathPage({
           </h2>
           <p className="mt-6 max-w-full border-l border-paper/25 pl-4 text-[clamp(1.25rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 sm:mt-8 sm:max-w-[22em] sm:pl-6 sm:text-[clamp(1.4rem,2.45vw,2.15rem)] md:mt-12 md:pl-8">
             Not a Follow Up Boss or BoldTrail replacement. Those are full
-            CRMs. Closepath is the book underneath — 7 days free, then $9.99 a
-            month, cancel anytime — and one place that holds the transaction
+            CRMs. Closepath is the book underneath: 7 days free, then $9.99 a
+            month, cancel anytime, and one place that holds the transaction
             from listing to funded.
           </p>
         </div>
