@@ -13,8 +13,17 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test("/ responds and renders the studio homepage", async ({ page }) => {
+  const response = await page.goto("/");
+  expect(response?.status()).toBe(200);
+  const portal = page.locator(".hud-portal-name");
+  await expect(portal).toContainText("Anzen");
+  await expect(portal).toContainText(/Digital\s*Media/);
+  await expect(page.getByRole("link", { name: /^Projects/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^Contact/i })).toBeVisible();
+});
+
 const pages: { path: string; text: string }[] = [
-  { path: "/", text: "Tools you open in the browser" },
   { path: "/products/closepath", text: "Never lose a deal" },
   { path: "/closepath/sign-in", text: "Open your book." },
   { path: "/terms", text: "Terms" },
