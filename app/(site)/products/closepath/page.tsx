@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BuyClosepath } from "../../../../components/BuyClosepath";
-import { CLOSEPATH_OFFER } from "../../../../lib/closepath";
+import { CLOSEPATH_AMOUNT_CENTS, CLOSEPATH_OFFER } from "../../../../lib/closepath";
 import { isStripeConfigured } from "../../../../lib/env";
 
 export const dynamic = "force-dynamic";
@@ -39,11 +39,28 @@ function one(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
+const priceFigure = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+}).format(CLOSEPATH_AMOUNT_CENTS / 100);
+
+function offerLine(text: string) {
+  return text.replace(/(\d+)\s+(days)/g, "$1\u00a0$2");
+}
+
+function ProductMark() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 100 100" aria-hidden="true" className="shrink-0">
+      <polygon points="30 3 70 3 97 30 97 70 70 97 30 97 3 70 3 30" fill="none" stroke="#5df2dc" strokeWidth="6" />
+    </svg>
+  );
+}
+
 function AlreadySubscribed() {
   return (
-    <p className="mt-4 text-sm text-paper/60">
+    <p className="mt-4 text-sm text-paper/75">
       Already have Closepath?{" "}
-      <Link href="/closepath/sign-in" className="text-paper transition-colors duration-300 hover:text-paper">
+      <Link href="/closepath/sign-in" className="text-link">
         Sign in
       </Link>
     </p>
@@ -52,12 +69,9 @@ function AlreadySubscribed() {
 
 function Questions({ className = "mt-2" }: { className?: string }) {
   return (
-    <p className={`${className} text-sm text-paper/60`}>
+    <p className={`${className} text-sm text-paper/75`}>
       Questions go to{" "}
-      <a
-        href="mailto:contact@anzendigitalmedia.com"
-        className="text-paper transition-colors duration-300 hover:text-paper"
-      >
+      <a href="mailto:contact@anzendigitalmedia.com" className="text-link">
         contact@anzendigitalmedia.com
       </a>
       .
@@ -97,16 +111,16 @@ const shots: { src: string; alt: string; label: string; caption: string }[] = [
 
 function ProductFilm() {
   return (
-    <section className="pt-16 md:pt-24" aria-labelledby="closepath-film">
+    <section className="border-t border-signal/25 pt-16 md:pt-24" aria-labelledby="closepath-film">
       <div className="frame">
-        <h2
-          id="closepath-film"
-          className="text-[15px] font-normal tracking-[-0.02em] text-paper/60"
-        >
+        <h2 id="closepath-film" className="page-title text-[clamp(2rem,4vw,3.2rem)]">
           The film
         </h2>
+        <p id="closepath-film-desc" className="mt-4 max-w-[38rem] text-[15px] leading-relaxed text-paper/75">
+          The sample book, from the morning list through one address and the commission. The film has sound.
+        </p>
         <video
-          className="mt-8 block aspect-video h-auto w-full max-w-full border border-paper/15 bg-ink"
+          className="mt-6 block aspect-video h-auto w-full max-w-full border border-signal/40 bg-ink"
           controls
           playsInline
           preload="metadata"
@@ -114,6 +128,7 @@ function ProductFilm() {
           width={1920}
           height={1080}
           aria-label="Closepath product film"
+          aria-describedby="closepath-film-desc"
           title="Closepath product film"
         >
           <source src="/closepath/ad.mp4" type="video/mp4" />
@@ -143,11 +158,11 @@ function BookShot({
         height={998}
         loading="lazy"
         decoding="async"
-        className="block h-auto w-full max-w-full border border-paper/15"
+        className="block h-auto w-full max-w-full border border-signal/40"
       />
       <figcaption className="mt-2 grid gap-1 text-[15px] leading-snug tracking-[-0.015em] sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-x-5">
-        <span className="text-paper/45">{label}</span>
-        <span className="text-paper/80">{caption}</span>
+        <span className="text-paper/75">{label}</span>
+        <span className="text-paper/85">{caption}</span>
       </figcaption>
     </figure>
   );
@@ -164,30 +179,50 @@ export default function ClosepathPage({
   const codeError = checkout === "code";
 
   return (
-    <main id="content" className="overflow-x-clip">
-      <section className="relative flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-12 pt-24 sm:pb-16 sm:pt-28 md:pb-24">
-        <div aria-hidden className="hero-glow breathe pointer-events-none absolute inset-0" />
-        <div className="frame relative min-w-0">
-          <p className="rise text-[15px] tracking-[-0.02em] text-paper/60">
-            Closepath
-          </p>
-          <h1 className="mt-4 max-w-full text-[2.15rem] font-semibold leading-[0.92] tracking-[-0.046em] sm:mt-6 sm:text-[clamp(2.85rem,8.2vw,8.15rem)] sm:leading-[0.86] sm:tracking-[-0.058em]">
-            <span className="rise block" style={{ animationDelay: "80ms" }}>
-              Never lose a deal
-            </span>
-            <span className="rise block" style={{ animationDelay: "160ms" }}>
-              to a missed date.
-            </span>
-          </h1>
-          <p
-            className="rise mt-5 max-w-[36rem] text-base leading-snug tracking-[-0.02em] text-paper/75 sm:mt-8 sm:text-lg md:mt-10 md:text-[1.35rem]"
-            style={{ animationDelay: "280ms" }}
-          >
-            Closepath is a listing-to-close system for solo residential real
-            estate agents. It supplements the tools you already use. You open
-            it in the browser on a computer or phone. {CLOSEPATH_OFFER}
-          </p>
-          <div className="rise mt-6 sm:mt-10 md:mt-12" style={{ animationDelay: "380ms" }}>
+    <main id="content" className="overflow-x-clip bg-black">
+      <section className="product-hero">
+        <div className="section-art-bleed" data-slot="closepath-hero" aria-hidden="true">
+          <picture>
+            <source srcSet="/brand/section-closepath-hero.webp" type="image/webp" />
+            <img
+              src="/brand/section-closepath-hero.jpg"
+              alt=""
+              width={2400}
+              height={1356}
+              decoding="async"
+              fetchPriority="high"
+            />
+          </picture>
+        </div>
+        <div className="product-hero-shade" aria-hidden="true" />
+        <div className="frame product-hero-grid">
+          <div className="min-w-0">
+            <p className="product-kicker">
+              <ProductMark />
+              <span translate="no">Closepath</span>
+            </p>
+            <h1 className="mt-4 max-w-[11ch] text-[2.6rem] leading-[0.88] sm:text-[clamp(3.4rem,6.4vw,6.6rem)]">
+              <span className="block">Never lose a deal</span>
+              <span className="block">to a missed date.</span>
+            </h1>
+            <p className="mt-6 max-w-[38rem] text-base leading-relaxed text-paper/85 sm:text-lg">
+              Closepath is a listing-to-close system for solo residential real
+              estate agents. It supplements the tools you already use. You open
+              it in the browser on a computer or phone.
+            </p>
+          </div>
+          <aside className="price-card">
+            <h2 className="m-0 font-display text-base font-bold tracking-[-0.03em] text-signal">Price</h2>
+            <p className="product-price">
+              <span className="sr-only">{offerLine(CLOSEPATH_OFFER)}</span>
+              <span aria-hidden="true" className="flex items-start">
+                <span className="mt-[0.16em] text-[0.38em] font-bold">$</span>
+                {priceFigure}
+              </span>
+            </p>
+            <p className="mt-3 text-base leading-snug text-paper/85" aria-hidden="true">
+              {offerLine(CLOSEPATH_OFFER)}
+            </p>
             <BuyClosepath
               noteId="closepath-checkout-hero"
               enabled={checkoutReady}
@@ -196,21 +231,21 @@ export default function ClosepathPage({
             />
             <AlreadySubscribed />
             <Questions />
-          </div>
+          </aside>
         </div>
       </section>
 
       <ProductFilm />
 
-      <section className="py-16 md:py-20" aria-labelledby="closepath-book">
+      <section className="border-t border-signal/25 py-16 md:py-24" aria-labelledby="closepath-book">
         <div className="frame">
-          <h2 id="closepath-book" className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
+          <h2 id="closepath-book" className="page-title text-[clamp(2rem,4vw,3.2rem)]">
             The book
           </h2>
-          <p className="mt-5 max-w-[16em] text-[clamp(1.85rem,3.6vw,2.9rem)] font-medium leading-[1.08] tracking-[-0.04em]">
+          <p className="mt-5 max-w-[16em] font-display text-[clamp(1.7rem,3vw,2.5rem)] font-bold leading-[1.05] tracking-[-0.04em]">
             One address. The dates first.
           </p>
-          <p className="mt-4 max-w-[38rem] text-[15px] leading-snug tracking-[-0.015em] text-paper/70 md:text-base">
+          <p className="mt-4 max-w-[38rem] text-[15px] leading-relaxed tracking-[-0.015em] text-paper/80 md:text-base">
             This is Closepath after checkout. The rows are samples: 1842 Maple Street, Elena Vasquez, and 910 Cedar Avenue, Marcus Hale. Not real clients.
           </p>
           <div className="mt-8 space-y-8">
@@ -236,79 +271,57 @@ export default function ClosepathPage({
         </div>
       </section>
 
-      <section className="flex min-h-[100svh] flex-col justify-center py-28">
-        <div className="frame view-rise">
-          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
-            What it tracks
-          </h2>
-          <ol className="mt-8 border-t border-paper/15 md:mt-10">
-            {tracks.map((item, index) => (
-              <li
-                key={item.title}
-                className="group grid grid-cols-[2.25rem_minmax(0,1fr)] items-baseline gap-x-4 border-b border-paper/15 py-5 sm:grid-cols-[3.25rem_minmax(0,1fr)] sm:gap-x-8 sm:py-6 lg:py-7"
-              >
-                <span className="text-sm tabular-nums text-paper/40 transition-colors duration-300 group-hover:text-paper">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <p className="text-[clamp(2rem,4.2vw,3.7rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
-                    {item.title}
-                  </p>
-                  {item.detail ? (
-                    <p className="mt-2 max-w-[36rem] text-pretty text-base tracking-[-0.015em] text-paper/70 md:text-lg">
-                      {item.detail}
-                    </p>
-                  ) : null}
-                </div>
+      <section className="border-t border-signal/25 py-16 md:py-24">
+        <div className="frame">
+          <h2 className="page-title text-[clamp(2rem,4vw,3.2rem)]">What it tracks</h2>
+          <ul className="benefit-grid">
+            {tracks.map((item) => (
+              <li key={item.title} className="benefit-card min-w-0">
+                <p>{item.title}</p>
+                {item.detail ? <span>{item.detail}</span> : null}
               </li>
             ))}
-          </ol>
+          </ul>
         </div>
       </section>
 
-      <section className="flex min-h-[100svh] flex-col justify-end py-28 md:py-36">
-        <div className="frame view-rise">
-          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
-            Who it’s for
-          </h2>
-          <p className="mt-6 max-w-full text-[clamp(1.55rem,4.1vw,3.45rem)] font-medium leading-[1.12] tracking-[-0.035em] sm:mt-8 sm:max-w-[14em] sm:text-[clamp(1.9rem,4.1vw,3.45rem)] md:mt-12">
-            A solo residential agent who is running listings, showings, and
-            closings out of texts and spreadsheets, and cannot afford to miss a
-            date.
-          </p>
+      <section className="border-t border-signal/25 py-16 md:py-24">
+        <div className="frame split-grid">
+          <article className="split-card">
+            <h2>Who it’s for</h2>
+            <p className="max-w-[22em] font-display text-[clamp(1.45rem,2.4vw,2.15rem)] font-bold leading-[1.15] tracking-[-0.04em]">
+              A solo residential agent who is running listings, showings, and
+              closings out of texts and spreadsheets, and cannot afford to miss a
+              date.
+            </p>
+          </article>
+          <article className="split-card">
+            <div className="section-art-bleed" data-slot="closepath" aria-hidden="true">
+              <picture>
+                <source srcSet="/brand/section-closepath.webp" type="image/webp" />
+                <img src="/brand/section-closepath.jpg" alt="" width={2400} height={1356} decoding="async" loading="lazy" />
+              </picture>
+            </div>
+            <h2 className="relative">What it is not</h2>
+            <p className="relative max-w-[28em] text-lg leading-relaxed text-paper/90">
+              Not a Follow Up Boss or BoldTrail replacement. Those are full
+              CRMs. Closepath is the book underneath: 7&nbsp;days free, then $9.99 a
+              month, cancel anytime, and one place that holds the transaction
+              from listing to funded.
+            </p>
+          </article>
         </div>
       </section>
 
-      <section className="flex min-h-[100svh] flex-col justify-end py-28 md:py-36">
-        <div className="frame view-rise">
-          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
-            What it is not
-          </h2>
-          <p className="mt-6 max-w-full border-l border-paper/25 pl-4 text-[clamp(1.25rem,2.45vw,2.15rem)] font-medium leading-[1.32] tracking-[-0.03em] text-paper/85 sm:mt-8 sm:max-w-[22em] sm:pl-6 sm:text-[clamp(1.4rem,2.45vw,2.15rem)] md:mt-12 md:pl-8">
-            Not a Follow Up Boss or BoldTrail replacement. Those are full
-            CRMs. Closepath is the book underneath: 7 days free, then $9.99 a
-            month, cancel anytime, and one place that holds the transaction
-            from listing to funded.
-          </p>
-        </div>
-      </section>
-
-      <section className="flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-16 pt-24 sm:pb-28 sm:pt-28 md:pb-32">
-        <div className="frame view-rise min-w-0">
-          <h2 className="text-[15px] font-normal tracking-[-0.02em] text-paper/60">
-            Price
-          </h2>
-          <p className="mt-4 max-w-full text-[clamp(4.5rem,16vw,11rem)] font-semibold leading-[0.8] tracking-[-0.065em] sm:mt-6">
-            <span className="sr-only">{CLOSEPATH_OFFER}</span>
-            <span aria-hidden className="flex items-start">
-              <span className="mt-[0.12em] text-[0.38em] font-medium">$</span>
-              9.99
-            </span>
-          </p>
-          <p className="mt-4 text-lg tracking-[-0.02em] text-paper/70 md:text-xl" aria-hidden>
-            {CLOSEPATH_OFFER}
-          </p>
-          <div className="mt-8 sm:mt-10 md:mt-14">
+      <section className="overflow-x-clip border-t border-signal/25 py-16 md:py-24">
+        <div className="frame grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.7fr)] lg:items-center">
+          <div className="min-w-0">
+            <h2 className="page-title text-[clamp(2rem,4vw,3.4rem)]">Price</h2>
+            <p className="mt-4 max-w-[34rem] text-lg leading-relaxed text-paper/85">
+              {offerLine(CLOSEPATH_OFFER)}
+            </p>
+          </div>
+          <aside className="price-card">
             <BuyClosepath
               noteId="closepath-checkout-price"
               enabled={checkoutReady}
@@ -317,7 +330,7 @@ export default function ClosepathPage({
             />
             <AlreadySubscribed />
             <Questions />
-          </div>
+          </aside>
         </div>
       </section>
     </main>

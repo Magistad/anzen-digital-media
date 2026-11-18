@@ -188,7 +188,7 @@ export function ClosepathApp({
             <span className="book-email">{email}</span>
           </p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-0 text-[14px] sm:items-baseline sm:gap-x-4">
-            <span className="text-paper/45">{saveState === "saving" ? "Saving" : saveState === "error" ? "Not saved" : "Saved"}</span>
+            <span className="text-paper/75" role="status">{saveState === "saving" ? "Saving…" : saveState === "error" ? "Not saved. Try again." : "Saved"}</span>
             {saveState === "error" ? (
               <button type="button" className="book-quiet" onClick={() => void drain()}>
                 Retry

@@ -303,11 +303,10 @@ export default function TermsPage() {
           <br />
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>
         </p>
-        <p>
+        <nav aria-label="Related policies" className="flex flex-wrap gap-x-4 gap-y-2">
           <LegalLink href="/privacy">Privacy Policy</LegalLink>
-          {" · "}
           <LegalLink href="/refunds">Refund Policy</LegalLink>
-        </p>
+        </nav>
       </LegalSection>
     </LegalDocument>
   );

@@ -15,7 +15,9 @@ test.describe("studio homepage", () => {
     await expect(page.getByText(EMAIL)).toHaveCount(0);
     await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Sign in" })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /Closepath/i })).toHaveCount(0);
+    const closepath = page.getByRole("link", { name: /^Closepath$/i });
+    await expect(closepath).toHaveCount(1);
+    await expect(closepath).toHaveAttribute("href", "/products/closepath");
 
     const projects = page.getByRole("link", { name: /^Projects/i });
     await expect(projects).toHaveCount(1);

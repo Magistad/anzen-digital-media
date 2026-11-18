@@ -167,7 +167,7 @@ export function FileDocuments({
         {shell ? (
           <>
             <button type="button" className="book-action" disabled={full || busy} onClick={() => void capture("camera")}>
-              {busy ? "Saving" : "Take a photo"}
+              {busy ? "Saving…" : "Take a photo"}
             </button>
             <button type="button" className="book-action" disabled={full || busy} onClick={() => void capture("photo")}>
               Choose a photo
@@ -179,7 +179,7 @@ export function FileDocuments({
         ) : (
           <>
             <label className={`book-action ${full || busy ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
-              {busy ? "Saving" : "Take a photo"}
+              {busy ? "Saving…" : "Take a photo"}
               <input
                 type="file"
                 accept="image/*"

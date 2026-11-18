@@ -302,13 +302,13 @@ export function FileView({
             <div>
               <div className="text-[12px] text-paper/45">Gross</div>
               <div className="text-[1.35rem] font-semibold tabular-nums tracking-[-0.03em]">
-                {figures.gross === null ? "—" : formatMoneyAuto(figures.gross)}
+                {figures.gross === null ? "None" : formatMoneyAuto(figures.gross)}
               </div>
             </div>
             <div>
               <div className="text-[12px] text-paper/45">Your net</div>
               <div className="text-[1.35rem] font-semibold tabular-nums tracking-[-0.03em]">
-                {figures.net === null ? "—" : formatMoneyAuto(figures.net)}
+                {figures.net === null ? "None" : formatMoneyAuto(figures.net)}
               </div>
             </div>
           </div>

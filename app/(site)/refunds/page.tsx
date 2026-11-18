@@ -113,11 +113,10 @@ export default function RefundsPage() {
           subsequent charges. This policy does not refund earlier months and does not add a warranty or a
           service-level commitment.
         </p>
-        <p>
+        <nav aria-label="Related policies" className="flex flex-wrap gap-x-4 gap-y-2">
           <LegalLink href="/terms">Terms of Service</LegalLink>
-          {" · "}
           <LegalLink href="/privacy">Privacy Policy</LegalLink>
-        </p>
+        </nav>
       </LegalSection>
     </LegalDocument>
   );

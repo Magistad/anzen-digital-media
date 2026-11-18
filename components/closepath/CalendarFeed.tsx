@@ -84,7 +84,7 @@ export function CalendarFeed({ label = "Subscribe" }: { label?: string }) {
             A private link for this book. Apple, Google, and Outlook update when a date changes. Sample files and closed
             files stay off it. Google may take a day to pick up a change.
           </p>
-          {loading ? <p className="mt-2 text-[14px] text-paper/50">Loading</p> : null}
+          {loading ? <p className="mt-2 text-[14px] text-paper/75" role="status">Loading…</p> : null}
           {error ? (
             <p className="mt-2 text-[14px] text-paper/70" role="status">
               {error}
@@ -92,7 +92,7 @@ export function CalendarFeed({ label = "Subscribe" }: { label?: string }) {
           ) : null}
           {!loading && feed && !feed.enabled ? (
             <button type="button" className="book-action mt-3" disabled={pending} onClick={() => void act("enable")}>
-              {pending ? "Saving" : "Create a private link"}
+              {pending ? "Saving…" : "Create a private link"}
             </button>
           ) : null}
           {url ? (

@@ -42,7 +42,7 @@ export default function SignInPage({
   const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
 
   return (
-    <main id="content" className="flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-12 pt-24 sm:pb-20 sm:pt-28 md:pb-28">
+    <main id="content" className="flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-12 pt-[calc(6.5rem+env(safe-area-inset-top))] sm:pb-20 md:pb-28">
       <div className="frame min-w-0">
         <p className="text-[15px] tracking-[-0.02em] text-paper/60">Closepath</p>
         <h1 className="mt-4 max-w-full text-[2.35rem] font-semibold leading-[0.92] tracking-[-0.045em] sm:mt-6 sm:max-w-[12ch] sm:text-[clamp(2.85rem,8vw,7rem)] sm:leading-[0.86] sm:tracking-[-0.055em]">
@@ -59,7 +59,7 @@ export default function SignInPage({
         <form action="/api/closepath/sign-in" method="post" className="mt-6 max-w-md sm:mt-8">
           <label className="block">
             <span className="text-[15px] text-paper/60">Email</span>
-            <input name="email" type="email" required autoComplete="email" className={fieldClass} />
+            <input name="email" type="email" required autoComplete="email" spellCheck={false} className={fieldClass} />
           </label>
           <label className="mt-4 block sm:mt-6">
             <span className="text-[15px] text-paper/60">Password</span>
