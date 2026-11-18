@@ -1509,11 +1509,16 @@ select.book-input {
   pointer-events: none;
 }
 
+.section-art-bleed picture,
 .section-art-bleed img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.62;
+}
+
+.section-art-bleed img {
+  opacity: 1;
 }
 
 .glass-panel,
@@ -1721,8 +1726,189 @@ select.book-input {
   to { opacity: 1; }
 }
 
+.hero-media {
+  background: #070708 url("/brand/hero-poster.jpg") center / cover no-repeat;
+}
+
+.hero-media-still,
+.hero-media-still img,
+.hero-media-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-media-still { display: block; }
+
+.hero-media-video { display: none; }
+
+.hud-hero[data-video="ready"] .hero-media-video {
+  display: block;
+}
+
+.hero-shade {
+  background:
+    radial-gradient(ellipse 36% 32% at 50% 46%, rgba(7, 7, 8, 0.72), rgba(7, 7, 8, 0.08) 72%),
+    linear-gradient(180deg, rgba(7, 7, 8, 0.28), transparent 24%, rgba(7, 7, 8, 0.55));
+}
+
+.hud-stage {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "name";
+  place-items: center;
+  align-content: center;
+  min-height: 100svh;
+  height: auto;
+  text-align: center;
+}
+
+.hud-name { grid-area: name; }
+
+.hud-hero .hud-portal-name {
+  font-size: clamp(3rem, 9vw, 7.6rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+  text-align: center;
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.65);
+}
+
+.hero-tools {
+  position: absolute;
+  z-index: 5;
+  right: calc(1rem + env(safe-area-inset-right));
+  bottom: calc(0.8rem + env(safe-area-inset-bottom));
+  margin-left: 0;
+}
+
+.home-legal {
+  position: relative;
+  z-index: 2;
+  background: #070708;
+}
+
+.home-band {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: min(88vh, 46rem);
+  overflow: hidden;
+}
+
+.home-band-art,
+.home-band-art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-band-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.home-band-projects .home-band-shade,
+.home-band-contact .home-band-shade {
+  background: linear-gradient(90deg, rgba(7, 7, 8, 0.92) 0%, rgba(7, 7, 8, 0.72) 38%, rgba(7, 7, 8, 0.15) 72%);
+}
+
+.home-band-closepath .home-band-shade {
+  background: linear-gradient(180deg, rgba(7, 7, 8, 0.2), rgba(7, 7, 8, 0.78) 78%);
+}
+
+.home-band-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 34rem;
+  padding-block: 4.5rem;
+}
+
+.home-band-closepath {
+  align-items: end;
+}
+
+.home-band-closepath .home-band-copy {
+  padding-bottom: 4.5rem;
+}
+
+.home-band-title {
+  margin: 0;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.home-band-copy p {
+  max-width: 32rem;
+  margin: 1rem 0 0;
+  color: rgba(244, 240, 230, 0.9);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
+}
+
+.home-band-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 1.4rem;
+  border: 1px solid var(--signal-deep);
+  background: var(--signal-deep);
+  padding: 0.65rem 1.15rem;
+  color: #04110e;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  text-transform: none;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.home-band-link:hover {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.product-hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(7, 7, 8, 0.88) 0%, rgba(7, 7, 8, 0.62) 42%, rgba(7, 7, 8, 0.2) 100%);
+}
+
+.product-hero-grid {
+  z-index: 2;
+}
+
+@media (max-width: 859px) {
+  .hero-media-video { display: none; }
+  .home-band-projects .home-band-shade,
+  .home-band-contact .home-band-shade,
+  .product-hero-shade {
+    background: linear-gradient(180deg, rgba(7, 7, 8, 0.2) 0%, rgba(7, 7, 8, 0.88) 70%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-media-video { display: none; }
   .hero-media-still { display: block; }
-  .reveal { animation: none; }
+  .reveal,
+  .benefit-card,
+  .split-card { animation: none; }
 }

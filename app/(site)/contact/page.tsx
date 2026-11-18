@@ -24,9 +24,12 @@ export default function ContactPage({
   return (
     <main id="content" className="relative min-h-[100svh] overflow-hidden bg-black px-4 pb-16 pt-[calc(4.5rem+env(safe-area-inset-top))] font-display text-paper sm:px-8">
       <div className="section-art-bleed" data-slot="contact" aria-hidden="true">
-        <img src="/brand/contact-wash.webp" alt="" width={1600} height={900} />
+        <picture>
+          <source srcSet="/brand/section-contact.webp" type="image/webp" />
+          <img src="/brand/section-contact.jpg" alt="" width={2400} height={1356} decoding="async" />
+        </picture>
       </div>
-      <div className="glass-panel relative z-[1] mx-auto w-full max-w-xl">
+      <div className="glass-panel relative z-[1] mr-auto w-full max-w-xl">
         <Link href="/" className="hud-tab">
           Studio
         </Link>

@@ -182,9 +182,19 @@ export default function ClosepathPage({
     <main id="content" className="overflow-x-clip bg-black">
       <section className="product-hero">
         <div className="section-art-bleed" data-slot="closepath-hero" aria-hidden="true">
-          <img src="/brand/hero.webp" alt="" width={1920} height={1080} />
+          <picture>
+            <source srcSet="/brand/section-closepath-hero.webp" type="image/webp" />
+            <img
+              src="/brand/section-closepath-hero.jpg"
+              alt=""
+              width={2400}
+              height={1356}
+              decoding="async"
+              fetchPriority="high"
+            />
+          </picture>
         </div>
-        <div className="hero-shade" aria-hidden="true" />
+        <div className="product-hero-shade" aria-hidden="true" />
         <div className="frame product-hero-grid">
           <div className="min-w-0">
             <p className="product-kicker">
@@ -286,8 +296,11 @@ export default function ClosepathPage({
             </p>
           </article>
           <article className="split-card">
-            <div className="section-art-bleed" data-slot="closepath-note" aria-hidden="true">
-              <img src="/brand/contact-panel.webp" alt="" width={640} height={960} />
+            <div className="section-art-bleed" data-slot="closepath" aria-hidden="true">
+              <picture>
+                <source srcSet="/brand/section-closepath.webp" type="image/webp" />
+                <img src="/brand/section-closepath.jpg" alt="" width={2400} height={1356} decoding="async" loading="lazy" />
+              </picture>
             </div>
             <h2 className="relative">What it is not</h2>
             <p className="relative max-w-[28em] text-lg leading-relaxed text-paper/90">

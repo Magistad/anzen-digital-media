@@ -19,7 +19,10 @@ export default function ProjectsPage() {
   return (
     <main id="content" className="relative min-h-[100svh] overflow-hidden bg-black px-4 pb-20 pt-[calc(4.5rem+env(safe-area-inset-top))] font-display text-paper sm:px-8">
       <div className="section-art-bleed" data-slot="projects" aria-hidden="true">
-        <img src="/brand/projects-panel.webp" alt="" width={640} height={960} />
+        <picture>
+          <source srcSet="/brand/section-projects.webp" type="image/webp" />
+          <img src="/brand/section-projects.jpg" alt="" width={2400} height={1356} decoding="async" />
+        </picture>
       </div>
       <div className="relative z-[1] mx-auto w-full max-w-5xl">
         <Link href="/" className="hud-tab">
