@@ -21,30 +21,37 @@ export function StudioHero() {
     }
 
     let stopped = false;
-    function detach() {
+    function detachGestures() {
       window.removeEventListener("pointerdown", onGesture);
+      window.removeEventListener("keydown", onGesture);
       window.removeEventListener("touchstart", onGesture);
       window.removeEventListener("scroll", onGesture);
     }
     function onGesture() {
       tryPlay();
     }
+    function onVisible() {
+      if (document.visibilityState === "visible") tryPlay();
+    }
     function tryPlay() {
       if (stopped) return;
       video.muted = true;
-      void video.play().then(detach).catch(() => {
+      void video.play().then(detachGestures).catch(() => {
         window.addEventListener("pointerdown", onGesture, { passive: true });
+        window.addEventListener("keydown", onGesture);
         window.addEventListener("touchstart", onGesture, { passive: true });
         window.addEventListener("scroll", onGesture, { passive: true });
       });
     }
     tryPlay();
     video.addEventListener("canplay", tryPlay);
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       stopped = true;
-      detach();
+      detachGestures();
       video.removeEventListener("canplay", tryPlay);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [paused]);
 
@@ -63,7 +70,7 @@ export function StudioHero() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           width={1920}
           height={1080}
           onLoadedData={() => setReady(true)}

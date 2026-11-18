@@ -11,7 +11,7 @@ export function SiteFooter() {
   if (path === "/" || path === "/projects" || path === "/contact") return null;
 
   return (
-    <footer className="border-t border-signal/30 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 font-display text-xs uppercase tracking-[0.16em] text-paper/80 sm:px-8">
+    <footer className="border-t border-signal/30 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 font-sans text-sm tracking-normal text-paper/90 sm:px-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p translate="no">Anzen Digital Media LLC</p>
         <a className={linkClass} href={`mailto:${STUDIO_EMAIL}`}>
