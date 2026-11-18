@@ -22,12 +22,15 @@ export default function ContactPage({
   const sent = searchParams?.sent === "1" || (Array.isArray(searchParams?.sent) && searchParams.sent[0] === "1");
 
   return (
-    <main id="content" className="brand-wash min-h-[100svh] bg-black px-4 pb-16 pt-12 font-display text-paper sm:px-8 md:pt-16">
-      <div className="mx-auto w-full max-w-xl">
+    <main id="content" className="relative min-h-[100svh] overflow-hidden bg-black px-4 pb-16 pt-[calc(4.5rem+env(safe-area-inset-top))] font-display text-paper sm:px-8">
+      <div className="section-art-bleed" data-slot="contact" aria-hidden="true">
+        <img src="/brand/contact-wash.webp" alt="" width={1600} height={900} />
+      </div>
+      <div className="glass-panel relative z-[1] mx-auto w-full max-w-xl">
         <Link href="/" className="hud-tab">
           Studio
         </Link>
-        <h1 className="hud-releases-title mt-8">Contact</h1>
+        <h1 className="page-title mt-8 text-[clamp(3.2rem,8vw,5.4rem)]">Contact</h1>
         {sent ? (
           <p className="contact-success" role="status">
             Message sent. We will read it.

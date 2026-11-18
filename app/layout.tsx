@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Barlow_Condensed, Instrument_Sans } from "next/font/google";
+import { Instrument_Sans, Syne } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteNav } from "../components/SiteNav";
@@ -11,9 +11,9 @@ const sans = Instrument_Sans({
   variable: "--font-sans",
 });
 
-const display = Barlow_Condensed({
+const display = Syne({
   subsets: ["latin"],
-  weight: ["300", "500"],
+  weight: ["600", "700", "800"],
   display: "swap",
   variable: "--font-display",
 });
