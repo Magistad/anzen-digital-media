@@ -1015,10 +1015,6 @@ select.book-input {
   .hud-portal { width: min(58vw, 18rem, 34vh); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-media-video { display: none; }
-  .hero-media-still { display: block; }
-}
 
 @keyframes hud-draw-frame {
   from { stroke-dashoffset: 4200; }
@@ -1742,10 +1738,13 @@ select.book-input {
 
 .hero-media-still { display: block; }
 
-.hero-media-video { display: none; }
+.hero-media-video {
+  display: block;
+  opacity: 0;
+}
 
 .hud-hero[data-video="ready"] .hero-media-video {
-  display: block;
+  opacity: 1;
 }
 
 .hero-shade {
@@ -1897,7 +1896,6 @@ select.book-input {
 }
 
 @media (max-width: 859px) {
-  .hero-media-video { display: none; }
   .home-band-projects .home-band-shade,
   .home-band-contact .home-band-shade,
   .product-hero-shade {
@@ -1906,8 +1904,6 @@ select.book-input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-media-video { display: none; }
-  .hero-media-still { display: block; }
   .reveal,
   .benefit-card,
   .split-card { animation: none; }
