@@ -9,8 +9,9 @@ export function StudioHero() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const current = videoRef.current;
+    if (!current) return;
+    const video: HTMLVideoElement = current;
     video.muted = true;
     video.defaultMuted = true;
 

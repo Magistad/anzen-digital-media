@@ -59,6 +59,8 @@ test("Pixel 7 hero plays the vertical loop", async ({ browser }) => {
   await page.goto("/");
   await videoAdvances(page, /\/brand\/hero-loop-phone\.(webm|mp4)(?:\?|$)/);
   const box = await page.locator("video.hero-media-video").boundingBox();
-  expect(box && box.height).toBeGreaterThan(box.width);
+  expect(box).not.toBeNull();
+  if (!box) return;
+  expect(box.height).toBeGreaterThan(box.width);
   await context.close();
 });
