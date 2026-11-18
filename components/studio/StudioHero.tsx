@@ -19,24 +19,31 @@ export function StudioHero() {
       return;
     }
 
-    let dropped = false;
-    const stopListening = () => {
+    let stopped = false;
+    function detach() {
+      window.removeEventListener("pointerdown", onGesture);
       window.removeEventListener("touchstart", onGesture);
       window.removeEventListener("scroll", onGesture);
-    };
-    const onGesture = () => {
-      if (dropped) return;
+    }
+    function onGesture() {
+      tryPlay();
+    }
+    function tryPlay() {
+      if (stopped) return;
       video.muted = true;
-      void video.play().then(stopListening).catch(() => {});
-    };
-    void video.play().catch(() => {
-      window.addEventListener("touchstart", onGesture, { passive: true });
-      window.addEventListener("scroll", onGesture, { passive: true });
-    });
+      void video.play().then(detach).catch(() => {
+        window.addEventListener("pointerdown", onGesture, { passive: true });
+        window.addEventListener("touchstart", onGesture, { passive: true });
+        window.addEventListener("scroll", onGesture, { passive: true });
+      });
+    }
+    tryPlay();
+    video.addEventListener("canplay", tryPlay);
 
     return () => {
-      dropped = true;
-      stopListening();
+      stopped = true;
+      detach();
+      video.removeEventListener("canplay", tryPlay);
     };
   }, [paused]);
 

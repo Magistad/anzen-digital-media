@@ -32,6 +32,27 @@ test("desktop hero plays the wide loop", async ({ page }) => {
   expect(box && box.width).toBeGreaterThan(800);
 });
 
+test.describe("reduced motion still plays the hero", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("desktop", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await videoAdvances(page, /\/brand\/hero-loop\.(webm|mp4)(?:\?|$)/);
+  });
+
+  test("Pixel 7", async ({ browser }) => {
+    const context = await browser.newContext({
+      ...devices["Pixel 7"],
+      reducedMotion: "reduce",
+    });
+    const page = await context.newPage();
+    await page.goto("/");
+    await videoAdvances(page, /\/brand\/hero-loop-phone\.(webm|mp4)(?:\?|$)/);
+    await context.close();
+  });
+});
+
 test("Pixel 7 hero plays the vertical loop", async ({ browser }) => {
   const context = await browser.newContext({ ...devices["Pixel 7"] });
   const page = await context.newPage();
