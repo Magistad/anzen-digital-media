@@ -89,7 +89,7 @@ export function StudioHero() {
             <div className="hud-door hud-door-left" aria-hidden="true" />
             <div className="hud-door hud-door-right" aria-hidden="true" />
             <div className="hud-portal-label">
-              <h1 className="hud-portal-name">
+              <h1 className="hud-portal-name" translate="no">
                 <span className="block">Anzen</span>
                 <span className="block">Digital</span>
                 <span className="block">Media</span>

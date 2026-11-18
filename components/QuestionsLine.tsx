@@ -1,35 +1,25 @@
 import Link from "next/link";
 
-const linkClass = "text-paper/80 transition-colors duration-300 hover:text-paper";
-
 export function QuestionsLine({ className = "" }: { className?: string }) {
   return (
-    <p className={`max-w-md text-sm leading-snug text-paper/60 ${className}`}>
-      Questions?{" "}
-      <a className={linkClass} href="mailto:contact@anzendigitalmedia.com">
-        contact@anzendigitalmedia.com
-      </a>
-      <span className="text-paper/35" aria-hidden="true">
-        {" "}
-        ·{" "}
-      </span>
-      <Link className={linkClass} href="/terms">
-        Terms
-      </Link>
-      <span className="text-paper/35" aria-hidden="true">
-        {" "}
-        ·{" "}
-      </span>
-      <Link className={linkClass} href="/privacy">
-        Privacy
-      </Link>
-      <span className="text-paper/35" aria-hidden="true">
-        {" "}
-        ·{" "}
-      </span>
-      <Link className={linkClass} href="/refunds">
-        Refunds
-      </Link>
-    </p>
+    <div className={`max-w-md text-sm leading-snug text-paper/75 ${className}`}>
+      <p>
+        Questions?{" "}
+        <a className="text-link" href="mailto:contact@anzendigitalmedia.com">
+          contact@anzendigitalmedia.com
+        </a>
+      </p>
+      <nav aria-label="Legal" className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        <Link className="text-link" href="/terms">
+          Terms
+        </Link>
+        <Link className="text-link" href="/privacy">
+          Privacy
+        </Link>
+        <Link className="text-link" href="/refunds">
+          Refunds
+        </Link>
+      </nav>
+    </div>
   );
 }

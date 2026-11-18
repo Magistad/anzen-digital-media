@@ -128,32 +128,32 @@ function buildStart(workbook: ExcelJS.Workbook) {
     { text: "", size: 12, height: 12 },
     { text: "How a deal moves", size: 16, bold: true, height: 24 },
     {
-      text: "1. Leads — who they are, where they came from, and the next time you will contact them. A file starts when there is a property.",
+      text: "1. Leads: who they are, where they came from, and the next time you will contact them. A file starts when there is a property.",
       size: 12,
       height: 32,
     },
     {
-      text: "2. Showings — one row every time you open a door. Keep what they said.",
+      text: "2. Showings: one row every time you open a door. Keep what they said.",
       size: 12,
       height: 22,
     },
     {
-      text: "3. Offers — price, earnest money, concessions, and whether the offer is still alive.",
+      text: "3. Offers: price, earnest money, concessions, and whether the offer is still alive.",
       size: 12,
       height: 22,
     },
     {
-      text: "4. Critical dates — the morning sheet. Inspection, appraisal, loan contingency, and close. Days-left cells turn warm inside three days and red after the date passes.",
+      text: "4. Critical dates: the morning sheet. Inspection, appraisal, loan contingency, and close. Days-left cells turn warm inside three days and red after the date passes.",
       size: 12,
       height: 36,
     },
     {
-      text: "5. Commissions — sale price times your rate, then your split. Mark it paid only when the money is in your account.",
+      text: "5. Commissions: sale price times your rate, then your split. Mark it paid only when the money is in your account.",
       size: 12,
       height: 32,
     },
     {
-      text: "6. Deals — one row per property. The same address is the deal on every sheet. Outcome is Open, Closed, or Did not close. Closed means the deal funded. The file stays in the book either way.",
+      text: "6. Deals: one row per property. The same address is the deal on every sheet. Outcome is Open, Closed, or Did not close. Closed means the deal funded. The file stays in the book either way.",
       size: 12,
       height: 48,
     },

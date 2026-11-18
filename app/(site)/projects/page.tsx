@@ -22,8 +22,7 @@ export default function ProjectsPage() {
         <Link href="/" className="hud-tab">
           Studio
         </Link>
-        <p className="hud-kicker mt-8">Field catalog</p>
-        <h1 className="hud-releases-title">Projects</h1>
+        <h1 className="hud-releases-title mt-8">Projects</h1>
         <p className="hud-releases-lead">
           Small apps from the studio. Open a live one, or read what is still on the bench.
         </p>

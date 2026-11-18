@@ -21,10 +21,10 @@ const FILTERS: { id: FileShow; label: string }[] = [
 function attention(file: DealFile, today: string | null): { when: string; tone: string; what: string; net: string } {
   const { net } = commissionFigures(file.salePrice, file.ratePercent, file.splitPercent);
   const netLabel = formatMoneyAuto(net);
-  if (file.outcome !== "Open") return { when: "—", tone: "text-paper/40", what: "—", net: netLabel };
+  if (file.outcome !== "Open") return { when: "None", tone: "text-paper/70", what: "None", net: netLabel };
   if (!today) return { when: "", tone: "text-paper/50", what: "", net: netLabel };
   const next = nextWatch(file, today);
-  if (!next) return { when: "—", tone: "text-paper/40", what: "No date", net: netLabel };
+  if (!next) return { when: "None", tone: "text-paper/70", what: "No date", net: netLabel };
   const tone = next.days < 0 ? "when-past" : next.days <= 3 ? "when-soon" : "text-paper";
   const when =
     next.days < 0
@@ -84,7 +84,7 @@ export function FileList({
   onReopen: (id: string) => void;
 }) {
   const totals = outcomeTotals(book);
-  const netLabel = totals.net === null ? "—" : formatMoneyAuto(totals.net);
+  const netLabel = totals.net === null ? "None" : formatMoneyAuto(totals.net);
 
   return (
     <div className="mt-3">
@@ -162,7 +162,7 @@ export function FileList({
                 file.client || "No client",
                 file.outcome !== "Open" ? file.outcome : "",
                 file.status,
-                mark.what && mark.what !== "—" ? mark.what : "",
+                mark.what && mark.what !== "None" ? mark.what : "",
               ]
                 .filter(Boolean)
                 .join(" · ");

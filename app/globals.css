@@ -10,7 +10,34 @@
 
 html {
   background: var(--ink);
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: calc(6.5rem + env(safe-area-inset-top));
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(93, 242, 220, 0.28);
+}
+
+@media (pointer: fine) {
+  html {
+    overscroll-behavior: none;
+  }
+}
+
+h1,
+h2,
+h3,
+[id] {
+  scroll-margin-top: calc(6.5rem + env(safe-area-inset-top));
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li,
+figcaption {
+  text-wrap: pretty;
 }
 
 html,
@@ -37,8 +64,10 @@ button:disabled {
 }
 
 :focus-visible {
-  outline: 1px solid var(--paper);
-  outline-offset: 4px;
+  outline: 2px solid var(--paper);
+  outline-offset: 3px;
+  scroll-margin-top: calc(6.5rem + env(safe-area-inset-top));
+  scroll-margin-bottom: 1.5rem;
 }
 
 .frame {
@@ -144,21 +173,6 @@ button:disabled {
   animation: draw 1.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.breathe {
-  animation: breathe 11s ease-in-out infinite;
-}
-
-.drift {
-  animation: drift 22s ease-in-out infinite alternate;
-}
-
-@supports (animation-timeline: view()) {
-  .view-rise {
-    animation: rise both;
-    animation-timeline: view();
-    animation-range: entry 0% cover 32%;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -199,6 +213,10 @@ button:disabled {
   font: inherit;
   letter-spacing: -0.01em;
   color-scheme: dark;
+}
+
+.book-input:focus-visible {
+  border-bottom-color: var(--signal);
 }
 
 input[type="date"].book-input {
@@ -388,6 +406,7 @@ select.book-input {
   z-index: 1;
   top: -20%;
   height: 18%;
+  opacity: 0;
   background: linear-gradient(to bottom, transparent, rgba(93, 242, 220, 0.08), transparent);
 }
 
@@ -442,10 +461,10 @@ select.book-input {
   border-width: 0;
 }
 
-.hud-tick-tl { top: 12px; left: 12px; border-top-width: 1px; border-left-width: 1px; }
-.hud-tick-tr { top: 12px; right: 12px; border-top-width: 1px; border-right-width: 1px; }
-.hud-tick-bl { bottom: 12px; left: 12px; border-bottom-width: 1px; border-left-width: 1px; }
-.hud-tick-br { bottom: 12px; right: 12px; border-bottom-width: 1px; border-right-width: 1px; }
+.hud-tick-tl { top: calc(12px + env(safe-area-inset-top)); left: calc(12px + env(safe-area-inset-left)); border-top-width: 1px; border-left-width: 1px; }
+.hud-tick-tr { top: calc(12px + env(safe-area-inset-top)); right: calc(12px + env(safe-area-inset-right)); border-top-width: 1px; border-right-width: 1px; }
+.hud-tick-bl { bottom: calc(12px + env(safe-area-inset-bottom)); left: calc(12px + env(safe-area-inset-left)); border-bottom-width: 1px; border-left-width: 1px; }
+.hud-tick-br { bottom: calc(12px + env(safe-area-inset-bottom)); right: calc(12px + env(safe-area-inset-right)); border-bottom-width: 1px; border-right-width: 1px; }
 
 .hud-nav {
   position: relative;
@@ -466,10 +485,12 @@ select.book-input {
 
 .hud-nav-bar {
   display: flex;
-  height: 3.5rem;
+  min-height: 3.5rem;
+  height: auto;
+  flex-wrap: wrap;
   grid-template-columns: none;
   grid-template-areas: none;
-  padding: 0 0.85rem;
+  padding: 0.15rem 0.85rem;
 }
 
 .hud-nav-bar .hud-tabs,
@@ -497,9 +518,10 @@ select.book-input {
 .hud-grain-toggle {
   display: inline-flex;
   align-items: center;
-  min-height: 1.85rem;
+  justify-content: center;
+  min-height: 2rem;
   border: 1px solid transparent;
-  padding: 0.2rem 0.55rem;
+  padding: 0.3rem 0.65rem;
   color: rgba(244, 240, 230, 0.78);
   font: inherit;
   font-size: 11px;
@@ -591,7 +613,7 @@ select.book-input {
   align-items: center;
   height: 100%;
   gap: 0.85rem 1rem;
-  padding: 1.25rem 1.15rem;
+  padding: calc(1.25rem + env(safe-area-inset-top)) calc(1.15rem + env(safe-area-inset-right)) 1.25rem calc(1.15rem + env(safe-area-inset-left));
 }
 
 .hud-copy { grid-area: copy; text-align: center; }
@@ -692,17 +714,17 @@ select.book-input {
 .hud-portal-label {
   position: relative;
   z-index: 3;
-  padding: 0.45rem 0.8rem 0.55rem;
-  background: rgba(0, 0, 0, 0.62);
+  padding: 0.7rem 0.95rem 0.8rem;
+  background: rgba(0, 0, 0, 0.72);
   text-align: center;
 }
 
 .hud-portal-name {
   margin: 0;
-  font-size: clamp(0.95rem, 2.2vw, 1.35rem);
+  font-size: clamp(1.2rem, 2.8vw, 1.75rem);
   font-weight: 500;
-  letter-spacing: 0.16em;
-  line-height: 1.2;
+  letter-spacing: 0.2em;
+  line-height: 1.15;
   text-transform: uppercase;
 }
 
@@ -771,17 +793,17 @@ select.book-input {
 .hud-side-right { grid-area: right; text-align: center; }
 
 .hud-side-kicker {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .hud-action {
   color: var(--signal);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
@@ -807,16 +829,34 @@ select.book-input {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.55rem 1rem;
-  padding: 0.45rem 1.15rem 0.9rem;
-  color: rgba(244, 240, 230, 0.82);
-  font-size: 11px;
+  gap: 0.35rem 0.85rem;
+  padding: 0.35rem calc(1.15rem + env(safe-area-inset-right)) calc(0.7rem + env(safe-area-inset-bottom)) calc(1.15rem + env(safe-area-inset-left));
+  color: rgba(244, 240, 230, 0.86);
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.hud-foot a { color: rgba(244, 240, 230, 0.9); }
+.hud-foot a,
+.hud-grain-toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+}
+
+@media (pointer: coarse) {
+  .hud-tab,
+  .hud-signin,
+  .hud-grain-toggle,
+  .hud-foot a,
+  .trial-button,
+  .contact-form button {
+    min-height: 2.75rem;
+  }
+}
+
+.hud-foot a { color: rgba(244, 240, 230, 0.92); }
 
 .hud-foot a[href^="mailto:"] {
   letter-spacing: 0.03em;
@@ -998,26 +1038,6 @@ select.book-input {
     animation: hud-draw-y 1.05s 0.12s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .hud-portal-core {
-    animation: hud-pulse 4.8s ease-in-out infinite;
-  }
-
-  .hud-orbit {
-    animation: hud-spin 96s linear infinite;
-  }
-
-  .hud-sweep {
-    animation: hud-sweep 7.5s ease-in-out infinite;
-  }
-
-  .hud-scan {
-    animation: hud-scan-drift 14s linear infinite;
-  }
-
-  .hud-live-pip {
-    animation: hud-pulse 2.4s ease-in-out infinite;
-  }
-
   .hud-door {
     transition: transform 90ms linear;
   }
@@ -1134,6 +1154,7 @@ select.book-input {
   stroke: rgba(93, 242, 220, 0.55);
   stroke-width: 1.2;
   vector-effect: non-scaling-stroke;
+  transition: stroke 180ms ease;
 }
 
 .project-card:hover .project-frame polygon {
@@ -1141,17 +1162,7 @@ select.book-input {
 }
 
 .project-edge {
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  background: conic-gradient(from var(--edge-angle, 0deg), transparent 0 72%, rgba(93, 242, 220, 0.95) 84%, transparent 94%);
-  pointer-events: none;
-  clip-path: inherit;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  display: none;
 }
 
 .project-mark {
@@ -1205,14 +1216,6 @@ select.book-input {
   .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .project-edge { animation: project-edge 7.5s linear infinite; }
-  .project-card:hover .project-edge { animation-duration: 2.8s; }
-}
-
-@keyframes project-edge {
-  to { --edge-angle: 360deg; }
-}
 
 .contact-form {
   display: grid;
@@ -1236,13 +1239,14 @@ select.book-input {
 .contact-form input,
 .contact-form textarea {
   width: 100%;
+  min-height: 2.75rem;
   border: 0;
   border-bottom: 1px solid rgba(93, 242, 220, 0.45);
   background: transparent;
   color: var(--paper);
-  font: inherit;
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.01em;
   padding: 0.55rem 0;
 }
 
@@ -1251,17 +1255,37 @@ select.book-input {
   resize: vertical;
 }
 
-.contact-form input:focus,
-.contact-form textarea:focus {
-  outline: none;
+.contact-form label:focus-within span {
+  color: var(--paper);
+}
+
+.contact-form input:focus-visible,
+.contact-form textarea:focus-visible {
   border-bottom-color: var(--signal);
-  box-shadow: 0 8px 18px -14px rgba(0, 205, 171, 0.9);
+}
+
+.contact-form .field-error {
+  margin: 0;
+  color: #f0c9bc;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: none;
 }
 
 .contact-form button {
   justify-self: start;
+  min-height: 2.75rem;
   margin-top: 0.4rem;
+  padding-inline: 1rem;
   cursor: pointer;
+}
+
+.contact-form button:disabled {
+  color: #04110e;
+  -webkit-text-fill-color: #04110e;
+  cursor: progress;
 }
 
 .contact-hp {
@@ -1298,8 +1322,57 @@ select.book-input {
   border: 1px solid rgba(93, 242, 220, 0.45);
   padding: 1.25rem 1.1rem;
   color: var(--paper);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 1.15rem;
   letter-spacing: 0.02em;
-  line-height: 1.4;
+  line-height: 1.45;
   text-transform: none;
+}
+
+.hud-releases-lead,
+.project-tagline {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.trial-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  margin-top: 1rem;
+  border: 1px solid var(--signal-deep);
+  background: var(--signal-deep);
+  padding: 0.65rem 1.15rem;
+  color: #04110e;
+  font-size: 15px;
+  letter-spacing: -0.015em;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.trial-button:hover {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.text-link {
+  color: var(--paper);
+  text-decoration-line: underline;
+  text-decoration-color: rgba(93, 242, 220, 0.55);
+  text-underline-offset: 3px;
+  transition: color 150ms ease, text-decoration-color 150ms ease;
+}
+
+.text-link:hover {
+  color: var(--signal);
+  text-decoration-color: var(--signal);
+}
+
+.product-price {
+  font-variant-numeric: tabular-nums;
+}
+
+.line-input:focus-visible {
+  border-bottom-color: var(--signal);
 }

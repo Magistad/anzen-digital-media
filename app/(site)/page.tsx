@@ -20,8 +20,11 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main id="content" className="bg-black font-display text-paper">
-      <StudioHero />
-    </main>
+    <>
+      <link rel="preload" href="/brand/hero.webp" as="image" fetchPriority="high" />
+      <main id="content" className="bg-black font-display text-paper">
+        <StudioHero />
+      </main>
+    </>
   );
 }

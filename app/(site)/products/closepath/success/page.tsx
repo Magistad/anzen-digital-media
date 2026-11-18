@@ -60,6 +60,7 @@ function PasswordForm({
           readOnly={locked}
           defaultValue={email}
           autoComplete="email"
+          spellCheck={false}
           className={fieldClass}
         />
       </label>
@@ -136,7 +137,7 @@ export default async function ClosepathSuccessPage({
       } Set a password. The dates, the offers, and the commission stay with this email when you open Closepath on another phone.`;
 
   return (
-    <main id="content" className="flex min-h-[100svh] flex-col justify-end pb-20 pt-28 md:pb-28">
+    <main id="content" className="flex min-h-[100svh] flex-col justify-end pb-20 pt-[calc(7rem+env(safe-area-inset-top))] md:pb-28">
       <div className="frame">
         <p className="text-[15px] tracking-[-0.02em] text-paper/60">Closepath</p>
         {access.state === "paid" && sessionId ? (

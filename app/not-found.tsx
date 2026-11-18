@@ -14,10 +14,9 @@ export default function NotFound() {
         </h1>
         <Link
           href="/"
-          className="mt-12 inline-flex items-center gap-3 border border-paper/30 px-5 py-3 text-[15px] tracking-[-0.015em] transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink"
+          className="mt-12 inline-flex min-h-11 items-center border border-paper/30 px-5 py-3 text-[15px] tracking-[-0.015em] transition-[color,background-color,border-color] duration-150 hover:border-paper hover:bg-paper hover:text-ink"
         >
           Return home
-          <span aria-hidden>→</span>
         </Link>
       </div>
     </main>

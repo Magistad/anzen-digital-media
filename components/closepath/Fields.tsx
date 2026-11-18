@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LIMITS } from "../../lib/closepath-model";
 
 function Caption({ children, bare }: { children: string; bare?: boolean }) {
-  return <span className={bare ? "sr-only" : "block text-[12px] leading-none text-paper/45"}>{children}</span>;
+  return <span className={bare ? "sr-only" : "block text-[12px] leading-none text-paper/75"}>{children}</span>;
 }
 
 export function TextField({
@@ -34,6 +34,9 @@ export function TextField({
         value={value}
         maxLength={maxLength}
         autoComplete={autoComplete}
+        spellCheck={type === "email" ? false : undefined}
+        autoCapitalize={type === "email" ? "off" : undefined}
+        inputMode={type === "tel" ? "tel" : type === "email" ? "email" : undefined}
         onChange={(event) => onChange(event.target.value)}
       />
     </label>
@@ -90,7 +93,7 @@ export function SelectField({
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
-        <option value="">—</option>
+        <option value="">None</option>
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

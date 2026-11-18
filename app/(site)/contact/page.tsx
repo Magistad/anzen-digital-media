@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ContactForm } from "../../../components/ContactForm";
 
 const description = "Send a note to Anzen Digital Media.";
 
@@ -32,37 +33,7 @@ export default function ContactPage({
             Message sent. We will read it.
           </p>
         ) : (
-          <form
-            className="contact-form"
-            name="contact"
-            method="POST"
-            action="/contact?sent=1"
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
-          >
-            <input type="hidden" name="form-name" value="contact" />
-            <p className="contact-hp" hidden>
-              <label>
-                Do not fill this in
-                <input name="bot-field" tabIndex={-1} autoComplete="off" />
-              </label>
-            </p>
-            <label>
-              <span>Name</span>
-              <input name="name" type="text" required autoComplete="name" />
-            </label>
-            <label>
-              <span>Email</span>
-              <input name="email" type="email" required autoComplete="email" />
-            </label>
-            <label>
-              <span>Message</span>
-              <textarea name="message" required rows={6} />
-            </label>
-            <button type="submit" className="hud-signin">
-              Send
-            </button>
-          </form>
+          <ContactForm />
         )}
       </div>
     </main>
