@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Instrument_Sans, Syne } from "next/font/google";
+import { Archivo, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteNav } from "../components/SiteNav";
@@ -11,9 +11,9 @@ const sans = Instrument_Sans({
   variable: "--font-sans",
 });
 
-const display = Syne({
+const display = Archivo({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["600", "700"],
   display: "swap",
   variable: "--font-display",
 });

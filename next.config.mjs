@@ -23,6 +23,22 @@ const nextConfig = {
         source: "/:all*(svg|png|jpg|jpeg|gif|webp|ico)",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
+      // HTML must revalidate so a new deploy is not stuck behind an old page.
+      // Hashed files under /_next/static keep the immutable rule above.
+      {
+        source: "/",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+          { key: "Netlify-CDN-Cache-Control", value: "public, max-age=0, must-revalidate" },
+        ],
+      },
+      {
+        source: "/:path((?!_next/static|_next/image|brand/).*)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+          { key: "Netlify-CDN-Cache-Control", value: "public, max-age=0, must-revalidate" },
+        ],
+      },
       // Security headers for every route
       {
         source: "/(.*)",

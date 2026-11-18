@@ -522,11 +522,11 @@ select.book-input {
   min-height: 2rem;
   border: 1px solid transparent;
   padding: 0.3rem 0.65rem;
-  color: rgba(244, 240, 230, 0.78);
+  color: rgba(244, 240, 230, 0.92);
   font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
   line-height: 1;
   text-transform: none;
   background: transparent;
@@ -1015,10 +1015,6 @@ select.book-input {
   .hud-portal { width: min(58vw, 18rem, 34vh); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-media-video { display: none; }
-  .hero-media-still { display: block; }
-}
 
 @keyframes hud-draw-frame {
   from { stroke-dashoffset: 4200; }
@@ -1202,10 +1198,11 @@ select.book-input {
 
 .contact-form label span {
   color: var(--signal);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .contact-form input,
@@ -1556,8 +1553,9 @@ select.book-input {
 
 .product-hero h1 {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.05em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
 }
 
 .product-kicker {
@@ -1579,10 +1577,10 @@ select.book-input {
 .price-card .product-price {
   margin: 0.35rem 0 0;
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(4.2rem, 12vw, 6.4rem);
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  line-height: 0.82;
+  font-size: clamp(3.4rem, 9vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
 }
 
 .benefit-grid {
@@ -1603,8 +1601,8 @@ select.book-input {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(1.7rem, 3vw, 2.3rem);
   font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
 }
 
 .benefit-card span {
@@ -1638,17 +1636,15 @@ select.book-input {
 
 .page-title {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
   text-transform: none;
 }
 
 @media (min-width: 860px) {
   .hero-shade {
-    background:
-      linear-gradient(90deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.28) 46%, rgba(0, 0, 0, 0.62) 100%),
-      radial-gradient(ellipse 48% 60% at 74% 42%, rgba(0, 205, 171, 0.4), transparent 70%);
+    background: linear-gradient(180deg, transparent 0%, transparent 78%, rgba(7, 7, 8, 0.18) 100%);
   }
 
   .hud-stage {
@@ -1742,16 +1738,17 @@ select.book-input {
 
 .hero-media-still { display: block; }
 
-.hero-media-video { display: none; }
+.hero-media-video {
+  display: block;
+  opacity: 0;
+}
 
 .hud-hero[data-video="ready"] .hero-media-video {
-  display: block;
+  opacity: 1;
 }
 
 .hero-shade {
-  background:
-    radial-gradient(ellipse 36% 32% at 50% 46%, rgba(7, 7, 8, 0.72), rgba(7, 7, 8, 0.08) 72%),
-    linear-gradient(180deg, rgba(7, 7, 8, 0.28), transparent 24%, rgba(7, 7, 8, 0.55));
+  background: linear-gradient(180deg, transparent 0%, transparent 78%, rgba(7, 7, 8, 0.18) 100%);
 }
 
 .hud-stage {
@@ -1768,12 +1765,12 @@ select.book-input {
 .hud-name { grid-area: name; }
 
 .hud-hero .hud-portal-name {
-  font-size: clamp(3rem, 9vw, 7.6rem);
-  font-weight: 800;
-  letter-spacing: -0.055em;
-  line-height: 0.86;
+  font-size: clamp(2.7rem, 7vw, 6.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
   text-align: center;
-  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.65);
+  text-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
 }
 
 .hero-tools {
@@ -1842,10 +1839,10 @@ select.book-input {
 .home-band-title {
   margin: 0;
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(2.6rem, 6vw, 4.6rem);
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 0.9;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
 }
 
 .home-band-copy p {
@@ -1853,10 +1850,10 @@ select.book-input {
   margin: 1rem 0 0;
   color: rgba(244, 240, 230, 0.9);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.05rem;
-  font-weight: 400;
+  font-size: 1.125rem;
+  font-weight: 500;
   letter-spacing: 0;
-  line-height: 1.5;
+  line-height: 1.55;
   text-transform: none;
 }
 
@@ -1897,7 +1894,6 @@ select.book-input {
 }
 
 @media (max-width: 859px) {
-  .hero-media-video { display: none; }
   .home-band-projects .home-band-shade,
   .home-band-contact .home-band-shade,
   .product-hero-shade {
@@ -1906,8 +1902,6 @@ select.book-input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-media-video { display: none; }
-  .hero-media-still { display: block; }
   .reveal,
   .benefit-card,
   .split-card { animation: none; }

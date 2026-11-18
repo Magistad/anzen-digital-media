@@ -5,60 +5,81 @@ import { useEffect, useRef, useState } from "react";
 export function StudioHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [grain, setGrain] = useState(true);
-  const [playVideo, setPlayVideo] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const wide = window.matchMedia("(min-width: 860px)");
-    const sync = () => setPlayVideo(wide.matches && !reduce.matches);
-    sync();
-    wide.addEventListener("change", sync);
-    reduce.addEventListener("change", sync);
-    return () => {
-      wide.removeEventListener("change", sync);
-      reduce.removeEventListener("change", sync);
-    };
-  }, []);
+    const current = videoRef.current;
+    if (!current) return;
+    const video: HTMLVideoElement = current;
+    video.muted = true;
+    video.defaultMuted = true;
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (!playVideo || paused) {
+    if (paused) {
       video.pause();
       return;
     }
-    video.muted = true;
-    void video.play().catch(() => setPaused(true));
-  }, [playVideo, paused]);
 
-  const showing = playVideo && !paused;
+    let stopped = false;
+    function detachGestures() {
+      window.removeEventListener("pointerdown", onGesture);
+      window.removeEventListener("keydown", onGesture);
+      window.removeEventListener("touchstart", onGesture);
+      window.removeEventListener("scroll", onGesture);
+    }
+    function onGesture() {
+      tryPlay();
+    }
+    function onVisible() {
+      if (document.visibilityState === "visible") tryPlay();
+    }
+    function tryPlay() {
+      if (stopped) return;
+      video.muted = true;
+      void video.play().then(detachGestures).catch(() => {
+        window.addEventListener("pointerdown", onGesture, { passive: true });
+        window.addEventListener("keydown", onGesture);
+        window.addEventListener("touchstart", onGesture, { passive: true });
+        window.addEventListener("scroll", onGesture, { passive: true });
+      });
+    }
+    tryPlay();
+    video.addEventListener("canplay", tryPlay);
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      stopped = true;
+      detachGestures();
+      video.removeEventListener("canplay", tryPlay);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [paused]);
 
   return (
     <section
       className="hud-hero"
       data-grain={grain ? "on" : "off"}
-      data-video={showing ? "ready" : "still"}
-      data-motion={showing ? "on" : "off"}
+      data-video={!paused && ready ? "ready" : "still"}
+      data-motion={paused ? "off" : "on"}
     >
       <div className="hero-media" aria-hidden="true">
-        {playVideo ? (
-          <video
-            ref={videoRef}
-            className="hero-media-video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/brand/hero-poster.webp"
-            width={1920}
-            height={1080}
-          >
-            <source src="/brand/hero-loop.webm" type="video/webm" />
-            <source src="/brand/hero-loop.mp4" type="video/mp4" />
-          </video>
-        ) : null}
+        <video
+          ref={videoRef}
+          className="hero-media-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          width={1920}
+          height={1080}
+          onLoadedData={() => setReady(true)}
+        >
+          <source media="(max-width: 859px)" src="/brand/hero-loop-phone.webm" type="video/webm" />
+          <source media="(max-width: 859px)" src="/brand/hero-loop-phone.mp4" type="video/mp4" />
+          <source media="(min-width: 860px)" src="/brand/hero-loop.webm" type="video/webm" />
+          <source media="(min-width: 860px)" src="/brand/hero-loop.mp4" type="video/mp4" />
+        </video>
         <picture className="hero-media-still">
           <source media="(max-width: 859px)" srcSet="/brand/hero-poster-phone.webp" type="image/webp" />
           <source media="(max-width: 859px)" srcSet="/brand/hero-poster-phone.jpg" type="image/jpeg" />
@@ -80,17 +101,15 @@ export function StudioHero() {
       </div>
 
       <div className="hud-foot-tools hero-tools">
-        {playVideo ? (
-          <button
-            type="button"
-            className="hud-grain-toggle"
-            aria-pressed={!paused}
-            aria-label={paused ? "Play background" : "Pause background"}
-            onClick={() => setPaused((value) => !value)}
-          >
-            {paused ? "Play" : "Pause"}
-          </button>
-        ) : null}
+        <button
+          type="button"
+          className="hud-grain-toggle"
+          aria-pressed={!paused}
+          aria-label={paused ? "Play background" : "Pause background"}
+          onClick={() => setPaused((value) => !value)}
+        >
+          {paused ? "Play" : "Pause"}
+        </button>
         <button
           type="button"
           className="hud-grain-toggle"
