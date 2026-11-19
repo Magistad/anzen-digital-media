@@ -1371,15 +1371,11 @@ select.book-input {
   object-fit: cover;
 }
 
-.hero-media-still { display: none; }
-
-.hud-hero[data-video="missing"] .hero-media-video,
-.hud-hero[data-motion="off"] .hero-media-video {
+.hud-hero[data-video="missing"] .hero-media-video {
   display: none;
 }
 
-.hud-hero[data-video="missing"] .hero-media-still,
-.hud-hero[data-motion="off"] .hero-media-still {
+.hud-hero[data-video="missing"] .hero-media-still {
   display: block;
 }
 
@@ -1736,15 +1732,28 @@ select.book-input {
   object-fit: cover;
 }
 
-.hero-media-still { display: block; }
+.hero-media-still,
+.hero-media-still img {
+  display: block;
+  z-index: 1;
+  opacity: 1;
+}
 
 .hero-media-video {
   display: block;
+  z-index: 0;
   opacity: 0;
 }
 
 .hud-hero[data-video="ready"] .hero-media-video {
+  z-index: 2;
   opacity: 1;
+}
+
+.hud-hero[data-video="ready"] .hero-media-still,
+.hud-hero[data-video="ready"] .hero-media-still img {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .hero-shade {
