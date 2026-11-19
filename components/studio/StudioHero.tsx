@@ -15,11 +15,6 @@ export function StudioHero() {
     video.muted = true;
     video.defaultMuted = true;
 
-    if (paused) {
-      video.pause();
-      return;
-    }
-
     let stopped = false;
     function detachGestures() {
       window.removeEventListener("pointerdown", onGesture);
@@ -33,24 +28,43 @@ export function StudioHero() {
     function onVisible() {
       if (document.visibilityState === "visible") tryPlay();
     }
-    function tryPlay() {
-      if (stopped) return;
-      video.muted = true;
-      void video.play().then(detachGestures).catch(() => {
-        window.addEventListener("pointerdown", onGesture, { passive: true });
-        window.addEventListener("keydown", onGesture);
-        window.addEventListener("touchstart", onGesture, { passive: true });
-        window.addEventListener("scroll", onGesture, { passive: true });
-      });
+    function reveal() {
+      if (stopped || video.paused || video.readyState < 2) return;
+      setReady(true);
     }
-    tryPlay();
-    video.addEventListener("canplay", tryPlay);
+    function tryPlay() {
+      if (stopped || paused) return;
+      video.muted = true;
+      const pending = video.play();
+      if (pending && typeof pending.then === "function") {
+        void pending.then(() => {
+          detachGestures();
+          reveal();
+        }).catch(() => {
+          window.addEventListener("pointerdown", onGesture, { passive: true });
+          window.addEventListener("keydown", onGesture);
+          window.addEventListener("touchstart", onGesture, { passive: true });
+          window.addEventListener("scroll", onGesture, { passive: true });
+        });
+      } else {
+        reveal();
+      }
+    }
+    video.addEventListener("playing", reveal);
+    video.addEventListener("timeupdate", reveal);
+    if (paused) {
+      video.pause();
+    } else {
+      reveal();
+      tryPlay();
+    }
     document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       stopped = true;
       detachGestures();
-      video.removeEventListener("canplay", tryPlay);
+      video.removeEventListener("playing", reveal);
+      video.removeEventListener("timeupdate", reveal);
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [paused]);
@@ -59,7 +73,7 @@ export function StudioHero() {
     <section
       className="hud-hero"
       data-grain={grain ? "on" : "off"}
-      data-video={!paused && ready ? "ready" : "still"}
+      data-video={ready ? "ready" : "still"}
       data-motion={paused ? "off" : "on"}
     >
       <div className="hero-media" aria-hidden="true">
@@ -73,7 +87,6 @@ export function StudioHero() {
           preload="auto"
           width={1920}
           height={1080}
-          onLoadedData={() => setReady(true)}
         >
           <source media="(max-width: 859px)" src="/brand/hero-loop-phone.webm" type="video/webm" />
           <source media="(max-width: 859px)" src="/brand/hero-loop-phone.mp4" type="video/mp4" />
