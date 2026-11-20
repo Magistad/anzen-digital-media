@@ -15,5 +15,11 @@
       <textarea name="message"></textarea>
       <button type="submit">Send</button>
     </form>
+    <form name="vegas-waitlist" method="POST" action="/products/vegas?joined=1" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="vegas-waitlist" />
+      <input name="bot-field" />
+      <input type="email" name="email" />
+      <button type="submit">Join the Waitlist</button>
+    </form>
   </body>
 </html>

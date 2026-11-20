@@ -64,15 +64,17 @@ export default function PrivacyPage() {
           Email you send us. If you write to{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>, we
           receive the address you write from and the message. We use it to respond, including for a refund, a
-          deletion request, or a dispute. There is no chat widget, form, or helpdesk on the site.
+          deletion request, or a dispute. The contact form stores the name, email, and message you submit.
+          There is no chat widget or helpdesk on the site.
         </p>
       </LegalSection>
 
       <LegalSection id="do-not" title="What we do not collect">
         <p>
           We do not collect or store card numbers. Closepath does not accept uploaded contracts or other
-          documents, and we do not keep a document vault. We do not run analytics, advertising pixels, or
-          other non-essential tracking. We do not sell personal information.
+          documents, and we do not keep a document vault. We do not run third-party analytics, advertising
+          pixels, or other advertising tracking. The Vegas Right Now page keeps a first-party count, described
+          below. We do not sell personal information.
         </p>
       </LegalSection>
 
@@ -145,6 +147,18 @@ export default function PrivacyPage() {
           The Service does not include two-factor authentication, and Anzen does not provide a SOC 2 or ISO
           27001 report. Account credentials are described in the{" "}
           <LegalLink href="/terms">Terms of Service</LegalLink>.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="vegas" title="Vegas Right Now">
+        <p>
+          Vegas Right Now is a page on this site. The waitlist form stores the email address you submit.
+          Netlify stores that submission. We use it to write when the visitor map is available.
+        </p>
+        <p>
+          The same page counts views, outbound link clicks, and form submissions in a first-party counter on
+          Netlify. The counter stores totals and link addresses. It does not store your email or your message,
+          and it does not set an analytics cookie. We do not send those counts to an advertising network.
         </p>
       </LegalSection>
 

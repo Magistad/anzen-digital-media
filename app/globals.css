@@ -504,7 +504,6 @@ select.book-input {
 .hud-tab,
 .hud-signin,
 .hud-grain-toggle,
-.hud-mail,
 .hud-mark,
 .hud-side,
 .release-row,
@@ -534,7 +533,6 @@ select.book-input {
 }
 
 .hud-tab:hover,
-.hud-mail:hover,
 .hud-foot a:hover,
 .hud-legal a:hover {
   color: var(--signal);
@@ -590,15 +588,6 @@ select.book-input {
   align-items: center;
   gap: 0.65rem;
   min-width: 0;
-}
-
-.hud-mail {
-  display: none;
-  color: rgba(244, 240, 230, 0.86);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: none;
 }
 
 .hud-stage {
@@ -962,8 +951,6 @@ select.book-input {
 }
 
 @media (min-width: 860px) {
-  .hud-mail { display: inline; }
-
   .hud-nav {
     grid-template-columns: 1fr auto 1fr;
     grid-template-areas: "tabs mark tools";
@@ -1914,4 +1901,361 @@ select.book-input {
   .reveal,
   .benefit-card,
   .split-card { animation: none; }
+}
+
+/* Vegas Right Now. Same ink, paper, and signal as the studio. No separate palette. */
+.vegas {
+  margin-inline: auto;
+  max-width: 48rem;
+  padding: calc(5.75rem + env(safe-area-inset-top)) 1.25rem calc(3rem + env(safe-area-inset-bottom));
+  color: var(--paper);
+}
+
+.vegas-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.vegas-mark {
+  color: var(--signal);
+}
+
+.vegas-title {
+  margin-top: 0.7rem;
+  font-size: clamp(2.7rem, 11vw, 4.8rem);
+}
+
+.vegas-lead {
+  max-width: 18ch;
+  margin: 0.85rem 0 0;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.45rem, 3.4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.vegas-section {
+  margin-top: 2.75rem;
+}
+
+.vegas-h2,
+.vegas-h3 {
+  margin: 0;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.vegas-h2 {
+  font-size: clamp(1.8rem, 4vw, 2.45rem);
+}
+
+.vegas-h3 {
+  margin-top: 1.15rem;
+  font-size: 1.2rem;
+}
+
+.vegas-prose,
+.vegas-empty,
+.vegas-crowd,
+.vegas-stamp,
+.vegas-hint,
+.vegas-commission,
+.vegas-foot,
+.vegas-included,
+.vegas-readout {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.vegas-prose,
+.vegas-empty,
+.vegas-included,
+.vegas-readout {
+  overflow-wrap: break-word;
+}
+
+.vegas-instrument > div {
+  min-width: 0;
+}
+
+.vegas-prose,
+.vegas-empty {
+  max-width: 38rem;
+  margin: 0.8rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.vegas-stamp,
+.vegas-hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.vegas-instrument {
+  display: grid;
+  gap: 1.35rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(93, 242, 220, 0.45);
+  background:
+    linear-gradient(180deg, rgba(93, 242, 220, 0.08), rgba(0, 0, 0, 0.55) 42%),
+    rgba(0, 0, 0, 0.62);
+  padding: 1.05rem 1rem 1.2rem;
+}
+
+.vegas-readout {
+  margin: 0.45rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.vegas-sources,
+.vegas-list,
+.vegas-weeks {
+  margin: 0.55rem 0 0;
+  padding: 0;
+}
+
+.vegas-sources,
+.vegas-weeks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  list-style: none;
+}
+
+.vegas-weeks {
+  gap: 1.35rem;
+  margin-top: 1.1rem;
+}
+
+.vegas-list {
+  padding-left: 1.15rem;
+}
+
+.vegas-list li {
+  margin-top: 0.35rem;
+}
+
+.vegas-hit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-block: 0.35rem;
+}
+
+.vegas-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.vegas-table {
+  width: 100%;
+  border-collapse: collapse;
+  caption-side: top;
+  text-align: left;
+}
+
+.vegas-cell-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.vegas-table caption {
+  margin-bottom: 0.7rem;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.vegas-table th,
+.vegas-table td {
+  padding: 0.75rem 0.75rem 0.85rem 0;
+  border-bottom: 1px solid rgba(93, 242, 220, 0.28);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  vertical-align: top;
+}
+
+.vegas-table thead th {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.vegas-num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.vegas-fee-note {
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+@media (max-width: 719px) {
+  .vegas-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .vegas-table,
+  .vegas-table tbody {
+    display: block;
+  }
+
+  .vegas-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.2rem 0.8rem;
+    padding: 0.95rem 0 1rem;
+    border-bottom: 1px solid rgba(93, 242, 220, 0.28);
+  }
+
+  .vegas-table th,
+  .vegas-table td {
+    border: 0;
+    padding: 0;
+  }
+
+  .vegas-table th[scope="row"],
+  .vegas-fee-note,
+  .vegas-checked {
+    grid-column: 1 / -1;
+  }
+
+  .vegas-cell-label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    display: block;
+    color: var(--signal);
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+}
+
+.vegas-included {
+  display: block;
+  margin-top: 0.35rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.vegas-questions article {
+  margin-top: 0.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(93, 242, 220, 0.28);
+}
+
+.vegas-commission {
+  margin: 0.85rem 0 0;
+  color: rgba(244, 240, 230, 0.78);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.45;
+  text-transform: none;
+}
+
+.vegas-foot {
+  margin-top: 3rem;
+  border-top: 1px solid rgba(93, 242, 220, 0.3);
+  padding-top: 1rem;
+  line-height: 1.45;
+}
+
+.vegas .contact-form {
+  max-width: 38rem;
+}
+
+.vegas .contact-form button {
+  min-height: 2.75rem;
+}
+
+@media (min-width: 720px) {
+  .vegas {
+    padding-inline: 2rem;
+  }
+
+  .vegas-instrument {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 1.75rem;
+  }
+}
+
+.vegas-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+}
+
+.vegas-subnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid rgba(93, 242, 220, 0.45);
+  color: var(--paper);
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.vegas-subnav a:hover,
+.vegas-subnav a:focus-visible {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.vegas-subnav a[aria-current="page"] {
+  border-color: var(--signal-deep);
+  background: var(--signal-deep);
+  color: #04110e;
+}
+
+.vegas-subnav a[aria-current="page"]:hover {
+  color: #04110e;
+}
+
+.vegas-preview {
+  margin-top: 1.25rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(93, 242, 220, 0.28);
+}
+
+.vegas-listing {
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vegas-listing li {
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(93, 242, 220, 0.28);
+}
+
+.vegas-listing li:first-child {
+  border-top: 0;
 }

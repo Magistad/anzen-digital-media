@@ -16,6 +16,11 @@ test("a project is one catalog entry", () => {
   assert.equal(countdown?.status, "soon");
   assert.equal(countdown?.statusLabel, "Coming soon");
 
+  const vegas = projectBySlug("vegas");
+  assert.equal(vegas?.href, "/products/vegas");
+  assert.equal(vegas?.status, "live");
+  assert.equal(vegas?.name, "Vegas Right Now");
+
   for (const item of PROJECTS) {
     assert.equal(item.href, `/products/${item.slug}`);
     assert.equal(item.name.includes("\u2014"), false);

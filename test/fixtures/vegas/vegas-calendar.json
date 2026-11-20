@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "id": 57,
+      "title": "Ethel M Chocolates Holiday Cactus Garden",
+      "url": "https://www.vegascalendar.org/event/ethel-m-chocolates-holiday-cactus-garden/",
+      "start": "2026-11-05T17:00:00-08:00",
+      "end": "2027-01-03T22:00:00-08:00",
+      "all_day": false,
+      "status": "scheduled",
+      "tickets_url": "https://www.vegascalendar.org/go/57/",
+      "venue": { "name": "Ethel M Chocolates Botanical Cactus Garden" }
+    }
+  ],
+  "meta": {
+    "attribution": { "text": "Events from Vegas Calendar", "url": "https://www.vegascalendar.org/events/" }
+  }
+}
