@@ -1,0 +1,25 @@
+{
+  "source": "Las Vegas Convention Guide",
+  "url": "https://lasvegasconventionguide.com/shows",
+  "note": "Confirm dates with each show.",
+  "updated": "2026-11-18",
+  "shows": [
+    {
+      "slug": "this-week",
+      "name": "Sample Expo",
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-20",
+      "venues": [{ "name": "Las Vegas Convention Center" }],
+      "official": "https://example.com/sample-expo"
+    },
+    {
+      "slug": "later",
+      "name": "January Expo",
+      "startDate": "2027-01-06",
+      "endDate": "2027-01-09",
+      "venues": [{ "name": "Las Vegas Convention Center" }],
+      "official": "https://example.com/january"
+    },
+    { "slug": "broken", "name": "Missing dates" }
+  ]
+}

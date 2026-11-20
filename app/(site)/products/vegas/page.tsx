@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { VegasGuide } from "../../../../components/vegas/VegasGuide";
 import { loadConditions } from "../../../../lib/vegas-conditions";
+import { loadVegasFeeds } from "../../../../lib/vegas-feeds";
 
 export const dynamic = "force-dynamic";
 
@@ -27,10 +28,11 @@ export default async function VegasPage({
 }: {
   searchParams?: { joined?: string | string[]; asked?: string | string[]; tipped?: string | string[] };
 }) {
-  const report = await loadConditions(fetch);
+  const [report, feeds] = await Promise.all([loadConditions(fetch), loadVegasFeeds()]);
   return (
     <VegasGuide
       report={report}
+      feeds={feeds}
       joined={flag(searchParams?.joined)}
       asked={flag(searchParams?.asked)}
       tipped={flag(searchParams?.tipped)}

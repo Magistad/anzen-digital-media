@@ -1,3 +1,5 @@
+import { withAffiliate } from "./vegas-affiliates";
+
 /**
  * Plain links until an affiliate account exists. Empty ids must not be written
  * onto URLs. Do not put a sample or fake id here.
@@ -62,11 +64,8 @@ export function attractionHref(
   item: Attraction,
   ids: { viator: string; getyourguide: string } = AFFILIATE_IDS,
 ): string {
-  if (item.network === "none") return item.href;
-  const id = ids[item.network].trim();
-  if (!id) return item.href;
-  const url = new URL(item.href);
-  const key = item.network === "viator" ? "pid" : "partner_id";
-  url.searchParams.set(key, id);
-  return url.toString();
+  return withAffiliate(item.href, {
+    VIATOR_PARTNER_ID: ids.viator,
+    GETYOURGUIDE_PARTNER_ID: ids.getyourguide,
+  });
 }

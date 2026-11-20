@@ -35,15 +35,34 @@ test("projects card opens Vegas Right Now on a phone", async ({ page }) => {
   await expect(tip.locator("input[name='area']")).toBeVisible();
 
   await expect(page.getByText(/No community answers yet/i)).toBeVisible();
-  await expect(page.getByText("Some links may earn us a commission at no extra cost to you.")).toBeVisible();
+  await expect(page.getByText("Some links may earn us a commission at no extra cost to you.").first()).toBeVisible();
   await expect(page.getByText("This is not a live incident feed.")).toBeVisible();
 
-  const text = await page.locator("main").innerText();
-  expect(text.includes("\u2014")).toBe(false);
-  expect(text.toLowerCase().includes("real-time")).toBe(false);
-
-  const overflow = await page.evaluate(
+  await expect(page.getByRole("heading", { name: "Tonight and This Week" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Know Before You Go" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "From Locals" })).toBeVisible();
+  const hubOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
   );
-  expect(overflow).toBe(false);
+  expect(hubOverflow).toBe(false);
+
+  for (const [path, heading] of [
+    ["/products/vegas/sports", "Sports"],
+    ["/products/vegas/shows", "Shows"],
+    ["/products/vegas/nightlife", "Nightlife"],
+    ["/products/vegas/conventions", "Conventions"],
+    ["/products/vegas/events", "Events"],
+  ] as const) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "This week" })).toBeVisible();
+    await expect(page.getByText("Some links may earn us a commission at no extra cost to you.").first()).toBeVisible();
+    const text = await page.locator("main").innerText();
+    expect(text.includes("\u2014")).toBe(false);
+    expect(text.toLowerCase().includes("real-time")).toBe(false);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    );
+    expect(overflow).toBe(false);
+  }
 });

@@ -15,12 +15,6 @@ import {
   formatPacific,
 } from "../../lib/vegas-conditions";
 import {
-  CONVENTION_CALENDAR,
-  CONVENTION_MODULE_CHECKED,
-  CONVENTION_WEEKS,
-  formatWeekOf,
-} from "../../lib/vegas-conventions";
-import {
   FEE_MODULE_CHECKED,
   FEE_TRACKERS,
   PRIMARY_GAMING_CORRIDOR_RATE,
@@ -31,8 +25,18 @@ import {
   formatUsd,
 } from "../../lib/vegas-fees";
 import { QUESTIONS_CHECKED, VISITOR_QUESTIONS } from "../../lib/vegas-questions";
+import type { ListingFeed } from "../../lib/vegas-listings";
 import { AskForm, TipForm, WaitlistForm } from "./VegasForms";
 import { TrackEvents } from "./TrackEvents";
+import { ListingPreview, WeekNav } from "./VegasWeek";
+
+export type VegasFeeds = {
+  sports: ListingFeed;
+  shows: ListingFeed;
+  nightlife: ListingFeed;
+  conventions: ListingFeed;
+  events: ListingFeed;
+};
 
 function Octagon() {
   return (
@@ -113,11 +117,13 @@ export function VegasGuide({
   joined,
   asked,
   tipped,
+  feeds,
 }: {
   report: ConditionsReport;
   joined: boolean;
   asked: boolean;
   tipped: boolean;
+  feeds: VegasFeeds;
 }) {
   const posts = hasCommunityPosts() ? COMMUNITY_POSTS : [];
   const taxPercent = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(
@@ -139,12 +145,26 @@ export function VegasGuide({
         <p className="vegas-prose">Honest answers and current conditions from a Las Vegas local.</p>
       </header>
 
+      <section id="tonight" className="vegas-section" aria-labelledby="tonight-title">
+        <h2 id="tonight-title" className="vegas-h2">
+          Tonight and This Week
+        </h2>
+        <p className="vegas-disclosure">Some links may earn us a commission at no extra cost to you.</p>
+        <WeekNav />
+        <ListingPreview feed={feeds.sports} href="/products/vegas/sports" label="Sports" />
+        <ListingPreview feed={feeds.shows} href="/products/vegas/shows" label="Shows" />
+        <ListingPreview feed={feeds.nightlife} href="/products/vegas/nightlife" label="Nightlife" />
+        <ListingPreview feed={feeds.conventions} href="/products/vegas/conventions" label="Conventions" />
+        <ListingPreview feed={feeds.events} href="/products/vegas/events" label="Events" />
+      </section>
+
       <Conditions report={report} />
 
       <section id="vegas-cost" className="vegas-section" aria-labelledby="vegas-cost-title">
         <h2 id="vegas-cost-title" className="vegas-h2">
-          What It Costs
+          Know Before You Go
         </h2>
+        <h3 className="vegas-h3">Resort Fees</h3>
         <Stamp iso={FEE_MODULE_CHECKED} label="Last updated" />
         <p className="vegas-prose">
           A room rate leaves out the resort fee and the tax. These {RESORT_FEES.length} hotels are a short list, not
@@ -226,53 +246,8 @@ export function VegasGuide({
         </p>
       </section>
 
-      <section id="vegas-week" className="vegas-section" aria-labelledby="vegas-week-title">
-        <h2 id="vegas-week-title" className="vegas-h2">
-          This Week
-        </h2>
-        <Stamp iso={CONVENTION_MODULE_CHECKED} label="Last updated" />
-        <p className="vegas-prose">
-          A busy week means fewer unsold rooms, and published hotel rates usually rise. This page does not estimate
-          the increase. Crowd words come from the calendar linked below. If a week has no sourced crowd word, the
-          line is left blank.
-        </p>
-        <ol className="vegas-weeks">
-          {CONVENTION_WEEKS.map((week) => (
-            <li key={week.id}>
-              <h3 className="vegas-h3">{formatWeekOf(week.weekOf)}</h3>
-              <p className="vegas-crowd">
-                {week.crowd ? (
-                  <>
-                    Crowd: {week.crowd.label}.{" "}
-                    <Outbound href={week.crowd.sourceUrl}>{week.crowd.sourceLabel}</Outbound>
-                    {", data last updated "}
-                    <time dateTime={week.crowd.checked}>{formatCheckedDate(week.crowd.checked)}</time>.
-                  </>
-                ) : (
-                  "Crowd: not rated here."
-                )}
-              </p>
-              {week.shows.length > 0 ? (
-                <ul className="vegas-list">
-                  {week.shows.map((show) => (
-                    <li key={show.name}>
-                      <Outbound href={show.sourceUrl}>{show.name}</Outbound>
-                      {`. ${show.when}. ${show.where}.`}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-              <p className="vegas-prose">{week.note}</p>
-            </li>
-          ))}
-        </ol>
-        <p className="vegas-prose">
-          Full calendar: <Outbound href={CONVENTION_CALENDAR.url}>{CONVENTION_CALENDAR.label}</Outbound>.
-        </p>
-      </section>
-
       <section id="vegas-questions" className="vegas-section" aria-labelledby="vegas-questions-title">
-        <h2 id="vegas-questions-title" className="vegas-h2">
+        <h2 id="vegas-questions-title" className="vegas-h3">
           Visitor Questions
         </h2>
         <Stamp iso={QUESTIONS_CHECKED} label="Last updated" />
@@ -313,7 +288,7 @@ export function VegasGuide({
 
       <section id="vegas-community" className="vegas-section" aria-labelledby="vegas-community-title">
         <h2 id="vegas-community-title" className="vegas-h2">
-          Community Answers
+          From Locals
         </h2>
         <Stamp iso={COMMUNITY_CHECKED} label="Last updated" />
         {posts.length === 0 ? (

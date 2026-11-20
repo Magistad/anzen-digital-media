@@ -78,8 +78,12 @@ test("affiliate ids stay empty and are not written onto plain links", () => {
   assert.ok(helicopter);
   assert.equal(attractionHref(helicopter), helicopter.href);
   assert.equal(attractionHref(helicopter).includes("pid="), false);
-  const withId = attractionHref(helicopter, { viator: "test-partner", getyourguide: "" });
+  const withId = attractionHref(
+    { ...helicopter, href: "https://www.viator.com/tours/Las-Vegas/night" },
+    { viator: "test-partner", getyourguide: "" },
+  );
   assert.match(withId, /pid=test-partner/);
+  assert.equal(attractionHref(helicopter, { viator: "test-partner", getyourguide: "" }), helicopter.href);
   for (const item of ATTRACTIONS) assert.match(item.href, /^https:\/\//);
 });
 

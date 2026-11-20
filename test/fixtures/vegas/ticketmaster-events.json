@@ -1,0 +1,43 @@
+{
+  "_embedded": {
+    "events": [
+      {
+        "id": "sports-1",
+        "name": "Sample Hockey Game",
+        "url": "https://www.ticketmaster.com/event/sports-1",
+        "dates": {
+          "start": { "dateTime": "2026-11-21T03:00:00Z", "localDate": "2026-11-20" },
+          "status": { "code": "onsale" }
+        },
+        "classifications": [{ "segment": { "name": "Sports" }, "genre": { "name": "Hockey" } }],
+        "_embedded": {
+          "venues": [{ "name": "T-Mobile Arena", "city": { "name": "Las Vegas" }, "state": { "stateCode": "NV" } }]
+        }
+      },
+      {
+        "id": "show-1",
+        "name": "Sample Residency",
+        "url": "https://www.ticketmaster.com/event/show-1",
+        "dates": { "start": { "dateTime": "2026-11-22T04:00:00Z" }, "status": { "code": "onsale" } },
+        "classifications": [{ "segment": { "name": "Music" }, "genre": { "name": "Rock" } }],
+        "_embedded": { "venues": [{ "name": "Sphere", "state": { "stateCode": "NV" } }] }
+      },
+      {
+        "id": "club-1",
+        "name": "Sample Club Night",
+        "url": "https://www.ticketmaster.com/event/club-1",
+        "dates": { "start": { "dateTime": "2026-11-21T06:00:00Z" }, "status": { "code": "onsale" } },
+        "classifications": [{ "segment": { "name": "Music" }, "genre": { "name": "Dance/Electronic" } }],
+        "_embedded": { "venues": [{ "name": "Omnia", "state": { "stateCode": "NV" } }] }
+      },
+      {
+        "id": "later",
+        "name": "Next Month",
+        "url": "https://www.ticketmaster.com/event/later",
+        "dates": { "start": { "dateTime": "2026-12-20T03:00:00Z" }, "status": { "code": "onsale" } },
+        "classifications": [{ "segment": { "name": "Sports" } }],
+        "_embedded": { "venues": [{ "name": "Allegiant Stadium", "state": { "stateCode": "NV" } }] }
+      }
+    ]
+  }
+}
