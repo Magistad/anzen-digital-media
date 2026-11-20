@@ -1,5 +1,5 @@
 import { cached } from "./vegas-cache";
-import { formatInstantPacific, type Listing, type ListingFeed, type WeekWindow, pacificWeek } from "./vegas-listings";
+import { listingWhen, pacificDayFromInstant, type Listing, type ListingFeed, type WeekWindow, pacificWeek } from "./vegas-listings";
 
 export const VEGAS_CALENDAR_URL = "https://www.vegascalendar.org/wp-json/vegascal/v1/events";
 export const VEGAS_CALENDAR_CREDIT = "Events from Vegas Calendar";
@@ -27,10 +27,10 @@ export function parseVegasCalendar(body: unknown, week: WeekWindow): Listing[] {
     if (!raw || typeof raw !== "object") continue;
     const event = raw as CalendarEvent;
     if (!event.title || !event.start) continue;
-    const when = formatInstantPacific(event.start, Boolean(event.all_day));
+    const when = listingWhen(event.start, event.end, week, Boolean(event.all_day));
     if (!when) continue;
-    const startDay = pacificDay(event.start);
-    const endDay = event.end ? pacificDay(event.end) : startDay;
+    const startDay = pacificDayFromInstant(event.start);
+    const endDay = event.end ? pacificDayFromInstant(event.end) : startDay;
     if (!startDay || !endDay) continue;
     if (startDay > week.end || endDay < week.start) continue;
     const venueName = event.venue?.name?.trim() || "Venue not listed";
@@ -47,17 +47,6 @@ export function parseVegasCalendar(body: unknown, week: WeekWindow): Listing[] {
     });
   }
   return items;
-}
-
-function pacificDay(iso: string): string | null {
-  const instant = new Date(iso);
-  if (Number.isNaN(instant.getTime())) return null;
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Los_Angeles",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(instant);
 }
 
 export async function loadVegasCalendar(fetchImpl: typeof fetch = fetch, now = new Date()): Promise<ListingFeed> {

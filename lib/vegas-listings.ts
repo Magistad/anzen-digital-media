@@ -51,6 +51,40 @@ export function formatInstantPacific(iso: string, allDay = false): { date: strin
   return { date, time };
 }
 
+export function pacificDayFromInstant(iso: string): string | null {
+  const instant = new Date(iso);
+  if (Number.isNaN(instant.getTime())) return null;
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: PACIFIC_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(instant);
+}
+
+/**
+ * Events that started before this week keep their published start and end.
+ * The label says they are underway through the published end date.
+ */
+export function listingWhen(
+  startIso: string,
+  endIso: string | null | undefined,
+  week: WeekWindow,
+  allDay = false,
+): { date: string; time: string } | null {
+  const when = formatInstantPacific(startIso, allDay);
+  if (!when) return null;
+  if (!endIso) return when;
+  const startDay = pacificDayFromInstant(startIso);
+  const endDay = pacificDayFromInstant(endIso);
+  const endWhen = formatInstantPacific(endIso, true);
+  if (!startDay || !endDay || !endWhen || startDay === endDay) return when;
+  if (startDay < week.start && endDay >= week.start) {
+    return { date: `Now through ${endWhen.date}`, time: allDay ? "All day" : when.time };
+  }
+  return when;
+}
+
 export function dateOnlyListing(id: string, title: string, start: string, end: string, venue: string, href: string): Listing {
   const same = start === end;
   return {

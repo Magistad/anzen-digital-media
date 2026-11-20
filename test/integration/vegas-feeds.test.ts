@@ -88,7 +88,26 @@ test("Vegas Calendar fixture keeps the published venue and start", () => {
   assert.equal(items[0]?.title, "Ethel M Chocolates Holiday Cactus Garden");
   assert.equal(items[0]?.venue, "Ethel M Chocolates Botanical Cactus Garden");
   assert.equal(items[0]?.start, "2026-11-05T17:00:00-08:00");
+  assert.equal(items[0]?.end, "2027-01-03T22:00:00-08:00");
+  assert.equal(items[0]?.dateLabel, "Now through Jan 3, 2027");
   assert.equal(parseVegasCalendar({ data: [] }, WEEK).length, 0);
+  const tonight = parseVegasCalendar(
+    {
+      data: [
+        {
+          id: 9,
+          title: "One night",
+          start: "2026-11-21T19:00:00-08:00",
+          end: "2026-11-21T22:00:00-08:00",
+          url: "https://www.vegascalendar.org/event/one-night/",
+          venue: { name: "Sphere" },
+        },
+      ],
+    },
+    WEEK,
+  );
+  assert.equal(tonight[0]?.dateLabel, "Nov 21, 2026");
+  assert.equal(tonight[0]?.dateLabel.includes("Now through"), false);
 });
 
 test("Vegas Calendar load reports a failed feed", async () => {
