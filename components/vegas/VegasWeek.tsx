@@ -62,6 +62,7 @@ export function WeekList({ feed, links }: { feed: ListingFeed; links: readonly O
           Checked <time dateTime={feed.fetchedAt}>{formatPacific(new Date(feed.fetchedAt))}</time>
         </p>
       ) : null}
+      <p className="vegas-commission">We may earn a commission on tickets.</p>
       {feed.ok && !feed.pending && feed.items.length === 0 ? (
         <p className="vegas-empty">Nothing listed for this week.</p>
       ) : null}

@@ -55,7 +55,6 @@ export default async function VegasSectionPage({ params }: { params: { section: 
         <p className="vegas-lead">{LEDE[section.slug]}</p>
       </header>
       <WeekNav current={section.slug} />
-      <p className="vegas-disclosure">Some links may earn us a commission at no extra cost to you.</p>
       <WeekList feed={feeds[section.slug]} links={LINKS[section.slug]} />
       <p className="vegas-foot">
         <span translate="no">Vegas Right Now</span> is an <span translate="no">Anzen Digital Media</span> project.

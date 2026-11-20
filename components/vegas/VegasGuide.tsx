@@ -149,8 +149,8 @@ export function VegasGuide({
         <h2 id="tonight-title" className="vegas-h2">
           Tonight and This Week
         </h2>
-        <p className="vegas-disclosure">Some links may earn us a commission at no extra cost to you.</p>
         <WeekNav />
+        <p className="vegas-commission">We may earn a commission on tickets.</p>
         <ListingPreview feed={feeds.sports} href="/products/vegas/sports" label="Sports" />
         <ListingPreview feed={feeds.shows} href="/products/vegas/shows" label="Shows" />
         <ListingPreview feed={feeds.nightlife} href="/products/vegas/nightlife" label="Nightlife" />
@@ -275,7 +275,6 @@ export function VegasGuide({
           Things to Do
         </h2>
         <Stamp iso={ATTRACTIONS_CHECKED} label="Last updated" />
-        <p className="vegas-disclosure">Some links may earn us a commission at no extra cost to you.</p>
         <ul className="vegas-list">
           {ATTRACTIONS.map((item) => (
             <li key={item.id}>

@@ -1963,7 +1963,7 @@ select.book-input {
 .vegas-crowd,
 .vegas-stamp,
 .vegas-hint,
-.vegas-disclosure,
+.vegas-commission,
 .vegas-foot,
 .vegas-included,
 .vegas-readout {
@@ -2168,12 +2168,14 @@ select.book-input {
   border-top: 1px solid rgba(93, 242, 220, 0.28);
 }
 
-.vegas-disclosure {
-  max-width: 38rem;
-  margin-top: 0.85rem;
-  border: 1px solid rgba(93, 242, 220, 0.45);
-  padding: 0.85rem 0.95rem;
+.vegas-commission {
+  margin: 0.85rem 0 0;
+  color: rgba(244, 240, 230, 0.78);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
   line-height: 1.45;
+  text-transform: none;
 }
 
 .vegas-foot {
