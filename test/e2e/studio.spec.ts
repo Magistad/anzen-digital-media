@@ -62,7 +62,7 @@ test.describe("studio homepage", () => {
     await expect(home).toHaveAttribute("href", "/");
 
     const cards = page.locator(".project-card");
-    await expect(cards).toHaveCount(2);
+    await expect(cards).toHaveCount(3);
     await expect(cards.nth(0)).toHaveAttribute("href", "/products/closepath");
     await expect(cards.nth(0)).toContainText("Live");
     await expect(cards.nth(1)).toHaveAttribute("href", "/products/countdown");
@@ -131,6 +131,6 @@ test.describe("studio homepage with reduced motion", () => {
     const opacity = await heading.evaluate((element) => getComputedStyle(element).opacity);
     expect(Number(opacity)).toBeGreaterThan(0.9);
     await page.goto("/projects");
-    await expect(page.locator(".project-card")).toHaveCount(2);
+    await expect(page.locator(".project-card")).toHaveCount(3);
   });
 });

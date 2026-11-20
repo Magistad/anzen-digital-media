@@ -6,12 +6,14 @@ import { PROJECTS, projectBySlug } from "../../../../lib/projects";
 type Params = { slug: string };
 
 export function generateStaticParams(): Params[] {
-  return PROJECTS.filter((item) => item.slug !== "closepath").map((item) => ({ slug: item.slug }));
+  return PROJECTS.filter((item) => item.slug !== "closepath" && item.slug !== "vegas").map((item) => ({
+    slug: item.slug,
+  }));
 }
 
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const project = projectBySlug(params.slug);
-  if (!project || project.slug === "closepath") return {};
+  if (!project || project.slug === "closepath" || project.slug === "vegas") return {};
   return {
     title: project.name,
     description: project.summary,
@@ -25,7 +27,7 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
 
 export default function ReleasePage({ params }: { params: Params }) {
   const project = projectBySlug(params.slug);
-  if (!project || project.slug === "closepath") notFound();
+  if (!project || project.slug === "closepath" || project.slug === "vegas") notFound();
   const soon = project.status === "soon";
 
   return (

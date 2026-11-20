@@ -30,6 +30,15 @@ export const PROJECTS: readonly Project[] = [
     statusLabel: "Coming soon",
     action: "Soon",
   },
+  {
+    slug: "vegas",
+    name: "Vegas Right Now",
+    href: "/products/vegas",
+    summary: "What Las Vegas is like this week, and what a visit really costs.",
+    status: "live",
+    statusLabel: "Live",
+    action: "Open",
+  },
 ];
 
 export function projectBySlug(slug: string): Project | undefined {
