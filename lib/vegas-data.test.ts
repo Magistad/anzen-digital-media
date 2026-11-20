@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { AFFILIATE_IDS, ATTRACTIONS, attractionHref } from "./vegas-attractions";
-import { COMMUNITY_POSTS, hasCommunityPosts } from "./vegas-community";
 import { CONVENTION_WEEKS } from "./vegas-conventions";
 import { RESORT_FEES, ZERO_RESORT_FEES, taxIncludedCents } from "./vegas-fees";
 import { VISITOR_QUESTIONS } from "./vegas-questions";
@@ -12,7 +11,6 @@ const COPY_FILES = [
   "lib/vegas-conventions.ts",
   "lib/vegas-questions.ts",
   "lib/vegas-attractions.ts",
-  "lib/vegas-community.ts",
   "lib/vegas-conditions.ts",
   "components/vegas/VegasGuide.tsx",
   "components/vegas/VegasForms.tsx",
@@ -87,23 +85,6 @@ test("affiliate ids stay empty and are not written onto plain links", () => {
   for (const item of ATTRACTIONS) assert.match(item.href, /^https:\/\//);
 });
 
-test("community answers start empty", () => {
-  assert.equal(COMMUNITY_POSTS.length, 0);
-  assert.equal(hasCommunityPosts(), false);
-  assert.equal(
-    hasCommunityPosts([
-      {
-        id: "sample",
-        kind: "tip",
-        title: "Reviewed tip",
-        body: "Added by hand after review.",
-        published: "2026-11-19",
-      },
-    ]),
-    true,
-  );
-});
-
 test("vegas copy has no em dash and does not invent a live crime feed", () => {
   const bundled = COPY_FILES.map((file) => readFileSync(file, "utf8")).join("\n");
   const data = walkStrings({
@@ -112,7 +93,6 @@ test("vegas copy has no em dash and does not invent a live crime feed", () => {
     ZERO_RESORT_FEES,
     CONVENTION_WEEKS,
     ATTRACTIONS,
-    COMMUNITY_POSTS,
   }).join("\n");
   for (const text of [bundled, data]) {
     assert.equal(text.includes("\u2014"), false);

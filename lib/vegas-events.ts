@@ -3,10 +3,10 @@
  * No cookies, no third-party script, no message body, no email.
  * Netlify Blobs store "vegas-events" holds the totals when the site is on
  * Netlify. Elsewhere the counter accepts the event and does not persist it.
- * Waitlist, question, and tip emails stay in Netlify Forms, not in this counter.
+ * Waitlist emails stay in Netlify Forms, not in this counter.
  */
 
-export const VEGAS_EVENT_TYPES = ["view", "outbound", "waitlist", "ask", "tip"] as const;
+export const VEGAS_EVENT_TYPES = ["view", "outbound", "waitlist"] as const;
 
 export type VegasEventType = (typeof VEGAS_EVENT_TYPES)[number];
 
@@ -18,8 +18,6 @@ export type VegasEvent = {
 export type EventCounts = {
   views: number;
   waitlist: number;
-  ask: number;
-  tip: number;
   outboundTotal: number;
   outbound: Record<string, number>;
 };
@@ -27,7 +25,7 @@ export type EventCounts = {
 const OUTBOUND_KEY_LIMIT = 40;
 
 export function emptyEventCounts(): EventCounts {
-  return { views: 0, waitlist: 0, ask: 0, tip: 0, outboundTotal: 0, outbound: {} };
+  return { views: 0, waitlist: 0, outboundTotal: 0, outbound: {} };
 }
 
 export function parseVegasEvent(input: unknown): VegasEvent | null {
@@ -53,8 +51,6 @@ export function applyVegasEvent(counts: EventCounts, event: VegasEvent): EventCo
   const next: EventCounts = { ...counts, outbound: { ...counts.outbound } };
   if (event.type === "view") next.views += 1;
   if (event.type === "waitlist") next.waitlist += 1;
-  if (event.type === "ask") next.ask += 1;
-  if (event.type === "tip") next.tip += 1;
   if (event.type === "outbound") {
     next.outboundTotal += 1;
     const known = Object.prototype.hasOwnProperty.call(next.outbound, event.target);
@@ -80,8 +76,6 @@ export function coerceEventCounts(value: unknown): EventCounts {
   return {
     views: numberOr(record.views, 0),
     waitlist: numberOr(record.waitlist, 0),
-    ask: numberOr(record.ask, 0),
-    tip: numberOr(record.tip, 0),
     outboundTotal: numberOr(record.outboundTotal, 0),
     outbound,
   };

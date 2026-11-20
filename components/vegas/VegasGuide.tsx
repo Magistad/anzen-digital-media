@@ -4,7 +4,6 @@ import {
   ATTRACTIONS_CHECKED,
   attractionHref,
 } from "../../lib/vegas-attractions";
-import { COMMUNITY_CHECKED, COMMUNITY_POSTS, hasCommunityPosts } from "../../lib/vegas-community";
 import {
   AIRPORT_HOME_URL,
   AIRPORT_WAIT_URL,
@@ -26,7 +25,7 @@ import {
 } from "../../lib/vegas-fees";
 import { QUESTIONS_CHECKED, VISITOR_QUESTIONS } from "../../lib/vegas-questions";
 import type { ListingFeed } from "../../lib/vegas-listings";
-import { AskForm, TipForm, WaitlistForm } from "./VegasForms";
+import { WaitlistForm } from "./VegasForms";
 import { TrackEvents } from "./TrackEvents";
 import { ListingPreview, WeekNav } from "./VegasWeek";
 
@@ -115,17 +114,12 @@ function Conditions({ report }: { report: ConditionsReport }) {
 export function VegasGuide({
   report,
   joined,
-  asked,
-  tipped,
   feeds,
 }: {
   report: ConditionsReport;
   joined: boolean;
-  asked: boolean;
-  tipped: boolean;
   feeds: VegasFeeds;
 }) {
-  const posts = hasCommunityPosts() ? COMMUNITY_POSTS : [];
   const taxPercent = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(
     PRIMARY_GAMING_CORRIDOR_RATE * 100,
   );
@@ -283,46 +277,6 @@ export function VegasGuide({
             </li>
           ))}
         </ul>
-      </section>
-
-      <section id="vegas-community" className="vegas-section" aria-labelledby="vegas-community-title">
-        <h2 id="vegas-community-title" className="vegas-h2">
-          From Locals
-        </h2>
-        <Stamp iso={COMMUNITY_CHECKED} label="Last updated" />
-        {posts.length === 0 ? (
-          <p className="vegas-empty">No community answers yet. Approved questions and tips are added here by hand. Nothing is posted automatically.</p>
-        ) : (
-          <ul className="vegas-list">
-            {posts.map((post) => (
-              <li key={post.id}>
-                <h3 className="vegas-h3">{post.title}</h3>
-                <p className="vegas-prose">{post.body}</p>
-                <p className="vegas-stamp">
-                  {post.kind === "tip" ? "Tip" : "Question"}
-                  {post.area ? `, ${post.area}` : ""}
-                  {post.attribution ? `, ${post.attribution}` : ""}
-                  {". "}
-                  <time dateTime={post.published}>{formatCheckedDate(post.published)}</time>
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <h3 className="vegas-h3" id="ask-a-local">
-          Ask a Local
-        </h3>
-        <p className="vegas-prose">
-          The best questions are answered on this page after they are reviewed. Sending a question does not publish it.
-        </p>
-        <AskForm done={asked} />
-
-        <h3 className="vegas-h3" id="share-a-tip">
-          Share a Local Tip
-        </h3>
-        <p className="vegas-prose">Share a tip for a neighborhood. Tips are reviewed before they are posted.</p>
-        <TipForm done={tipped} />
       </section>
 
       <section id="vegas-map" className="vegas-section" aria-labelledby="vegas-map-title">

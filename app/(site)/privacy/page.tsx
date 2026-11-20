@@ -152,11 +152,8 @@ export default function PrivacyPage() {
 
       <LegalSection id="vegas" title="Vegas Right Now">
         <p>
-          Vegas Right Now is a page on this site. The waitlist form stores the email address you submit, and
-          whether you checked the community option. The Ask a local form stores the question, optional trip
-          dates, and optional email. The Share a local tip form stores the tip, neighborhood or area, optional
-          name or handle, and optional email. Netlify stores those submissions. A submission is not published
-          on the page. A person reviews it first, and only then can it be added by editing the page.
+          Vegas Right Now is a page on this site. The waitlist form stores the email address you submit.
+          Netlify stores that submission. We use it to write when the visitor map is available.
         </p>
         <p>
           The same page counts views, outbound link clicks, and form submissions in a first-party counter on

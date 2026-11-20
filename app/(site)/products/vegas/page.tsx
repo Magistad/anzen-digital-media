@@ -26,7 +26,7 @@ function flag(value: string | string[] | undefined): boolean {
 export default async function VegasPage({
   searchParams,
 }: {
-  searchParams?: { joined?: string | string[]; asked?: string | string[]; tipped?: string | string[] };
+  searchParams?: { joined?: string | string[] };
 }) {
   const [report, feeds] = await Promise.all([loadConditions(fetch), loadVegasFeeds()]);
   return (
@@ -34,8 +34,6 @@ export default async function VegasPage({
       report={report}
       feeds={feeds}
       joined={flag(searchParams?.joined)}
-      asked={flag(searchParams?.asked)}
-      tipped={flag(searchParams?.tipped)}
     />
   );
 }

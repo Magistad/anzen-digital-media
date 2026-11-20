@@ -18,12 +18,10 @@ test("event counts do not store message text and cap new outbound keys", () => {
   let counts = emptyEventCounts();
   counts = applyVegasEvent(counts, { type: "view", target: "/products/vegas" });
   counts = applyVegasEvent(counts, { type: "waitlist", target: "vegas-waitlist" });
-  counts = applyVegasEvent(counts, { type: "ask", target: "vegas-ask-a-local" });
-  counts = applyVegasEvent(counts, { type: "tip", target: "vegas-local-tip" });
   counts = applyVegasEvent(counts, { type: "outbound", target: "https://grandcanyonwest.com/" });
   assert.deepEqual(
-    { views: counts.views, waitlist: counts.waitlist, ask: counts.ask, tip: counts.tip, outboundTotal: counts.outboundTotal },
-    { views: 1, waitlist: 1, ask: 1, tip: 1, outboundTotal: 1 },
+    { views: counts.views, waitlist: counts.waitlist, outboundTotal: counts.outboundTotal },
+    { views: 1, waitlist: 1, outboundTotal: 1 },
   );
   assert.equal(counts.outbound["https://grandcanyonwest.com/"], 1);
   assert.equal(JSON.stringify(counts).includes("@"), false);

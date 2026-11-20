@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { ATTRACTIONS_CHECKED } from "./vegas-attractions";
-import { COMMUNITY_CHECKED } from "./vegas-community";
 import { CONVENTION_CALENDAR, CONVENTION_MODULE_CHECKED, CONVENTION_WEEKS, formatWeekOf } from "./vegas-conventions";
 import { formatPacificDate, pacificDate } from "./vegas-dates";
 import { FEE_MODULE_CHECKED, RESORT_FEES, TAX_RATE_SOURCE, ZERO_RESORT_FEES } from "./vegas-fees";
@@ -14,7 +13,6 @@ const CHECKED = [
   ["convention calendar", CONVENTION_CALENDAR.checked],
   ["questions", QUESTIONS_CHECKED],
   ["attractions", ATTRACTIONS_CHECKED],
-  ["community", COMMUNITY_CHECKED],
   ...RESORT_FEES.map((fee) => [`fee ${fee.id}`, fee.checked] as const),
   ...ZERO_RESORT_FEES.map((fee) => [`zero fee ${fee.id}`, fee.checked] as const),
   ...CONVENTION_WEEKS.flatMap((week) => (week.crowd ? [[`crowd ${week.id}`, week.crowd.checked] as const] : [])),

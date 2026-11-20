@@ -21,26 +21,16 @@ test("projects card opens Vegas Right Now on a phone", async ({ page }) => {
   await expect(waitlist).toHaveAttribute("data-netlify-honeypot", "bot-field");
   await expect(waitlist.locator("input[name='bot-field']")).toHaveCount(1);
   await expect(waitlist.locator("input[name='email']")).toBeVisible();
-  await expect(page.getByRole("checkbox", { name: /Vegas locals and visitors community/i })).toBeVisible();
-
-  const ask = page.locator("form[name='vegas-ask-a-local']");
-  await expect(ask).toBeVisible();
-  await expect(ask.locator("input[name='bot-field']")).toHaveCount(1);
-  await expect(ask.locator("textarea[name='question']")).toBeVisible();
-
-  const tip = page.locator("form[name='vegas-local-tip']");
-  await expect(tip).toBeVisible();
-  await expect(tip.locator("input[name='bot-field']")).toHaveCount(1);
-  await expect(tip.locator("textarea[name='tip']")).toBeVisible();
-  await expect(tip.locator("input[name='area']")).toBeVisible();
-
-  await expect(page.getByText(/No community answers yet/i)).toBeVisible();
+  await expect(waitlist.locator("input[type='checkbox']")).toHaveCount(0);
+  await expect(page.locator("form[name='vegas-ask-a-local']")).toHaveCount(0);
+  await expect(page.locator("form[name='vegas-local-tip']")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "From Locals" })).toHaveCount(0);
   await expect(page.getByText("We may earn a commission on tickets.")).toBeVisible();
   await expect(page.getByText("This is not a live incident feed.")).toBeVisible();
 
   await expect(page.getByRole("heading", { name: "Tonight and This Week" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Know Before You Go" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "From Locals" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "A Map for Visitors" })).toBeVisible();
   const hubOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
   );

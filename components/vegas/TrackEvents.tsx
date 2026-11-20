@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export function sendVegasEvent(type: "view" | "outbound" | "waitlist" | "ask" | "tip", target?: string) {
+export function sendVegasEvent(type: "view" | "outbound" | "waitlist", target?: string) {
   const body = JSON.stringify({ type, target: target ?? "" });
   try {
     if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
