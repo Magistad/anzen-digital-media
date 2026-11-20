@@ -70,6 +70,9 @@ test.describe("studio homepage", () => {
 
     await cards.nth(1).click();
     await expect(page.getByRole("heading", { level: 1, name: "Countdown" })).toBeVisible();
+    await expect(page.locator("header")).not.toContainText(EMAIL);
+    await expect(page.locator("header").getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
+    await expect(page.getByText(EMAIL)).toHaveCount(0);
 
     await page.goto("/projects");
     await cards.nth(0).click();

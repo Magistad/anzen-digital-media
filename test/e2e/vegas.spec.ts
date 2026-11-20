@@ -8,6 +8,9 @@ test("projects card opens Vegas Right Now on a phone", async ({ page }) => {
   await card.click();
   await expect(page).toHaveURL(/\/products\/vegas$/);
   await expect(page.getByRole("heading", { level: 1, name: "Vegas Right Now" })).toBeVisible();
+  const banner = page.getByRole("banner");
+  await expect(banner).not.toContainText("contact@anzendigitalmedia.com");
+  await expect(banner.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
 
   const questions = page.locator("#vegas-questions").getByRole("heading", { level: 3 });
   await expect(questions).toHaveCount(15);
