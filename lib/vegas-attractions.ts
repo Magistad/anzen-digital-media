@@ -18,7 +18,7 @@ export type Attraction = {
   network: AffiliateNetwork;
 };
 
-export const ATTRACTIONS_CHECKED = "2026-11-20";
+export const ATTRACTIONS_CHECKED = "2026-11-19";
 
 export const ATTRACTIONS: readonly Attraction[] = [
   {

@@ -5,7 +5,9 @@
  * Attendance figures are not copied.
  */
 
-export const CONVENTION_MODULE_CHECKED = "2026-11-20";
+import { formatPacificDate } from "./vegas-dates";
+
+export const CONVENTION_MODULE_CHECKED = "2026-11-19";
 
 export const CONVENTION_CALENDAR = {
   label: "Vegas Convention Calendar",
@@ -140,11 +142,5 @@ export const CONVENTION_WEEKS: readonly ConventionWeek[] = [
 ];
 
 export function formatWeekOf(iso: string): string {
-  const date = new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(`${iso}T00:00:00Z`));
-  return `Week of ${date}`;
+  return `Week of ${formatPacificDate(iso)}`;
 }

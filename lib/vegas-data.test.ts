@@ -93,7 +93,7 @@ test("community answers start empty", () => {
         kind: "tip",
         title: "Reviewed tip",
         body: "Added by hand after review.",
-        published: "2026-11-20",
+        published: "2026-11-19",
       },
     ]),
     true,

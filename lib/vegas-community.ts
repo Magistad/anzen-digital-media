@@ -13,7 +13,7 @@ export type CommunityPost = {
   published: string;
 };
 
-export const COMMUNITY_CHECKED = "2026-11-20";
+export const COMMUNITY_CHECKED = "2026-11-19";
 
 export const COMMUNITY_POSTS: readonly CommunityPost[] = [];
 

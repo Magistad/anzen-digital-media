@@ -1,4 +1,4 @@
-export const QUESTIONS_CHECKED = "2026-11-20";
+export const QUESTIONS_CHECKED = "2026-11-19";
 
 export type CitedSource = {
   label: string;

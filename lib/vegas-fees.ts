@@ -4,7 +4,7 @@
  * gaming corridor rate and are labeled as such. They are not hotel quotes.
  */
 
-export const FEE_MODULE_CHECKED = "2026-11-20";
+export const FEE_MODULE_CHECKED = "2026-11-19";
 
 /** Clark County Code 4.08.010, resort hotel in the primary gaming corridor, effective March 1, 2017. */
 export const PRIMARY_GAMING_CORRIDOR_RATE = 0.1338;
@@ -73,7 +73,7 @@ export const RESORT_FEES: readonly ResortFee[] = [
       "Fitness access for 2 at Canyon Ranch, in-suite internet, boarding-pass printing, unlimited local and toll-free calls, and PressReader while on Venetian or Palazzo Wi-Fi. The same page mentions Palazzo. A separate Palazzo amount was not stated.",
     sourceLabel: "The Venetian Resort fee page",
     sourceUrl: "https://www.venetianlasvegas.com/resort/resort-fee.html",
-    checked: "2026-11-20",
+    checked: "2026-11-19",
   }),
   stripFee({
     id: "wynn-encore",
@@ -83,7 +83,7 @@ export const RESORT_FEES: readonly ResortFee[] = [
       "Self-parking for up to 2\u00a0vehicles, in-room Wi-Fi, bottled water refreshed daily, unlimited local and domestic long-distance and toll-free calls, fitness access for up to 2\u00a0people, and a digital newsstand. Tower Suites use the same daily amount on this page, with valet or self-parking.",
     sourceLabel: "Wynn and Encore resort information",
     sourceUrl: "https://www.wynnlasvegas.com/about-us/resort-information",
-    checked: "2026-11-20",
+    checked: "2026-11-19",
   }),
   stripFee({
     id: "vdara",
@@ -173,9 +173,4 @@ export function formatUsd(cents: number): string {
   }).format(cents / 100);
 }
 
-export function formatCheckedDate(iso: string, style: "long" | "medium" = "long"): string {
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    dateStyle: style,
-  }).format(new Date(`${iso}T00:00:00Z`));
-}
+export { formatPacificDate as formatCheckedDate } from "./vegas-dates";
