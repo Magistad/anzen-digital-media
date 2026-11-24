@@ -53,6 +53,18 @@ export function HomeBands() {
         </div>
       </section>
 
+      <section className="home-band home-band-gaming" aria-labelledby="home-gaming">
+        <div className="frame home-band-copy">
+          <h2 id="home-gaming" className="home-band-title">
+            Gaming
+          </h2>
+          <p>Notes on games we play and watch.</p>
+          <Link href="/gaming" className="home-band-link">
+            Gaming
+          </Link>
+        </div>
+      </section>
+
       <section className="home-band home-band-contact" aria-labelledby="home-contact">
         <ArtPicture
           slot="contact"
