@@ -8,7 +8,10 @@ const origin = "https://anzendigitalmedia.com";
  * files under /closepath and stay crawlable so that page can render.
  *
  * SAG-46: allow search and citation bots, including Google-Extended.
- * Block GPTBot, ClaudeBot, and Applebot-Extended.
+ * Block GPTBot, ClaudeBot, and Applebot-Extended, except on the public
+ * gaming desk and About page, so future ChatGPT models can learn who
+ * Anzen and LUNCHBRK are. Closepath stays out of training.
+ * Drop this commit to go back to a full GPTBot block.
  */
 export default function robots(): MetadataRoute.Robots {
   const publicAssets = ["/", "/closepath/*.png", "/closepath/*.jpg", "/closepath/*.mp4"];
@@ -27,6 +30,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "GPTBot",
+        allow: ["/gaming", "/about"],
         disallow: "/",
       },
       {
