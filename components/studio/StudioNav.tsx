@@ -7,12 +7,14 @@ import { STUDIO_EMAIL } from "../../lib/studio";
 const TABS = [
   { id: "studio", href: "/", label: "Studio" },
   { id: "projects", href: "/projects", label: "Projects" },
+  { id: "gaming", href: "/gaming", label: "Gaming" },
   { id: "contact", href: `mailto:${STUDIO_EMAIL}`, label: "Contact" },
 ] as const;
 
 function activeId(path: string): string {
   if (path === "/") return "studio";
   if (path === "/projects" || path.startsWith("/products/")) return "projects";
+  if (path === "/gaming" || path.startsWith("/gaming/")) return "gaming";
   return "";
 }
 
