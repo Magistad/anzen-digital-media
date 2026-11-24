@@ -70,7 +70,7 @@ function decide(
 
   if (roomIsRicher && risk >= 3) {
     return {
-      title: "One more crate, then go",
+      title: "Grab the closest pile, then go",
       body: `The room still has more on the floor (${money(remaining)}) than you have bagged (${money(secured)}), but the area is not quiet. Grab the closest pile if you can do it fast, then leave.`,
     };
   }
@@ -123,7 +123,7 @@ export function LootCall() {
     <section className="loot-call" aria-labelledby="loot-call-title">
       <h2 id="loot-call-title">Leave or stay</h2>
       <p className="loot-call-lead">
-        This uses what you can actually see and hear. It does not invent a lobby count.
+        This uses what you can actually see and hear. It does not invent a lobby count. The leave call is about getting the bag out, not about jail years ticking up in the room.
       </p>
 
       <div className="loot-call-grid">
