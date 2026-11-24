@@ -34,25 +34,6 @@ export default function Page() {
     <main id="content" className="desk-shell">
       <div className="desk-frame desk-frame-wide">
         <p className="desk-kicker">{HUB.eyebrow}</p>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Anzen Digital Media LLC",
-              url: "https://anzendigitalmedia.com",
-              email: "contact@anzendigitalmedia.com",
-              founder: { "@type": "Person", name: "Javier Segura" },
-              address: {
-                "@type": "PostalAddress",
-                addressLocality: "Las Vegas",
-                addressRegion: "NV",
-                addressCountry: "US",
-              },
-            }),
-          }}
-        />
         <h1 className="desk-title">{HUB.title}</h1>
         <p className="desk-lead">{HUB.lead}</p>
 

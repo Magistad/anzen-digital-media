@@ -7,6 +7,9 @@ import { SectionDirectory } from "../../../../components/gaming/SectionDirectory
 import { draftsArePublic } from "../../../../lib/gaming/drafts";
 import { formatPostDate, getPost, listPosts, listPostsInSection } from "../../../../lib/gaming/posts";
 import { GAMING_SECTIONS, sectionBySlug } from "../../../../lib/gaming/sections";
+import { JsonLd } from "../../../../components/JsonLd";
+import { creatorByline, isCreatorByline, PUBLISHER } from "../../../../lib/identity";
+import { articleGraph } from "../../../../lib/structured-data";
 
 type Params = { slug: string };
 
@@ -22,7 +25,8 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
     return {
       title: section.name,
       description: section.summary,
-      openGraph: { title: section.name, description: section.summary, url: section.href },
+      openGraph: { title: section.name, description: section.summary, url: section.href, siteName: PUBLISHER.name },
+      twitter: { card: "summary", title: section.name, description: section.summary },
     };
   }
   const post = getPost(params.slug);
@@ -32,8 +36,17 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   return {
     title: post.title,
     description: post.excerpt,
-    authors: [{ name: post.author }],
-    openGraph: { title: post.title, description: post.excerpt, url: post.href, type: "article" },
+    authors: [{ name: isCreatorByline(post.author) ? creatorByline() : post.author, url: isCreatorByline(post.author) ? "/about" : undefined }],
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: post.href,
+      type: "article",
+      siteName: PUBLISHER.name,
+      publishedTime: post.date,
+      modifiedTime: post.updated ?? post.date,
+    },
+    twitter: { card: "summary", title: post.title, description: post.excerpt },
     robots: post.draft ? { index: false, follow: false } : undefined,
   };
 }
@@ -77,14 +90,27 @@ export default async function GamingSlugPage({ params }: { params: Params }) {
 
   return (
     <GamingShell>
+      {post.draft ? null : <JsonLd data={articleGraph(post)} />}
       <article className="gaming-frame gaming-article">
         {post.draft ? <p className="gaming-flag gaming-flag-banner">Draft</p> : null}
         <GamingKicker href={sectionMeta?.href ?? "/gaming"} label={post.sectionName} />
         <h1 className="page-title gaming-title">{post.title}</h1>
         <p className="gaming-byline">
-          <span translate="no">{post.author}</span>
+          {isCreatorByline(post.author) ? (
+            <Link href="/about" translate="no">
+              {creatorByline()}
+            </Link>
+          ) : (
+            <span translate="no">{post.author}</span>
+          )}
           {", "}
           <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+          {post.updated && post.updated !== post.date ? (
+            <>
+              {". Updated "}
+              <time dateTime={post.updated}>{formatPostDate(post.updated)}</time>
+            </>
+          ) : null}
         </p>
         {post.todo ? (
           <p className="gaming-todo">
