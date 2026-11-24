@@ -57,7 +57,7 @@ function decide(
   if (bagIsHeavier) {
     return {
       title: "Leave",
-      body: `The bag already beats the room: ${money(secured)} secured, ${money(remaining)} still on the floor. I only stay if it is still quiet, and even then I would already be walking to the door.`,
+      body: `The bag already beats the room: ${money(secured)} secured, ${money(remaining)} still left to open. I only stay if it is still quiet, and even then I would already be walking to the door.`,
     };
   }
 
@@ -71,13 +71,13 @@ function decide(
   if (roomIsRicher && risk >= 3) {
     return {
       title: "Grab the closest pile, then go",
-      body: `The room still has more on the floor (${money(remaining)}) than you have bagged (${money(secured)}), but the area is not quiet. Grab the closest pile if you can do it fast, then leave.`,
+      body: `The room still has more left to open (${money(remaining)}) than you have bagged (${money(secured)}), but the area is not quiet. Grab the closest pile if you can do it fast, then leave.`,
     };
   }
 
   return {
     title: "You can keep looking",
-    body: `The room still has more than the bag: ${money(remaining)} on the floor, ${money(secured)} already secured, and the area still feels manageable. Keep an ear on the street. The moment the bag passes the room, leave.`,
+    body: `The room still has more than the bag: ${money(remaining)} left to open, ${money(secured)} already secured, and the area still feels manageable. Keep an ear on the street. The moment the bag passes the room, leave.`,
   };
 }
 
