@@ -38,6 +38,11 @@ export default async function ReceivedPage({
             {offer.id === "trademark-name-logo" ? (
               <p className="desk-lead">Reply to the confirmation email with the logo file. The 48 hours start when that file arrives.</p>
             ) : null}
+            {order.confirmation === "failed" ? (
+              <p className="desk-lead" role="status">
+                The confirmation email did not send. The form is saved. Write to {STUDIO_EMAIL} and include the order reference, or submit the form once more to try the email again.
+              </p>
+            ) : null}
             {order.confirmation === "pending_configuration" ? (
               <p className="desk-lead">
                 If the confirmation is not in your inbox shortly, write to {STUDIO_EMAIL} and include the order reference. We still have the intake.

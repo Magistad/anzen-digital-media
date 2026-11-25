@@ -129,12 +129,22 @@ export default function RefundsPage() {
       </LegalSection>
 
       <LegalSection id="watch" title="Trademark Watch">
-        <p>
-          Trademark Watch is $19 USD a month. Cancel anytime by emailing{" "}
-          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
-          from the address on the subscription. Cancellation stops future monthly charges. It does not, by
-          itself, refund the current month.
-        </p>
+        {inApp ? (
+          <p>
+            Trademark Watch is a monthly subscription started on the website, not in this app. Cancel by
+            emailing{" "}
+            <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+            from the address on the subscription. Cancellation stops later months. This app does not show the
+            price.
+          </p>
+        ) : (
+          <p>
+            Trademark Watch is $19 USD a month. Cancel anytime by emailing{" "}
+            <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+            from the address on the subscription. Cancellation stops future monthly charges. It does not, by
+            itself, refund the current month.
+          </p>
+        )}
         <p>
           If Anzen does not email the first watch confirmation within 48 hours of a complete intake, you may
           request a refund of that first charge. A later month that was charged, and for which Anzen did not

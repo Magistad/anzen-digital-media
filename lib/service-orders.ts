@@ -22,26 +22,74 @@ export type ServiceOrder = {
   intake: ServiceIntake | null;
   paymentNotice: MailState;
   confirmation: MailState;
+  operatorNotice: MailState;
   createdAt: string;
   updatedAt: string;
 };
 
-function keyFor(sessionId: string): string {
-  return `order:${sessionId}`;
+type PaymentRecord = {
+  id: string;
+  offerId: string;
+  email: string;
+  customerId: string | null;
+  subscriptionId: string | null;
+  paymentStatus: string;
+  paymentNotice: MailState;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type IntakeRecord = {
+  intake: ServiceIntake;
+  confirmation: MailState;
+  operatorNotice: MailState;
+  updatedAt: string;
+};
+
+function paymentKey(sessionId: string): string {
+  return `pay:${sessionId}`;
 }
 
-export async function getServiceOrder(sessionId: string): Promise<ServiceOrder | null> {
-  const raw = await getServiceStore().get(keyFor(sessionId));
+function intakeKey(sessionId: string): string {
+  return `intake:${sessionId}`;
+}
+
+async function readJson<T>(key: string): Promise<T | null> {
+  const raw = await getServiceStore().get(key);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as ServiceOrder;
+    return JSON.parse(raw) as T;
   } catch {
     return null;
   }
 }
 
-async function saveServiceOrder(order: ServiceOrder): Promise<void> {
-  await getServiceStore().set(keyFor(order.id), JSON.stringify(order));
+export async function getServiceOrder(sessionId: string): Promise<ServiceOrder | null> {
+  const payment = await readJson<PaymentRecord>(paymentKey(sessionId));
+  const intake = await readJson<IntakeRecord>(intakeKey(sessionId));
+  if (!payment && !intake) return null;
+  return {
+    id: payment?.id ?? sessionId,
+    offerId: payment?.offerId ?? "",
+    email: payment?.email ?? intake?.intake.deliveryEmail ?? "",
+    customerId: payment?.customerId ?? null,
+    subscriptionId: payment?.subscriptionId ?? null,
+    paymentStatus: payment?.paymentStatus ?? "",
+    intake: intake?.intake ?? null,
+    paymentNotice: payment?.paymentNotice ?? "not_sent",
+    confirmation: intake?.confirmation ?? "not_sent",
+    operatorNotice: intake?.operatorNotice ?? "not_sent",
+    createdAt: payment?.createdAt ?? intake?.updatedAt ?? new Date().toISOString(),
+    updatedAt: intake?.updatedAt ?? payment?.updatedAt ?? new Date().toISOString(),
+  };
+}
+
+async function savePayment(record: PaymentRecord): Promise<void> {
+  await getServiceStore().set(paymentKey(record.id), JSON.stringify(record));
+}
+
+async function saveIntake(sessionId: string, record: IntakeRecord): Promise<void> {
+  await getServiceStore().set(intakeKey(sessionId), JSON.stringify(record));
 }
 
 function stringId(value: unknown): string | null {
@@ -94,37 +142,49 @@ function intakeLink(session: Stripe.Checkout.Session): string {
   }
 }
 
-/** Record a paid Checkout session. Safe to call more than once. */
+function noticeSettled(state: MailState | undefined): boolean {
+  return state === "sent" || state === "pending_configuration";
+}
+
+/** Record a paid Checkout session. Writes only the payment record, never the intake. */
 export async function recordPaidServiceSession(session: Stripe.Checkout.Session): Promise<ServiceOrder | null> {
   if (!paidServiceSession(session)) return null;
   const offer = offerById(session.metadata?.offer ?? "");
   if (!offer) return null;
-  const existing = await getServiceOrder(session.id);
+  const existing = await readJson<PaymentRecord>(paymentKey(session.id));
   const now = new Date().toISOString();
-  const order: ServiceOrder = {
+  const record: PaymentRecord = {
     id: session.id,
     offerId: offer.id,
     email: session.customer_details?.email ?? existing?.email ?? "",
     customerId: stringId(session.customer) ?? existing?.customerId ?? null,
     subscriptionId: stringId(session.subscription) ?? existing?.subscriptionId ?? null,
     paymentStatus: session.payment_status ?? existing?.paymentStatus ?? "paid",
-    intake: existing?.intake ?? null,
     paymentNotice: existing?.paymentNotice ?? "not_sent",
-    confirmation: existing?.confirmation ?? "not_sent",
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
 
-  if (order.email && order.paymentNotice !== "sent" && order.paymentNotice !== "pending_configuration") {
+  if (record.email && !noticeSettled(record.paymentNotice)) {
     const mail = paymentReceivedMail(offer, intakeLink(session));
-    order.paymentNotice = await sendServiceMail({ to: order.email, ...mail });
+    record.paymentNotice = await sendServiceMail({ to: record.email, ...mail });
   }
 
-  await saveServiceOrder(order);
-  if (order.paymentNotice === "failed") {
+  await savePayment(record);
+  const order = await getServiceOrder(session.id);
+  if (record.paymentNotice === "failed") {
     throw new Error("Service payment email failed");
   }
   return order;
+}
+
+/** Send the intake confirmation again when the last try failed. Does not throw. */
+export async function retryServiceConfirmation(sessionId: string): Promise<ServiceOrder | null> {
+  const order = await getServiceOrder(sessionId);
+  const offer = order ? offerById(order.offerId) : undefined;
+  if (!order?.intake || !offer) return order;
+  if (noticeSettled(order.confirmation) && noticeSettled(order.operatorNotice)) return order;
+  return deliverIntakeMail(order, offer);
 }
 
 export type IntakeResult =
@@ -156,35 +216,62 @@ export async function saveServiceIntake(
     if (value) cleaned[field.name] = value;
   }
 
-  const existing = (await recordPaidServiceSession(session)) ?? (await getServiceOrder(session.id));
+  let existing: ServiceOrder | null = null;
+  try {
+    existing = await recordPaidServiceSession(session);
+  } catch {
+    existing = await getServiceOrder(session.id);
+  }
   if (!existing) return { ok: false, error: "missing" };
-  if (existing.intake) return { ok: true, order: existing };
+  if (existing.intake) {
+    if (existing.confirmation === "failed" || existing.operatorNotice === "failed") {
+      const retried = await deliverIntakeMail(existing, offer);
+      return { ok: true, order: retried ?? existing };
+    }
+    return { ok: true, order: existing };
+  }
 
   const now = new Date().toISOString();
   const order: ServiceOrder = {
     ...existing,
     intake: { submittedAt: now, deliveryEmail, answers: cleaned },
+    confirmation: "not_sent",
+    operatorNotice: "not_sent",
     updatedAt: now,
   };
+  const saved = await deliverIntakeMail(order, offer);
+  return { ok: true, order: saved ?? order };
+}
 
-  const mail = confirmationMail(offer, order);
-  order.confirmation = await sendServiceMail({ to: deliveryEmail, ...mail });
-  if (order.email && order.email.toLowerCase() !== deliveryEmail.toLowerCase()) {
-    await sendServiceMail({ to: order.email, ...mail });
+async function deliverIntakeMail(order: ServiceOrder, offer: ServiceOffer): Promise<ServiceOrder | null> {
+  if (!order.intake) return order;
+  const now = new Date().toISOString();
+  let confirmation = order.confirmation;
+  let operatorNotice = order.operatorNotice ?? "not_sent";
+  if (!noticeSettled(confirmation)) {
+    const mail = confirmationMail(offer, order);
+    confirmation = await sendServiceMail({ to: order.intake.deliveryEmail, ...mail });
+    if (order.email && order.email.toLowerCase() !== order.intake.deliveryEmail.toLowerCase() && confirmation !== "failed") {
+      await sendServiceMail({ to: order.email, ...mail });
+    }
   }
-  await sendServiceMail({
-    to: STUDIO_EMAIL,
-    subject: `New service order: ${offer.name}`,
-    text: operatorText(offer, order),
-  });
-  await saveServiceOrder(order);
-  await notifyServiceForm({
-    offer: offer.name,
-    email: deliveryEmail,
-    reference: order.id,
-    summary: operatorText(offer, order).slice(0, 4000),
-  });
-  return { ok: true, order };
+  if (!noticeSettled(operatorNotice)) {
+    operatorNotice = await sendServiceMail({
+      to: STUDIO_EMAIL,
+      subject: `New service order: ${offer.name}`,
+      text: operatorText(offer, order),
+    });
+    if (operatorNotice !== "failed") {
+      await notifyServiceForm({
+        offer: offer.name,
+        email: order.intake.deliveryEmail,
+        reference: order.id,
+        summary: operatorText(offer, order).slice(0, 4000),
+      });
+    }
+  }
+  await saveIntake(order.id, { intake: order.intake, confirmation, operatorNotice, updatedAt: now });
+  return getServiceOrder(order.id);
 }
 
 function operatorText(offer: ServiceOffer, order: ServiceOrder): string {

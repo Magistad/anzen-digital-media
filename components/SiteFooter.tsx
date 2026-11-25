@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { headers } from "next/headers";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../lib/native-shell";
 import { STUDIO_EMAIL } from "../lib/studio";
 import { VERTICALS } from "../lib/verticals";
 
 const linkClass = "inline-flex min-h-11 items-center transition-colors duration-150 hover:text-signal";
 
 export function SiteFooter() {
+  const hideStore = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
   return (
     <footer className="border-t border-signal/30 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-8 font-sans text-sm tracking-normal text-paper/90 sm:px-8">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
@@ -16,9 +19,11 @@ export function SiteFooter() {
           {STUDIO_EMAIL}
         </a>
         <nav aria-label="Products" className="flex flex-wrap gap-x-4 gap-y-1">
-          <Link href="/products/closepath" className={linkClass}>
-            Products: Closepath
-          </Link>
+          {hideStore ? null : (
+            <Link href="/products/closepath" className={linkClass}>
+              Products: Closepath
+            </Link>
+          )}
           <Link href="/projects" className={linkClass}>
             Projects
           </Link>
@@ -32,9 +37,11 @@ export function SiteFooter() {
               {vertical.name}
             </Link>
           ))}
-          <Link href="/services" className={linkClass}>
-            Services
-          </Link>
+          {hideStore ? null : (
+            <Link href="/services" className={linkClass}>
+              Services
+            </Link>
+          )}
         </nav>
         <nav aria-label="Legal" className="flex flex-wrap gap-x-4 gap-y-1">
           <Link href="/terms" className={linkClass}>

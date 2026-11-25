@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 import { clearEntitlementCache, subscriptionKeepsBook } from "../../../../lib/closepath-access";
 import { CLOSEPATH_PRODUCT } from "../../../../lib/closepath";
 import { isClosepathSession, shouldUnlockFulfillment } from "../../../../lib/closepath-order";
-import { recordPaidServiceSession } from "../../../../lib/service-orders";
+import { recordPaidServiceSession, retryServiceConfirmation } from "../../../../lib/service-orders";
 import { isServiceSession, paidServiceSession } from "../../../../lib/services";
 import {
   failClosepathFulfillment,
@@ -85,6 +85,10 @@ export async function POST(req: Request) {
       const session = await stripe.checkout.sessions.retrieve(received.id);
       if (event.type !== "checkout.session.async_payment_failed" && paidServiceSession(session)) {
         await recordPaidServiceSession(session);
+        const confirmed = await retryServiceConfirmation(session.id);
+        if (confirmed?.intake && confirmed.confirmation === "failed") {
+          throw new Error("Service confirmation email failed");
+        }
       }
       return NextResponse.json({ received: true });
     } catch (error) {

@@ -324,7 +324,8 @@ export default function TermsPage() {
           advice.
         </p>
         <p>
-          Trademark Watch is $19 USD a month. Cancel by emailing{" "}
+          Trademark Watch is a monthly subscription
+          {inApp ? "" : " at $19 USD a month"}. Cancel by emailing{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
           from the address on the subscription. Cancellation stops later months. Refunds are in the{" "}
           <LegalLink href="/refunds">Refund Policy</LegalLink>.

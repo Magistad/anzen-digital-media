@@ -3,7 +3,7 @@ import test from "node:test";
 import { POST as checkout } from "../../app/api/services/checkout/route";
 import { POST as intake } from "../../app/api/services/intake/route";
 import { memoryStore } from "../../lib/closepath-store";
-import { getServiceOrder } from "../../lib/service-orders";
+import { getServiceOrder, recordPaidServiceSession } from "../../lib/service-orders";
 import { setServiceStore } from "../../lib/service-store";
 import { resetStripeClient } from "../../lib/stripe";
 import { bindTestStripe } from "../bind-stripe";
@@ -11,8 +11,16 @@ import { TEST_EMAIL, TEST_ORIGIN, TEST_PRICE_ID, TEST_SESSION_ID } from "../cons
 import { formRequest } from "./http";
 
 let mock: Awaited<ReturnType<typeof bindTestStripe>>;
+const savedNoticeEnv = {
+  SERVICE_MAIL_API_KEY: process.env.SERVICE_MAIL_API_KEY,
+  URL: process.env.URL,
+  DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
+};
 
 test.before(async () => {
+  delete process.env.SERVICE_MAIL_API_KEY;
+  delete process.env.URL;
+  delete process.env.DEPLOY_PRIME_URL;
   mock = await bindTestStripe();
   setServiceStore(memoryStore());
 });
@@ -20,6 +28,10 @@ test.before(async () => {
 test.after(async () => {
   setServiceStore(null);
   await mock.unbind();
+  for (const [key, value] of Object.entries(savedNoticeEnv)) {
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
 });
 
 function usePrice(name: string) {
@@ -127,6 +139,23 @@ test("a paid session can submit intake once", async () => {
     assert.equal(order?.offerId, "grant-match");
     assert.equal(order?.intake?.answers.business, "Example LLC");
     assert.equal(order?.confirmation, "pending_configuration");
+    await recordPaidServiceSession({
+      id: TEST_SESSION_ID,
+      object: "checkout.session",
+      metadata: { product: "service", offer: "grant-match", service: "grant-match-report" },
+      mode: "payment",
+      status: "complete",
+      payment_status: "paid",
+      currency: "usd",
+      amount_total: 14900,
+      customer: null,
+      subscription: null,
+      customer_details: { email: TEST_EMAIL, name: null, phone: null },
+      success_url: `${TEST_ORIGIN}/services/intake?session_id={CHECKOUT_SESSION_ID}`,
+    } as never);
+    const kept = await getServiceOrder(TEST_SESSION_ID);
+    assert.equal(kept?.intake?.answers.business, "Example LLC");
+    assert.equal(kept?.confirmation, "pending_configuration");
   } finally {
     mock.setSessionPatch(null);
   }

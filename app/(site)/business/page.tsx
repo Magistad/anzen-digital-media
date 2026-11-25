@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { DeskCard } from "../../../components/desk/DeskCard";
 import { DeskIndex } from "../../../components/desk/DeskIndex";
 import { listDeskPosts } from "../../../lib/desk-posts";
 import { CLOSEPATH_OFFER } from "../../../lib/closepath";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../lib/native-shell";
 import { verticalById } from "../../../lib/verticals";
 
 const vertical = verticalById("business")!;
@@ -17,26 +19,29 @@ export const metadata: Metadata = {
 
 export default function BusinessPage() {
   const posts = listDeskPosts("business");
+  const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
   return (
     <DeskIndex name={vertical.name} lead={vertical.summary} posts={posts}>
-      <ul className="desk-grid">
-        <li>
-          <DeskCard
-            href="/products/closepath"
-            kicker="Product"
-            title="Closepath"
-            detail={`The book I sell to solo residential agents. ${CLOSEPATH_OFFER}`}
-          />
-        </li>
-        <li>
-          <DeskCard
-            href="/services"
-            kicker="Services"
-            title="Buy a service"
-            detail="Trademark search report, grant match, and the Nevada annual list kit. Prices are on each page."
-          />
-        </li>
-      </ul>
+      {inApp ? null : (
+        <ul className="desk-grid">
+          <li>
+            <DeskCard
+              href="/products/closepath"
+              kicker="Product"
+              title="Closepath"
+              detail={`The book I sell to solo residential agents. ${CLOSEPATH_OFFER}`}
+            />
+          </li>
+          <li>
+            <DeskCard
+              href="/services"
+              kicker="Services"
+              title="Buy a service"
+              detail="Trademark search report, grant match, and the Nevada annual list kit. Prices are on each page."
+            />
+          </li>
+        </ul>
+      )}
     </DeskIndex>
   );
 }
