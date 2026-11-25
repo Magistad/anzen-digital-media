@@ -206,9 +206,9 @@ export default function ClosepathPage({
               <span className="block">to a missed date.</span>
             </h1>
             <p className="mt-6 max-w-[38rem] text-base leading-relaxed text-paper/85 sm:text-lg">
-              Closepath is a listing-to-close system for solo residential real
-              estate agents. It supplements the tools you already use. You open
-              it in the browser on a computer or phone.
+              Closepath is the book I built for a solo residential agent who is
+              keeping dates in texts. Open it in the browser. It sits under the
+              CRM you already pay for. It does not replace that CRM.
             </p>
           </div>
           <aside className="price-card">

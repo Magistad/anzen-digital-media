@@ -13,25 +13,25 @@ export const VERTICALS: readonly Vertical[] = [
     id: "gaming",
     name: "Gaming",
     href: "/gaming",
-    summary: "Notes on games we play and watch.",
+    summary: "I play as LUNCHBRK. Notes from the games on my PC, not a press roundup.",
   },
   {
     id: "business",
     name: "Business",
     href: "/business",
-    summary: "Practical notes for running a small company.",
+    summary: "I run a Nevada LLC from Las Vegas. Trademark records, the annual list, and Closepath.",
   },
   {
     id: "tech",
     name: "Tech",
     href: "/tech",
-    summary: "Tools and buying checks for everyday software.",
+    summary: "What I use on a laptop, and what I will not paste into a chat box.",
   },
   {
     id: "money",
     name: "Money",
     href: "/money",
-    summary: "How small businesses find funding and avoid bad offers.",
+    summary: "Grants I will look up, and the pitches I delete.",
   },
 ];
 

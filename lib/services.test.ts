@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { FAQ_PAGE, HUB, SERVICE_PAGES } from "./service-copy";
+import { FAQ_PAGE, HUB, SERVICE_INDEX, SERVICE_PAGES } from "./service-copy";
 import {
   SERVICE_OFFERS,
   formatUsd,
@@ -73,6 +73,18 @@ test("a one-time price cannot be a subscription price", () => {
   );
 });
 
+test("service titles and descriptions fit a search result", () => {
+  for (const page of SERVICE_PAGES) {
+    const titleTag = `${page.title} | Anzen`;
+    assert.ok(titleTag.length < 60, `${titleTag} is ${titleTag.length}`);
+    assert.ok(page.description.length > 40 && page.description.length < 155, page.description);
+    assert.ok(page.faqs.length >= 3);
+  }
+  assert.ok(FAQ_PAGE.description.length < 155);
+  assert.ok(SERVICE_INDEX.description.length < 155);
+  assert.ok(HUB.description.length < 155, HUB.description);
+});
+
 test("new customer copy has no em dash and no meeting booking language", () => {
   const roots = [
     path.join(process.cwd(), "content", "business"),
@@ -89,14 +101,28 @@ test("new customer copy has no em dash and no meeting booking language", () => {
       return [root];
     }
   });
-  const banned = ["\u2014", "book a call", "calendly", "schedule a call"];
+  const banned = [
+    "\u2014",
+    "\u2013",
+    "book a call",
+    "calendly",
+    "schedule a call",
+    "in today's",
+    "unlock",
+    "elevate",
+    "seamless",
+    "delve",
+    "game-changer",
+    "not just",
+  ];
   for (const file of files) {
     const text = readFileSync(file, "utf8").toLowerCase();
     for (const token of banned) {
       assert.equal(text.includes(token), false, `${file} contains ${token}`);
     }
   }
-  assert.equal(HUB.lead.toLowerCase().includes("gaming"), true);
+  assert.equal(HUB.lead.toLowerCase().includes("javier"), true);
+  assert.equal(HUB.latestLead.toLowerCase().includes("gaming"), true);
   assert.equal(SERVICE_PAGES.length, 3);
   assert.equal(FAQ_PAGE.items.some((item) => item.answer.toLowerCase().includes("law firm")), true);
 });

@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: SERVICE_INDEX.title,
   description: SERVICE_INDEX.description,
   openGraph: { title: SERVICE_INDEX.title, description: SERVICE_INDEX.description, url: "/services" },
+  alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {

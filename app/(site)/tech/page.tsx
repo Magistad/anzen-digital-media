@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: vertical.name,
   description: vertical.summary,
   openGraph: { title: vertical.name, description: vertical.summary, url: vertical.href },
+  alternates: { canonical: vertical.href },
 };
 
 export default function TechPage() {

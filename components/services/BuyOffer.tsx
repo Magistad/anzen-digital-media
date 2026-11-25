@@ -44,7 +44,7 @@ export function BuyOffer({
             {offer.button}
           </button>
           <p id={noteId} className="service-offer-note">
-            Online checkout opens when this price is connected to Stripe. Until then, the price above is the offer.
+            The pay button turns on when this Stripe price is connected. The number above is the price.
           </p>
         </>
       )}

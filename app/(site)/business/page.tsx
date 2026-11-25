@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: vertical.name,
   description,
   openGraph: { title: vertical.name, description, url: vertical.href },
+  alternates: { canonical: vertical.href },
 };
 
 export default function BusinessPage() {
@@ -24,7 +25,7 @@ export default function BusinessPage() {
             href="/products/closepath"
             kicker="Product"
             title="Closepath"
-            detail={`A listing-to-close book for solo residential agents. ${CLOSEPATH_OFFER}`}
+            detail={`The book I sell to solo residential agents. ${CLOSEPATH_OFFER}`}
           />
         </li>
         <li>
@@ -32,7 +33,7 @@ export default function BusinessPage() {
             href="/services"
             kicker="Services"
             title="Buy a service"
-            detail="Trademark search, grant match report, and the Nevada annual compliance kit."
+            detail="Trademark search report, grant match, and the Nevada annual list kit. Prices are on each page."
           />
         </li>
       </ul>

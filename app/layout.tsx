@@ -20,7 +20,7 @@ const display = Archivo({
 
 const title = "Anzen Digital Media";
 const description =
-  "Anzen Digital Media LLC in Las Vegas publishes Gaming, Business, Tech, and Money, and sells online research services.";
+  "Javier Segura runs Anzen Digital Media LLC from Las Vegas. Gaming, business, tech, money, and three research services.";
 
 export const metadata: Metadata = {
   title: {

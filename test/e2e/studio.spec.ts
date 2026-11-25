@@ -16,9 +16,9 @@ test.describe("studio homepage", () => {
     await expect(nav.getByRole("link", { name: "Money" })).toHaveAttribute("href", "/money");
     await expect(nav.getByRole("link", { name: "Services" })).toHaveAttribute("href", "/services");
     await expect(page.getByRole("link", { name: "Products: Closepath" })).toHaveAttribute("href", "/products/closepath");
-    await expect(page.getByRole("link", { name: "Trademark Search Report" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Grant Match Report" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Nevada Annual Compliance Kit" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Trademark search report" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Small business grant match" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Nevada annual list filing kit" })).toBeVisible();
     await expect(page.getByRole("link", { name: EMAIL })).toBeVisible();
     await expect(page.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
     await expect(page.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");

@@ -52,16 +52,15 @@ export function paymentReceivedMail(offer: ServiceOffer, intakeLink: string): { 
   return {
     subject: `Payment received: ${offer.name}`,
     text: [
-      `We received your payment for ${offer.name}.`,
+      `Javier at Anzen Digital Media received your payment for ${offer.name}.`,
       "",
-      "Open this link and send the details we need:",
+      "Send the details on this form:",
       intakeLink,
       "",
-      "After you submit that form, we email a confirmation. We then email the finished work within 48 hours of a complete intake.",
+      "I email a confirmation when the form is in, then the work within 48 hours. A logo file has to arrive before that clock starts.",
       "",
-      "You do not need a meeting.",
-      "",
-      "Anzen Digital Media LLC",
+      "Javier Segura",
+      "Anzen Digital Media LLC, Las Vegas",
       STUDIO_EMAIL,
     ].join("\n"),
   };
@@ -72,16 +71,16 @@ export function confirmationMail(
   order: ServiceOrder,
 ): { subject: string; text: string } {
   const lines = [
-    `We have your ${offer.name} order.`,
+    `I have the ${offer.name} form.`,
     "",
-    `We will email the finished work to ${order.intake?.deliveryEmail ?? order.email} within 48 hours.`,
-    `Order reference: ${order.id}`,
+    `The finished work goes to ${order.intake?.deliveryEmail ?? order.email} within 48 hours.`,
+    `Reference: ${order.id}`,
     "",
   ];
   if (offer.id === "trademark-name-logo") {
-    lines.push("Reply to this email with the logo file. The 48 hours start when we have that file.", "");
+    lines.push("Reply with the logo file. I start the 48 hours when that file is here.", "");
   }
-  lines.push(offer.acknowledge, "", "Anzen Digital Media LLC", STUDIO_EMAIL);
+  lines.push(offer.acknowledge, "", "Javier Segura", "Anzen Digital Media LLC, Las Vegas", STUDIO_EMAIL);
   return { subject: `We have your order: ${offer.name}`, text: lines.join("\n") };
 }
 

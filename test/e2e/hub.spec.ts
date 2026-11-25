@@ -2,9 +2,9 @@ import { expect, test } from "@playwright/test";
 
 const pages = [
   { path: "/", heading: "Anzen Digital Media" },
-  { path: "/services/trademark-search-report", heading: "Trademark Search Report" },
-  { path: "/services/grant-match-report", heading: "Grant Match Report" },
-  { path: "/services/nevada-annual-compliance-kit", heading: "Nevada Annual Compliance Kit" },
+  { path: "/services/trademark-search-report", heading: "Trademark search report" },
+  { path: "/services/grant-match-report", heading: "Small business grant match" },
+  { path: "/services/nevada-annual-compliance-kit", heading: "Nevada annual list filing kit" },
   { path: "/business", heading: "Business" },
   { path: "/tech", heading: "Tech" },
   { path: "/money", heading: "Money" },

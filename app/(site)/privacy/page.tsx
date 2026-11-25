@@ -183,7 +183,7 @@ export default function PrivacyPage() {
         <p>
           Anzen Digital Media, LLC
           <br />
-          Nevada, United States
+          Las Vegas, Nevada, United States
           <br />
           <LegalLink href="https://anzendigitalmedia.com">https://anzendigitalmedia.com</LegalLink>
           <br />

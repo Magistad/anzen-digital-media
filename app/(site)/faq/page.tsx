@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: FAQ_PAGE.title,
   description: FAQ_PAGE.description,
   openGraph: { title: FAQ_PAGE.title, description: FAQ_PAGE.description, url: "/faq" },
+  alternates: { canonical: "/faq" },
 };
 
 export default function FaqPage() {

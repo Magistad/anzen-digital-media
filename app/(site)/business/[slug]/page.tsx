@@ -18,6 +18,7 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
     description: post.excerpt,
     authors: [{ name: post.author }],
     openGraph: { title: post.title, description: post.excerpt, url: post.href, type: "article" },
+    alternates: { canonical: post.href },
   };
 }
 

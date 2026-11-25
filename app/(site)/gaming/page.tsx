@@ -5,7 +5,7 @@ import { SectionDirectory } from "../../../components/gaming/SectionDirectory";
 import { listPosts } from "../../../lib/gaming/posts";
 
 const description =
-  "Notes on games we play and watch, from Anzen Digital Media. News, updates, tips, ratings, and a hype tracker.";
+  "LUNCHBRK notes from Javier Segura in Las Vegas. What he is actually playing, not a trailer recap.";
 
 export const metadata: Metadata = {
   title: "Gaming",
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     description,
     url: "/gaming",
   },
+  alternates: { canonical: "/gaming" },
 };
 
 export default function GamingPage() {
@@ -27,7 +28,9 @@ export default function GamingPage() {
       <div className="gaming-frame">
         <GamingKicker href="/" label="Anzen" />
         <h1 className="page-title gaming-title">Gaming</h1>
-        <p className="gaming-lead">Notes on games we play and watch.</p>
+        <p className="gaming-lead">
+          I play as LUNCHBRK. These notes are from the games on my PC, written in Las Vegas. Same desk layout as Business, Tech, and Money. Not the whole company.
+        </p>
         {published.length === 0 ? (
           <p className="gaming-empty">Nothing is published yet.</p>
         ) : null}

@@ -296,39 +296,38 @@ export default function TermsPage() {
 
       <LegalSection id="research" title="16. Research services">
         <p>
-          Anzen sells three research services on the site: a Trademark Search Report (a name, or a name and
-          logo) with an optional Trademark Watch, a Grant Match Report, and a Nevada Annual Compliance Kit
-          with an optional Certificate of Existence ordering guide. Prices are posted on each service page.
-          You pay through Stripe Checkout. You then submit an intake form. Anzen emails a confirmation, then
-          emails the deliverable within 48 hours after the intake is complete. A logo search starts that
-          period when the logo file arrives. There is no phone or video meeting in these services.
+          Javier Segura sells three research jobs through Anzen Digital Media, LLC, from Las Vegas. Prices
+          are on each service page. You pay with Stripe Checkout, then you submit an intake form. Anzen
+          emails a confirmation and emails the deliverable within 48 hours after that form is complete. A
+          logo search waits until the logo file arrives. These services do not include a phone call or a
+          video meeting.
         </p>
         <p>
-          Anzen is not a law firm. The trademark report and the watch alerts are informational research. They
-          are not legal advice, not an opinion on whether a name or logo can be registered, and not a
-          guarantee that a name is unused. A federal database search does not list every state registration
-          or every unregistered use. Anzen does not file a trademark application. Talk with a trademark
-          attorney before you file or rely on a name.
+          Anzen is not a law firm. A trademark search report, and a Trademark Watch alert, are research. They
+          are not legal advice. They are not an opinion that a name or logo can be registered, and they are
+          not a guarantee the name is unused. A federal database search misses state registrations and
+          unregistered use. Anzen does not file a trademark application. Hire a trademark attorney before you
+          file or before you treat a name as cleared.
         </p>
         <p>
-          The Grant Match Report is a list of programs that appear to fit the facts you provide, with official
-          links and the deadlines found on those pages. Anzen does not submit applications, does not promise
-          that you will receive an award, and does not take a percentage of any award. The funder decides.
+          A Grant Match Report lists programs that appear to fit the facts you provide, with the official
+          link and the deadline found on that page. Anzen does not submit the application. Anzen does not
+          promise an award. Anzen does not take a percentage of one. The funder decides.
         </p>
         <p>
           The Nevada Annual Compliance Kit is a checklist and a walkthrough filled with details you provide.
-          You submit the annual list and the state business license yourself in your own Nevada SilverFlume
-          or ORION account. Anzen does not log in, sign, or file for you. A done-for-you filing option is not
-          available. State fees, including the annual list and state business license amounts charged by the
-          State of Nevada, are paid by you to the state and are not part of Anzen’s fee. The Certificate of
-          Existence guide tells you how to order that certificate yourself. Anzen does not order it for you.
-          These materials are not legal, tax, or accounting advice.
+          You submit the annual list and the state business license in your own SilverFlume or ORION account.
+          Anzen does not log in, sign, or file for you. Done-for-you filing is not available. Fees the State
+          of Nevada charges, including the annual list and the state business license, are paid by you to the
+          state. They are not part of Anzen’s fee. The Certificate of Existence guide explains how you order
+          that certificate yourself. Anzen does not order it. None of this is legal, tax, or accounting
+          advice.
         </p>
         <p>
-          Trademark Watch is a monthly subscription. You may cancel by emailing{" "}
+          Trademark Watch is $19 USD a month. Cancel by emailing{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
-          from the address used at checkout. Cancellation stops later months. Refunds for the research
-          services and for Trademark Watch are in the <LegalLink href="/refunds">Refund Policy</LegalLink>.
+          from the address on the subscription. Cancellation stops later months. Refunds are in the{" "}
+          <LegalLink href="/refunds">Refund Policy</LegalLink>.
         </p>
       </LegalSection>
 
@@ -336,7 +335,7 @@ export default function TermsPage() {
         <p>
           Anzen Digital Media, LLC
           <br />
-          Nevada, United States
+          Las Vegas, Nevada, United States
           <br />
           <LegalLink href="https://anzendigitalmedia.com">https://anzendigitalmedia.com</LegalLink>
           <br />
