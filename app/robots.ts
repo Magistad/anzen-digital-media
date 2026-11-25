@@ -12,7 +12,7 @@ const origin = "https://anzendigitalmedia.com";
  */
 export default function robots(): MetadataRoute.Robots {
   const publicAssets = ["/", "/closepath/*.png", "/closepath/*.jpg", "/closepath/*.mp4"];
-  const privatePaths = ["/api/", "/closepath"];
+  const privatePaths = ["/api/", "/closepath", "/services/intake", "/services/received"];
 
   return {
     rules: [

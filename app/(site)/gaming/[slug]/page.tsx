@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DeskCard } from "../../../../components/desk/DeskCard";
 import { ArticleBody } from "../../../../components/gaming/ArticleBody";
 import { GamingKicker, GamingShell } from "../../../../components/gaming/GamingShell";
 import { SectionDirectory } from "../../../../components/gaming/SectionDirectory";
@@ -51,21 +51,16 @@ export default async function GamingSlugPage({ params }: { params: Params }) {
           {posts.length === 0 ? (
             <p className="gaming-empty">Nothing in this section yet.</p>
           ) : (
-            <ul className="gaming-index">
+            <ul className="desk-grid">
               {posts.map((post) => (
                 <li key={post.slug}>
-                  <Link href={post.href}>
-                    <span className="gaming-index-title">
-                      {post.draft ? <span className="gaming-flag">Draft</span> : null}
-                      {post.title}
-                    </span>
-                    <span className="gaming-index-meta">
-                      <span translate="no">{post.author}</span>
-                      {", "}
-                      <time dateTime={post.date}>{formatPostDate(post.date)}</time>
-                    </span>
-                    {post.excerpt ? <span className="gaming-index-excerpt">{post.excerpt}</span> : null}
-                  </Link>
+                  <DeskCard
+                    href={post.href}
+                    kicker={post.draft ? "Draft" : section.name}
+                    title={post.title}
+                    detail={post.excerpt}
+                    meta={`${post.author}, ${formatPostDate(post.date)}`}
+                  />
                 </li>
               ))}
             </ul>

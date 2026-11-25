@@ -6,7 +6,7 @@ export const LEGAL_UPDATED = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   year: "numeric",
   timeZone: "UTC",
-}).format(new Date("2026-11-09T12:00:00Z"));
+}).format(new Date("2026-11-25T12:00:00Z"));
 
 const proseLinkClass =
   "text-paper underline decoration-signal/50 underline-offset-[3px] transition-[color,text-decoration-color] duration-150 hover:text-signal hover:decoration-signal";

@@ -25,7 +25,7 @@ export default function GamingPage() {
   return (
     <GamingShell>
       <div className="gaming-frame">
-        <GamingKicker href="/" label="Studio" />
+        <GamingKicker href="/" label="Anzen" />
         <h1 className="page-title gaming-title">Gaming</h1>
         <p className="gaming-lead">Notes on games we play and watch.</p>
         {published.length === 0 ? (

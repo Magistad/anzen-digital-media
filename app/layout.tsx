@@ -19,7 +19,8 @@ const display = Archivo({
 });
 
 const title = "Anzen Digital Media";
-const description = "Anzen Digital Media is an independent studio.";
+const description =
+  "Anzen Digital Media LLC in Las Vegas publishes Gaming, Business, Tech, and Money, and sells online research services.";
 
 export const metadata: Metadata = {
   title: {

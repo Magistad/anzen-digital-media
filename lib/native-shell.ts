@@ -26,7 +26,15 @@ export function nativeShellHidesStoreBilling(platform: NativePlatform | null): b
 export function nativeShellRedirectPath(pathname: string, ua: string | null | undefined): string | null {
   if (!nativeShellHidesStoreBilling(nativePlatformFromUserAgent(ua))) return null;
   const path = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
-  if (path === "/" || path === "/products/closepath" || path === "/api/checkout" || path === "/api/closepath/billing") {
+  if (
+    path === "/" ||
+    path === "/products/closepath" ||
+    path === "/api/checkout" ||
+    path === "/api/closepath/billing" ||
+    path === "/services" ||
+    path.startsWith("/services/") ||
+    path.startsWith("/api/services/")
+  ) {
     return "/closepath/sign-in";
   }
   return null;

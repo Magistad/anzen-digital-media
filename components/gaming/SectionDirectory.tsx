@@ -1,11 +1,11 @@
-import Link from "next/link";
+import { DeskCard } from "../desk/DeskCard";
 import { GAMING_SECTIONS } from "../../lib/gaming/sections";
 import { listPostsInSection, type GamingPostMeta } from "../../lib/gaming/posts";
 
 export function SectionDirectory({ postsBySection }: { postsBySection?: Record<string, GamingPostMeta[]> }) {
   return (
-    <nav className="gaming-dir" aria-label="Gaming sections">
-      <ul>
+    <nav aria-label="Gaming sections">
+      <ul className="desk-grid">
         {GAMING_SECTIONS.map((section) => {
           const posts = postsBySection?.[section.slug] ?? listPostsInSection(section.slug);
           const published = posts.filter((post) => !post.draft).length;
@@ -22,11 +22,7 @@ export function SectionDirectory({ postsBySection }: { postsBySection?: Record<s
                 : "Nothing published yet";
           return (
             <li key={section.slug}>
-              <Link href={section.href}>
-                <span className="gaming-dir-name">{section.name}</span>
-                <span className="gaming-dir-summary">{section.summary}</span>
-                <span className="gaming-dir-state">{state}</span>
-              </Link>
+              <DeskCard href={section.href} kicker="Gaming" title={section.name} detail={section.summary} meta={state} />
             </li>
           );
         })}

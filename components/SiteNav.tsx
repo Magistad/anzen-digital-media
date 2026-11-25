@@ -1,14 +1,12 @@
-"use client";
-
-import { usePathname } from "next/navigation";
-import { StudioNav } from "./studio/StudioNav";
+import { headers } from "next/headers";
+import { HubNav } from "./hub/HubNav";
+import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../lib/native-shell";
 
 export function SiteNav() {
-  const path = usePathname();
-  if (path === "/" || path === "/projects" || path === "/contact") return null;
+  const hideServices = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
   return (
-    <header className="fixed inset-x-0 top-0 z-30 border-b border-signal/25 bg-black pt-[env(safe-area-inset-top)] font-display">
-      <StudioNav placement="bar" />
+    <header className="hub-nav">
+      <HubNav hideServices={hideServices} />
     </header>
   );
 }
