@@ -16,11 +16,10 @@ test.beforeEach(async ({ page }) => {
 test("/ responds and renders the studio homepage", async ({ page }) => {
   const response = await page.goto("/");
   expect(response?.status()).toBe(200);
-  const portal = page.locator(".hud-portal-name");
-  await expect(portal).toContainText("Anzen");
-  await expect(portal).toContainText(/Digital\s*Media/);
-  await expect(page.getByRole("link", { name: /^Projects/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /^Contact/i })).toBeVisible();
+  await expect(page).toHaveTitle("Anzen Digital Media");
+  await expect(page.getByRole("heading", { level: 1, name: "Anzen Digital Media" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Projects", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Contact", exact: true })).toBeVisible();
 });
 
 const pages: { path: string; text: string }[] = [

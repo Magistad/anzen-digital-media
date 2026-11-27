@@ -16,6 +16,10 @@ export type GamingPostMeta = {
   draft: boolean;
   todo: string | null;
   steamAppId: string | null;
+  /** Optional plain game name, used for the VideoGame part of the article markup. */
+  game: string | null;
+  /** Optional last real update, YYYY-MM-DD. Only set it when facts changed. */
+  updated: string | null;
   href: string;
 };
 
@@ -34,6 +38,8 @@ type Frontmatter = {
   draft?: unknown;
   todo?: unknown;
   steamAppId?: unknown;
+  game?: unknown;
+  updated?: unknown;
 };
 
 function asString(value: unknown): string {
@@ -81,6 +87,8 @@ function readAllSource(): GamingPost[] {
       draft: asBool(data.draft),
       todo: asString(data.todo) || null,
       steamAppId: asString(data.steamAppId) || null,
+      game: asString(data.game) || null,
+      updated: asDateString(data.updated) || null,
       href: `/gaming/${slug}`,
       content: parsed.content,
     } satisfies GamingPost;

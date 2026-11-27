@@ -24,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: origin },
     { url: `${origin}/projects` },
     { url: `${origin}/contact` },
+    { url: `${origin}/about` },
     ...PROJECTS.map((project) => ({ url: `${origin}${project.href}` })),
     ...gaming,
     ...desks,

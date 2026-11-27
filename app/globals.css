@@ -2566,6 +2566,10 @@ select.book-input {
     grid-template-columns: 1fr 1fr;
     gap: 1.35rem;
   }
+
+  .loot-window {
+    grid-column: 1 / -1;
+  }
 }
 
 .loot-field label,
@@ -2584,6 +2588,27 @@ select.book-input {
   font-weight: 500;
   color: var(--signal);
   font-variant-numeric: tabular-nums;
+}
+
+
+.loot-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  justify-content: flex-start;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.loot-check input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.2rem 0 0;
+  accent-color: var(--signal-deep);
 }
 
 .loot-field input[type="range"] {

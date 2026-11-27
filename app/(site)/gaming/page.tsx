@@ -14,8 +14,10 @@ export const metadata: Metadata = {
     title: "Gaming",
     description,
     url: "/gaming",
+    siteName: "Anzen Digital Media",
   },
   alternates: { canonical: "/gaming" },
+  twitter: { card: "summary", title: "Gaming | Anzen Digital Media", description },
 };
 
 export default function GamingPage() {

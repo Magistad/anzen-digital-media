@@ -2,6 +2,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../lib/native-shell";
 import { STUDIO_EMAIL } from "../lib/studio";
+import { CREATOR, CREATOR_PROFILES } from "../lib/identity";
 import { VERTICALS } from "../lib/verticals";
 
 const linkClass = "inline-flex min-h-11 items-center transition-colors duration-150 hover:text-signal";
@@ -43,7 +44,17 @@ export function SiteFooter() {
             </Link>
           )}
         </nav>
+        <nav aria-label={`${CREATOR.handle} profiles`} className="flex flex-wrap gap-x-4 gap-y-1">
+          {CREATOR_PROFILES.map((profile) => (
+            <a key={profile.href} href={profile.href} rel="me noopener" className={linkClass}>
+              {profile.label}
+            </a>
+          ))}
+        </nav>
         <nav aria-label="Legal" className="flex flex-wrap gap-x-4 gap-y-1">
+          <Link href="/about" className={linkClass}>
+            About
+          </Link>
           <Link href="/terms" className={linkClass}>
             Terms
           </Link>

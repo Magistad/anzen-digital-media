@@ -35,8 +35,15 @@ function decide(
   encounters: number,
   secured: number,
   remaining: number,
+  wipeWindow: boolean,
 ): Verdict {
-  const risk = activity + hotspot + Math.min(encounters, 4);
+  // A cleared first lobby after a wipe pushes risk toward Quiet, but it
+  // does not override a street that already sounds packed.
+  const effectiveActivity = wipeWindow ? Math.max(0, activity - 1) : activity;
+  const risk = effectiveActivity + hotspot + Math.min(encounters, 4);
+  const windowNote = wipeWindow
+    ? " The post-wipe window is only about an hour, and a patch can move it. If other servers have already merged in, uncheck that box and listen again."
+    : "";
   const bagIsHeavier = secured > 0 && secured >= remaining;
   const roomIsRicher = remaining > secured;
 
@@ -50,34 +57,34 @@ function decide(
   if (bagIsHeavier && risk >= 4) {
     return {
       title: "Leave",
-      body: `What you already have (${money(secured)}) is worth more than what is left in the room (${money(remaining)}), and this area feels dangerous. I would take the bag and go.`,
+      body: `What you already have (${money(secured)}) is worth more than what is left in the room (${money(remaining)}), and this area feels dangerous. I would take the bag and go.${windowNote}`,
     };
   }
 
   if (bagIsHeavier) {
     return {
       title: "Leave",
-      body: `The bag already beats the room: ${money(secured)} secured, ${money(remaining)} still on the floor. I only stay if it is still quiet, and even then I would already be walking to the door.`,
+      body: `The bag already beats the room: ${money(secured)} secured, ${money(remaining)} still left to open. I only stay if it is still quiet, and even then I would already be walking to the door.${windowNote}`,
     };
   }
 
   if (roomIsRicher && risk >= 5) {
     return {
       title: "I would still go",
-      body: `There is more left in the room (${money(remaining)}) than you have secured (${money(secured)}), but the street feels packed or this spot has burned you. A half bag that makes it out is better than a full one that does not.`,
+      body: `There is more left in the room (${money(remaining)}) than you have secured (${money(secured)}), but the street feels packed or this spot has burned you. A half bag that makes it out is better than a full one that does not.${windowNote}`,
     };
   }
 
   if (roomIsRicher && risk >= 3) {
     return {
-      title: "One more crate, then go",
-      body: `The room still has more on the floor (${money(remaining)}) than you have bagged (${money(secured)}), but the area is not quiet. Grab the closest pile if you can do it fast, then leave.`,
+      title: "Grab the closest pile, then go",
+      body: `The room still has more left to open (${money(remaining)}) than you have bagged (${money(secured)}), but the area is not quiet. Grab the closest pile if you can do it fast, then leave.${windowNote}`,
     };
   }
 
   return {
     title: "You can keep looking",
-    body: `The room still has more than the bag: ${money(remaining)} on the floor, ${money(secured)} already secured, and the area still feels manageable. Keep an ear on the street. The moment the bag passes the room, leave.`,
+    body: `The room still has more than the bag: ${money(remaining)} left to open, ${money(secured)} already secured, and the area still feels manageable. Keep an ear on the street. The moment the bag passes the room, leave.${windowNote}`,
   };
 }
 
@@ -87,6 +94,7 @@ export function LootCall() {
   const [encounters, setEncounters] = useState(0);
   const [secured, setSecured] = useState(0);
   const [remaining, setRemaining] = useState(0);
+  const [wipeWindow, setWipeWindow] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -112,8 +120,8 @@ export function LootCall() {
   }, [encounters, ready]);
 
   const verdict = useMemo(
-    () => decide(activity, hotspot, encounters, secured, remaining),
-    [activity, hotspot, encounters, secured, remaining],
+    () => decide(activity, hotspot, encounters, secured, remaining, wipeWindow),
+    [activity, hotspot, encounters, secured, remaining, wipeWindow],
   );
 
   const activityMeta = ACTIVITY[activity] ?? ACTIVITY[1];
@@ -123,7 +131,7 @@ export function LootCall() {
     <section className="loot-call" aria-labelledby="loot-call-title">
       <h2 id="loot-call-title">Leave or stay</h2>
       <p className="loot-call-lead">
-        This uses what you can actually see and hear. It does not invent a lobby count.
+        This uses what you can actually see and hear. It does not invent a lobby count. The leave call is about getting the bag out, not about jail years ticking up in the room. If you just cleared a first lobby after a fresh wipe, mark that below. It only lasts about an hour.
       </p>
 
       <div className="loot-call-grid">
@@ -187,6 +195,22 @@ export function LootCall() {
             </button>
           </div>
           <p className="loot-hint">Kept on this browser so the next run at the same place starts from what you already learned.</p>
+        </div>
+
+        <div className="loot-field loot-window">
+          <label className="loot-check" htmlFor="loot-wipe-window">
+            <input
+              id="loot-wipe-window"
+              name="wipeWindow"
+              type="checkbox"
+              checked={wipeWindow}
+              onChange={(event) => setWipeWindow(event.target.checked)}
+            />
+            <span>Cleared first lobby after a fresh wipe (about an hour)</span>
+          </label>
+          <p className="loot-hint">
+            That window can stay quiet, then get loud when other servers merge in. Uncheck this if the street already sounds busy, or if the hour is up.
+          </p>
         </div>
 
         <div className="loot-values">

@@ -4,6 +4,9 @@ import { Archivo, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteNav } from "../components/SiteNav";
+import { JsonLd } from "../components/JsonLd";
+import { PUBLISHER } from "../lib/identity";
+import { siteGraph } from "../lib/structured-data";
 
 const sans = Instrument_Sans({
   subsets: ["latin"],
@@ -19,8 +22,7 @@ const display = Archivo({
 });
 
 const title = "Anzen Digital Media";
-const description =
-  "Javier Segura runs Anzen Digital Media LLC from Las Vegas. Gaming, business, tech, money, and three research services.";
+const description = PUBLISHER.description;
 
 export const metadata: Metadata = {
   title: {
@@ -58,6 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <body className="bg-ink font-sans text-paper antialiased">
+        <JsonLd data={siteGraph()} />
         <div className="relative z-10">
           <a
             href="#content"
