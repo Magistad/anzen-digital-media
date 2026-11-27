@@ -30,7 +30,7 @@ test("robots keeps closepath private and applies the SAG-46 bot rules", () => {
   assert.equal(file.sitemap, "https://anzendigitalmedia.com/sitemap.xml");
 });
 
-test("sitemap lists the gaming desk and omits draft posts", () => {
+test("sitemap lists the gaming desk and published posts", () => {
   const urls = sitemap().map((entry) => entry.url);
   assert.ok(urls.includes("https://anzendigitalmedia.com/gaming"));
   assert.ok(urls.includes("https://anzendigitalmedia.com/gaming/tips"));
@@ -46,9 +46,7 @@ test("sitemap lists the gaming desk and omits draft posts", () => {
   assert.ok(urls.includes("https://anzendigitalmedia.com/services/grant-match-report"));
   assert.ok(urls.includes("https://anzendigitalmedia.com/services/nevada-annual-compliance-kit"));
   assert.ok(urls.includes("https://anzendigitalmedia.com/faq"));
+  assert.ok(urls.includes("https://anzendigitalmedia.com/about"));
   assert.equal(urls.includes("https://anzendigitalmedia.com/services/intake"), false);
-  assert.equal(
-    urls.some((url) => url.includes("when-the-alarm-goes-off-early-in-rob-run")),
-    false,
-  );
+  assert.ok(urls.includes("https://anzendigitalmedia.com/gaming/when-the-alarm-goes-off-early-in-rob-run"));
 });

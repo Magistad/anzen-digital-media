@@ -27,23 +27,24 @@ test("affiliate partners are ready with placeholder IDs", () => {
   assert.match(AFFILIATE_DISCLOSURE, /commission/i);
 });
 
-test("the Rob Run article is a draft and hides formulas", () => {
+test("the Rob Run article is published and hides formulas", () => {
   const visible = listPosts({ includeDrafts: true });
   assert.equal(visible.length, 1);
   const post = getPost("when-the-alarm-goes-off-early-in-rob-run", { includeDrafts: true });
   assert.ok(post);
-  assert.equal(post.draft, true);
+  assert.equal(post.draft, false);
   assert.equal(post.section, "tips");
   assert.equal(post.author, "Javier Segura");
-  assert.ok(post.todo);
+  assert.equal(post.todo, null);
+  assert.equal(post.content.includes("10,000-year"), false);
   assert.equal(post.title.includes("\u2014"), false);
   const banned = ["P_PvP", "Q_eff", "T_response", "T_total", "C_total", "lambda", "EV=", "1 - e^"];
   const haystack = `${post.title}\n${post.excerpt}\n${post.content}`;
   for (const token of banned) {
     assert.equal(haystack.includes(token), false, `article contains formula token ${token}`);
   }
-  assert.equal(listPosts({ includeDrafts: false }).length, 0);
-  assert.equal(getPost(post.slug, { includeDrafts: false }), undefined);
+  assert.equal(listPosts({ includeDrafts: false }).length, 1);
+  assert.ok(getPost(post.slug, { includeDrafts: false }));
 });
 
 test("draftsArePublic is false in a production context", () => {
