@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { CREATOR, CREATOR_PROFILES, PUBLISHER, creatorByline, isCreatorByline } from "./identity";
+import { CREATOR, LUNCHBRK_TWITCH, PUBLISHER, creatorByline, isCreatorByline } from "./identity";
 import { articleGraph, serializeJsonLd, siteGraph } from "./structured-data";
 
 test("publisher and creator descriptions stay plain", () => {
@@ -14,9 +14,9 @@ test("publisher and creator descriptions stay plain", () => {
   assert.equal(isCreatorByline("Someone Else"), false);
 });
 
-test("creator profiles are https and listed in sameAs", () => {
-  for (const profile of CREATOR_PROFILES) assert.ok(profile.href.startsWith("https://"));
-  assert.deepEqual([...CREATOR.sameAs], CREATOR_PROFILES.map((p) => p.href));
+test("the only creator profile is Twitch", () => {
+  assert.equal(LUNCHBRK_TWITCH, "https://www.twitch.tv/lunchbrk");
+  assert.deepEqual([...CREATOR.sameAs], [LUNCHBRK_TWITCH]);
 });
 
 test("site graph links publisher and creator both ways", () => {

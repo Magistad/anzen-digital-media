@@ -3000,7 +3000,7 @@ select.book-input {
   line-height: 1.65;
 }
 
-.content-prose > ul:not(.profile-pills),
+.content-prose > ul,
 .content-prose > ol,
 .gaming-prose > ul,
 .gaming-prose > ol {
@@ -3024,7 +3024,7 @@ select.book-input {
   line-height: 1.55;
 }
 
-.content-prose > ul:not(.profile-pills) > li::before,
+.content-prose > ul > li::before,
 .gaming-prose > ul > li::before {
   content: "";
   position: absolute;
@@ -3050,34 +3050,49 @@ select.book-input {
   font-weight: 700;
 }
 
-.profile-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  margin: 1.15rem 0 0;
-  padding: 0;
-  list-style: none;
+.lunchbrk-card {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  margin-top: 0.35rem;
 }
 
-.profile-pills a {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  border: 1px solid rgba(244, 239, 230, 0.24);
-  border-radius: 999px;
-  background: rgba(7, 9, 12, 0.45);
-  padding: 0.35rem 0.9rem;
-  color: var(--paper);
-  font-size: 0.95rem;
-  font-weight: 650;
-  letter-spacing: -0.015em;
+.lunchbrk-avatar {
+  width: 140px;
+  height: 140px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(244, 239, 230, 0.2);
+  background: #111;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.lunchbrk-avatar picture,
+.lunchbrk-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 32% 22%;
+}
+
+.content-prose a.lunchbrk-watch {
+  margin-top: 1rem;
+  color: #1a1208;
   text-decoration: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
-.profile-pills a:hover {
-  border-color: var(--signal);
-  color: var(--signal);
+.content-prose a.lunchbrk-watch:hover {
+  color: #1a1208;
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .lunchbrk-card {
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 1.15rem 1.25rem;
+  }
 }
 
 .about-intro .founder-portrait {

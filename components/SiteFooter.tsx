@@ -2,7 +2,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../lib/native-shell";
 import { STUDIO_EMAIL } from "../lib/studio";
-import { CREATOR, CREATOR_PROFILES, PUBLISHER } from "../lib/identity";
+import { PUBLISHER } from "../lib/identity";
 import { VERTICALS } from "../lib/verticals";
 
 export function SiteFooter() {
@@ -84,15 +84,7 @@ export function SiteFooter() {
                 Refunds
               </Link>
             </li>
-            {CREATOR_PROFILES.map((profile) => (
-              <li key={profile.href}>
-                <a href={profile.href} rel="me noopener" className="site-foot-link">
-                  {profile.label}
-                </a>
-              </li>
-            ))}
           </ul>
-          <p className="site-foot-meta">{CREATOR.handle}</p>
         </div>
       </div>
       <div className="site-foot-bar">
