@@ -9,7 +9,7 @@ export function generateMetadata(): Metadata {
     title: "Terms of Service",
     description: inApp
       ? "Terms of Service for Closepath from Anzen Digital Media, LLC."
-      : "Terms of Service for Closepath, the $9.99 per month listing-to-close book from Anzen Digital Media, LLC.",
+      : "Terms of Service for Anzen Digital Media, LLC, including Closepath and the research services.",
   };
 }
 
@@ -21,8 +21,9 @@ export default function TermsPage() {
         <p>
           These Terms of Service are between you and Anzen Digital Media, LLC, a Nevada limited liability
           company (“Anzen”). They govern access to and use of{" "}
-          <LegalLink href="https://anzendigitalmedia.com">anzendigitalmedia.com</LegalLink> and Closepath (the
-          “Service”).
+          <LegalLink href="https://anzendigitalmedia.com">anzendigitalmedia.com</LegalLink>, the articles on
+          the site, Closepath, and the research services sold on the site (together, the “Service,” and
+          Closepath where a section names it).
         </p>
         {inApp ? (
           <p>
@@ -293,11 +294,49 @@ export default function TermsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection id="contact" title="15. Contact">
+      <LegalSection id="research" title="16. Research services">
+        <p>
+          Javier Segura sells three research jobs through Anzen Digital Media, LLC, from Las Vegas. Prices
+          are on each service page. You pay with Stripe Checkout, then you submit an intake form. Anzen
+          emails a confirmation and emails the deliverable within 48 hours after that form is complete. A
+          logo search waits until the logo file arrives. These services do not include a phone call or a
+          video meeting.
+        </p>
+        <p>
+          Anzen is not a law firm. A trademark search report, and a Trademark Watch alert, are research. They
+          are not legal advice. They are not an opinion that a name or logo can be registered, and they are
+          not a guarantee the name is unused. A federal database search misses state registrations and
+          unregistered use. Anzen does not file a trademark application. Hire a trademark attorney before you
+          file or before you treat a name as cleared.
+        </p>
+        <p>
+          A Grant Match Report lists programs that appear to fit the facts you provide, with the official
+          link and the deadline found on that page. Anzen does not submit the application. Anzen does not
+          promise an award. Anzen does not take a percentage of one. The funder decides.
+        </p>
+        <p>
+          The Nevada Annual Compliance Kit is a checklist and a walkthrough filled with details you provide.
+          You submit the annual list and the state business license in your own SilverFlume or ORION account.
+          Anzen does not log in, sign, or file for you. Done-for-you filing is not available. Fees the State
+          of Nevada charges, including the annual list and the state business license, are paid by you to the
+          state. They are not part of Anzen’s fee. The Certificate of Existence guide explains how you order
+          that certificate yourself. Anzen does not order it. None of this is legal, tax, or accounting
+          advice.
+        </p>
+        <p>
+          Trademark Watch is a monthly subscription
+          {inApp ? "" : " at $19 USD a month"}. Cancel by emailing{" "}
+          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+          from the address on the subscription. Cancellation stops later months. Refunds are in the{" "}
+          <LegalLink href="/refunds">Refund Policy</LegalLink>.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="contact" title="17. Contact">
         <p>
           Anzen Digital Media, LLC
           <br />
-          Nevada, United States
+          Las Vegas, Nevada, United States
           <br />
           <LegalLink href="https://anzendigitalmedia.com">https://anzendigitalmedia.com</LegalLink>
           <br />

@@ -8,37 +8,25 @@ test.describe("studio homepage", () => {
     await expect(page).toHaveTitle("Anzen Digital Media");
     await expect(page.getByText("We make cool shit")).toHaveCount(0);
     await expect(page.getByRole("heading", { level: 1, name: "Anzen Digital Media" })).toBeVisible();
-    await expect(page.locator(".hud-portal-name")).toContainText("Anzen");
-    await expect(page.locator(".hud-portal-name")).toContainText("Digital");
-    await expect(page.locator(".hud-portal-name")).toContainText("Media");
     await expect(page.getByText("Independent studio")).toHaveCount(0);
-    await expect(page.getByText(EMAIL)).toHaveCount(0);
-    await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "Sign in" })).toHaveCount(0);
-    const closepath = page.getByRole("link", { name: /^Closepath$/i });
-    await expect(closepath).toHaveCount(1);
-    await expect(closepath).toHaveAttribute("href", "/products/closepath");
-
-    const projects = page.getByRole("link", { name: /^Projects/i });
-    await expect(projects).toHaveCount(1);
-    await expect(projects).toHaveAttribute("href", "/projects");
-
-    const contact = page.getByRole("link", { name: /^Contact/i });
-    await expect(contact).toHaveCount(1);
-    await expect(contact).toHaveAttribute("href", "/contact");
-
+    const nav = page.getByRole("navigation", { name: "Primary" });
+    await expect(nav.getByRole("link", { name: "Gaming" })).toHaveAttribute("href", "/gaming");
+    await expect(nav.getByRole("link", { name: "Business" })).toHaveAttribute("href", "/business");
+    await expect(nav.getByRole("link", { name: "Tech" })).toHaveAttribute("href", "/tech");
+    await expect(nav.getByRole("link", { name: "Money" })).toHaveAttribute("href", "/money");
+    await expect(nav.getByRole("link", { name: "Services" })).toHaveAttribute("href", "/services");
+    await expect(page.getByRole("link", { name: "Products: Closepath" })).toHaveAttribute("href", "/products/closepath");
+    await expect(page.getByRole("link", { name: "Trademark search report" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Small business grant match" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Nevada annual list filing kit" })).toBeVisible();
+    await expect(page.getByRole("link", { name: EMAIL })).toBeVisible();
     await expect(page.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
     await expect(page.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
     await expect(page.getByRole("link", { name: "Refunds" })).toHaveAttribute("href", "/refunds");
 
-    const grain = page.getByRole("button", { name: /grain/i });
-    await grain.click();
-    await expect(grain).toHaveAttribute("aria-pressed", "false");
-    await expect(page.locator(".hud-sweep")).toBeHidden();
-
     await page.goto("/contact");
-    await expect(page.getByText(EMAIL)).toHaveCount(0);
-    await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: EMAIL })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(1);
     await expect(page.getByRole("link", { name: "Studio" })).toHaveAttribute("href", "/");
     const form = page.locator("form[name='contact']");
     await expect(form).toHaveAttribute("data-netlify", "true");
@@ -51,12 +39,10 @@ test.describe("studio homepage", () => {
 
     await page.goto("/contact?sent=1");
     await expect(page.getByRole("status")).toHaveText("Message sent. We will read it.");
-    await expect(page.getByText(EMAIL)).toHaveCount(0);
 
     await page.goto("/projects");
     await expect(page.getByRole("heading", { level: 1, name: "Projects" })).toBeVisible();
-    await expect(page.getByText(EMAIL)).toHaveCount(0);
-    await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(0);
+    await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(1);
     const home = page.getByRole("link", { name: "Studio" });
     await expect(home).toHaveCount(1);
     await expect(home).toHaveAttribute("href", "/");
@@ -93,9 +79,12 @@ test.describe("studio homepage", () => {
     expect(box).not.toBeNull();
     expect(box!.x).toBeGreaterThanOrEqual(-1);
     expect(box!.x + box!.width).toBeLessThanOrEqual(391);
-    await expect(page.getByRole("link", { name: /^Projects/i })).toHaveCount(1);
-    await expect(page.getByRole("link", { name: /^Contact/i })).toHaveCount(1);
-    await expect(page.getByText(EMAIL)).toHaveCount(0);
+    const nav = page.getByRole("navigation", { name: "Primary" });
+    await expect(nav.getByRole("link", { name: "Gaming" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Business" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Tech" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Money" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Services" })).toBeVisible();
 
     const homeOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
@@ -104,8 +93,8 @@ test.describe("studio homepage", () => {
 
     await page.goto("/projects");
     await expect(page.getByRole("link", { name: "Studio" })).toHaveCount(1);
-    await expect(page.getByRole("link", { name: /Closepath/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Countdown/i })).toBeVisible();
+    await expect(page.locator(".project-card").nth(0)).toContainText("Closepath");
+    await expect(page.locator(".project-card").nth(1)).toContainText("Countdown");
     const gridOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     );
@@ -125,7 +114,6 @@ test.describe("studio homepage with reduced motion", () => {
 
   test("portal name and project cards stay visible without the intro", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByText("We make cool shit")).toHaveCount(0);
     const heading = page.getByRole("heading", { level: 1, name: "Anzen Digital Media" });
     await expect(heading).toBeVisible();
     const opacity = await heading.evaluate((element) => getComputedStyle(element).opacity);

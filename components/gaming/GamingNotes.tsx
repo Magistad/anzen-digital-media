@@ -53,7 +53,7 @@ export function GamingNotes() {
       <input
         type="hidden"
         name="message"
-        value="Send me a note when Anzen Gaming publishes."
+        value="Send me a note when LUNCHBRK publishes a gaming piece."
       />
       <p className="contact-hp" hidden>
         <label>
@@ -61,7 +61,7 @@ export function GamingNotes() {
           <input name="bot-field" tabIndex={-1} autoComplete="off" />
         </label>
       </p>
-      <p>Leave an email if you want a note when the first piece goes up. It uses the same contact form as the rest of the site.</p>
+      <p>Leave an email if you want a note when I publish the next one. It lands in the same inbox as the contact form.</p>
       <div className="gaming-notes-row">
         <label htmlFor="gaming-notes-email">
           <span>Email</span>

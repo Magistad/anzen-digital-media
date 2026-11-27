@@ -21,10 +21,13 @@ export type StripeMock = {
   calls: MockCall[];
   subscription(id: string): SubscriptionRecord | undefined;
   setPriceAmount(cents: number | null): void;
+  setPriceRecurring(recurring: boolean): void;
+  setSessionPatch(patch: Record<string, unknown> | null): void;
   close(): Promise<void>;
 };
 
 const DEFAULT_AMOUNT = 999;
+let priceRecurring = true;
 
 function price(amount: number) {
   return {
@@ -34,9 +37,9 @@ function price(amount: number) {
     currency: "usd",
     unit_amount: amount,
     product: CLOSEPATH_PRODUCT_ID,
-    type: "recurring",
+    type: priceRecurring ? "recurring" : "one_time",
     livemode: false,
-    recurring: { interval: "month", interval_count: 1 },
+    recurring: priceRecurring ? { interval: "month", interval_count: 1 } : null,
   };
 }
 
@@ -116,6 +119,8 @@ export function startStripeMock(port = 0): Promise<StripeMock> {
   const calls: MockCall[] = [];
   const subscriptions = new Map<string, SubscriptionRecord>();
   let priceAmount: number | null = DEFAULT_AMOUNT;
+  let sessionPatch: Record<string, unknown> | null = null;
+  priceRecurring = true;
 
   subscriptions.set(TEST_SUBSCRIPTION_ID, {
     id: TEST_SUBSCRIPTION_ID,
@@ -146,7 +151,7 @@ export function startStripeMock(port = 0): Promise<StripeMock> {
       }
 
       if (parts[0] === "v1" && parts[1] === "checkout" && parts[2] === "sessions" && !parts[3] && method === "POST") {
-        send(res, 200, session());
+        send(res, 200, { ...session(), ...sessionPatch });
         return;
       }
 
@@ -155,7 +160,7 @@ export function startStripeMock(port = 0): Promise<StripeMock> {
           stripeError(res, 404, "No such checkout session.");
           return;
         }
-        send(res, 200, session());
+        send(res, 200, { ...session(), ...sessionPatch });
         return;
       }
 
@@ -228,6 +233,12 @@ export function startStripeMock(port = 0): Promise<StripeMock> {
         },
         setPriceAmount(cents) {
           priceAmount = cents;
+        },
+        setPriceRecurring(recurring) {
+          priceRecurring = recurring;
+        },
+        setSessionPatch(patch) {
+          sessionPatch = patch;
         },
         close() {
           return new Promise((done, fail) => {

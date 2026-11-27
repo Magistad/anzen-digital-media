@@ -19,7 +19,8 @@ const display = Archivo({
 });
 
 const title = "Anzen Digital Media";
-const description = "Anzen Digital Media is an independent studio.";
+const description =
+  "Javier Segura runs Anzen Digital Media LLC from Las Vegas. Gaming, business, tech, money, and three research services.";
 
 export const metadata: Metadata = {
   title: {

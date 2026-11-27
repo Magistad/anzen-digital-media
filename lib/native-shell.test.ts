@@ -30,6 +30,10 @@ test("the ios and android shells hide store billing", () => {
     assert.equal(nativeShellRedirectPath("/closepath", ua), null);
     assert.equal(nativeShellRedirectPath("/closepath/sign-in", ua), null);
     assert.equal(nativeShellRedirectPath("/privacy", ua), null);
+    assert.equal(nativeShellRedirectPath("/services", ua), "/closepath/sign-in");
+    assert.equal(nativeShellRedirectPath("/services/trademark-search-report", ua), "/closepath/sign-in");
+    assert.equal(nativeShellRedirectPath("/api/services/checkout", ua), "/closepath/sign-in");
+    assert.equal(nativeShellRedirectPath("/business", ua), null);
     assert.equal(nativeShellRedirectPath("/products/closepath/success", ua), null);
   }
 });

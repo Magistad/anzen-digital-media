@@ -6,7 +6,7 @@ import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../..
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Privacy Policy for Anzen Digital Media, LLC and Closepath. What we collect, what we do not collect, and who handles it.",
+    "Privacy Policy for Anzen Digital Media, LLC, Closepath, and the research services. What we collect, what we do not collect, and who handles it.",
 };
 
 export default function PrivacyPage() {
@@ -15,10 +15,11 @@ export default function PrivacyPage() {
     <LegalDocument title="Privacy Policy">
       <LegalSection id="who" title="Who we are">
         <p>
-          Anzen Digital Media, LLC (“Anzen,” “we”) is a Nevada limited liability company. We operate{" "}
-          <LegalLink href="https://anzendigitalmedia.com">anzendigitalmedia.com</LegalLink> and Closepath from
-          the United States. This policy says what we collect, why, and who else handles it. The{" "}
-          <LegalLink href="/terms">Terms of Service</LegalLink> govern use of the product.
+          Anzen Digital Media, LLC (“Anzen,” “we”) is a Nevada limited liability company in Las Vegas. We
+          operate <LegalLink href="https://anzendigitalmedia.com">anzendigitalmedia.com</LegalLink>, the
+          Gaming, Business, Tech, and Money desks, Closepath, and the research services from the United
+          States. This policy says what we collect, why, and who else handles it. The{" "}
+          <LegalLink href="/terms">Terms of Service</LegalLink> govern use of the site and the products.
         </p>
       </LegalSection>
 
@@ -61,10 +62,22 @@ export default function PrivacyPage() {
           </p>
         )}
         <p>
+          Research services. If you buy a Trademark Search Report, Trademark Watch, a Grant Match Report, a
+          Nevada Annual Compliance Kit, or a Certificate of Existence ordering guide, we store the Stripe
+          Checkout session id, the checkout email, the offer you bought, and the answers you submit on the
+          intake form. We use them to prepare the deliverable and to email it to you. The order is stored in
+          Netlify Blobs, in a store named service-orders. We do not receive or store the card number. Stripe
+          processes the payment.
+        </p>
+        <p>
+          Contact form. If you use the form on the contact page, we receive the name, email, and message you
+          submit. Netlify receives that form submission so we can read it.
+        </p>
+        <p>
           Email you send us. If you write to{" "}
           <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>, we
           receive the address you write from and the message. We use it to respond, including for a refund, a
-          deletion request, or a dispute. There is no chat widget, form, or helpdesk on the site.
+          deletion request, or a dispute. There is no chat widget and no phone line for these services.
         </p>
       </LegalSection>
 
@@ -78,10 +91,10 @@ export default function PrivacyPage() {
 
       <LegalSection id="why" title="Why we use it">
         <p>
-          We use this information to provide the book, authenticate you, fulfill the purchase, answer email,
-          and protect the service against fraud and abuse. An account locks for fifteen minutes after eight
-          failed sign-ins. We do not use book contents to advertise to your clients, and we do not train a
-          model on them.
+          We use this information to provide the book, prepare a research deliverable, authenticate you,
+          fulfill the purchase, answer email, and protect the service against fraud and abuse. An account
+          locks for fifteen minutes after eight failed sign-ins. We do not use book contents or intake answers
+          to advertise to your clients, and we do not train a model on them.
         </p>
       </LegalSection>
 
@@ -94,7 +107,8 @@ export default function PrivacyPage() {
         </p>
         <p>
           Netlify is the hosting and storage processor. The site is hosted on Netlify. Buyer accounts and book
-          data are stored in Netlify Blobs, in a store named closepath, keyed to the buyer’s email. Netlify’s
+          data are stored in Netlify Blobs, in a store named closepath, keyed to the buyer’s email. Research
+          orders are stored in a separate Netlify Blobs store named service-orders. Netlify’s
           own policy is at{" "}
           <LegalLink href="https://www.netlify.com/privacy/">netlify.com/privacy</LegalLink>.
         </p>
@@ -169,7 +183,7 @@ export default function PrivacyPage() {
         <p>
           Anzen Digital Media, LLC
           <br />
-          Nevada, United States
+          Las Vegas, Nevada, United States
           <br />
           <LegalLink href="https://anzendigitalmedia.com">https://anzendigitalmedia.com</LegalLink>
           <br />

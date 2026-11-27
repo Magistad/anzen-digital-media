@@ -8,8 +8,8 @@ export function generateMetadata(): Metadata {
   return {
     title: "Refund Policy",
     description: inApp
-      ? "Refund and cancellation policy for the Closepath subscription from Anzen Digital Media, LLC."
-      : "Refund and cancellation policy for the $9.99 per month Closepath subscription from Anzen Digital Media, LLC.",
+      ? "Refund and cancellation policy for Closepath and the research services from Anzen Digital Media, LLC."
+      : "Refund and cancellation policy for Closepath and the research services from Anzen Digital Media, LLC.",
   };
 }
 
@@ -107,11 +107,57 @@ export default function RefundsPage() {
         </p>
       </LegalSection>
 
+      <LegalSection id="research" title="Research services">
+        <p>
+          The Trademark Search Report, the Grant Match Report, the Nevada Annual Compliance Kit, and the
+          Certificate of Existence ordering guide are one-time fees. Email{" "}
+          <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+          within 48 hours of payment if Anzen has not emailed the deliverable, and Anzen will refund that
+          Anzen fee. If the deliverable has been emailed, the fee is for work already done and is not
+          refunded, except where the law requires a refund.
+        </p>
+        <p>
+          If Anzen does not email the deliverable within 48 hours after a complete intake, you may request a
+          full refund of the Anzen fee. That request is not limited to 48 hours from payment. For a name and
+          logo search, the 48 hours start when the logo file arrives.
+        </p>
+        <p>
+          Fees you pay to a government agency are not Anzen fees. Nevada annual list fees, state business
+          license fees, and certificate fees are paid by you to the State of Nevada. Anzen does not refund
+          those amounts.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="watch" title="Trademark Watch">
+        {inApp ? (
+          <p>
+            Trademark Watch is a monthly subscription started on the website, not in this app. Cancel by
+            emailing{" "}
+            <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+            from the address on the subscription. Cancellation stops later months. This app does not show the
+            price.
+          </p>
+        ) : (
+          <p>
+            Trademark Watch is $19 USD a month. Cancel anytime by emailing{" "}
+            <LegalLink href="mailto:contact@anzendigitalmedia.com">contact@anzendigitalmedia.com</LegalLink>{" "}
+            from the address on the subscription. Cancellation stops future monthly charges. It does not, by
+            itself, refund the current month.
+          </p>
+        )}
+        <p>
+          If Anzen does not email the first watch confirmation within 48 hours of a complete intake, you may
+          request a refund of that first charge. A later month that was charged, and for which Anzen did not
+          run the watch, can be refunded if you email within 14 days of that charge.
+        </p>
+      </LegalSection>
+
       <LegalSection id="limit" title="Scope">
         <p>
-          A refund under this policy is limited to the monthly charge described above. Cancellation stops
-          subsequent charges. This policy does not refund earlier months and does not add a warranty or a
-          service-level commitment.
+          A Closepath refund under this policy is limited to the monthly charge described in the Closepath
+          sections. A research-service refund is limited to the Anzen fee described in the research sections.
+          Cancellation stops subsequent charges. This policy does not refund earlier months, does not refund
+          money you paid to a government agency, and does not add a warranty or a service-level commitment.
         </p>
         <nav aria-label="Related policies" className="flex flex-wrap gap-x-4 gap-y-2">
           <LegalLink href="/terms">Terms of Service</LegalLink>
