@@ -1,4 +1,4 @@
-import { CREATOR, PUBLISHER, SITE_ORIGIN, isCreatorByline } from "./identity";
+import { CREATOR, FOUNDER_PORTRAIT, PUBLISHER, SITE_ORIGIN, isCreatorByline } from "./identity";
 
 type Node = Record<string, unknown>;
 
@@ -18,6 +18,16 @@ export function organizationNode(): Node {
   };
 }
 
+export function founderImage(): Node {
+  return {
+    "@type": "ImageObject",
+    url: `${SITE_ORIGIN}${FOUNDER_PORTRAIT.jpg}`,
+    width: FOUNDER_PORTRAIT.width,
+    height: FOUNDER_PORTRAIT.height,
+    caption: FOUNDER_PORTRAIT.alt,
+  };
+}
+
 export function creatorNode(): Node {
   return {
     "@type": "Person",
@@ -26,6 +36,7 @@ export function creatorNode(): Node {
     alternateName: CREATOR.handle,
     url: CREATOR.url,
     description: CREATOR.description,
+    image: founderImage(),
     sameAs: [...CREATOR.sameAs],
     worksFor: { "@id": PUBLISHER.id },
   };
@@ -64,7 +75,14 @@ export type ArticleInput = {
 export function articleGraph(post: ArticleInput): Node {
   const url = `${SITE_ORIGIN}${post.href}`;
   const author = isCreatorByline(post.author)
-    ? { "@id": CREATOR.id, "@type": "Person", name: CREATOR.personName, alternateName: CREATOR.handle, url: CREATOR.url }
+    ? {
+        "@id": CREATOR.id,
+        "@type": "Person",
+        name: CREATOR.personName,
+        alternateName: CREATOR.handle,
+        url: CREATOR.url,
+        image: founderImage(),
+      }
     : { "@type": "Person", name: post.author };
 
   const article: Node = {

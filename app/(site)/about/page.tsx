@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FounderPortrait } from "../../../components/FounderPortrait";
 import { GamingKicker, GamingShell } from "../../../components/gaming/GamingShell";
 import { CREATOR, CREATOR_PROFILES, PUBLISHER } from "../../../lib/identity";
 
@@ -24,13 +25,17 @@ export default function AboutPage() {
       <article className="gaming-frame gaming-article">
         <GamingKicker href="/" label="Studio" />
         <h1 className="page-title gaming-title">About</h1>
-        <p className="gaming-lead">{PUBLISHER.description}</p>
-
-        <p>
-          I write the <Link href="/business">Business</Link>, <Link href="/tech">Tech</Link>, and{" "}
-          <Link href="/money">Money</Link> desks myself, and I do the work on every{" "}
-          <Link href="/services">research service</Link> order. No call center, no ghostwriters.
-        </p>
+        <div className="about-intro">
+          <FounderPortrait priority />
+          <div>
+            <p className="gaming-lead">{PUBLISHER.description}</p>
+            <p>
+              I write the <Link href="/business">Business</Link>, <Link href="/tech">Tech</Link>, and{" "}
+              <Link href="/money">Money</Link> desks myself, and I do the work on every{" "}
+              <Link href="/services">research service</Link> order. No call center, no ghostwriters.
+            </p>
+          </div>
+        </div>
         <h2 id="lunchbrk">Who writes the gaming pieces</h2>
         <p>{CREATOR.description}</p>
         <p>

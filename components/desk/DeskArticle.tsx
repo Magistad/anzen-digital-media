@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArticleBody } from "../gaming/ArticleBody";
 import { formatDeskDate, type DeskPost } from "../../lib/desk-posts";
+import { isCreatorByline } from "../../lib/identity";
+import { founderImage } from "../../lib/structured-data";
 
 export async function DeskArticle({ post, deskName, deskHref }: { post: DeskPost; deskName: string; deskHref: string }) {
   const jsonLd = {
@@ -13,6 +15,7 @@ export async function DeskArticle({ post, deskName, deskHref }: { post: DeskPost
     author: {
       "@type": "Person",
       name: post.author,
+      ...(isCreatorByline(post.author) ? { image: founderImage() } : {}),
       address: { "@type": "PostalAddress", addressLocality: "Las Vegas", addressRegion: "NV" },
     },
     publisher: {

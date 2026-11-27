@@ -2913,6 +2913,64 @@ select.book-input {
   text-transform: uppercase;
 }
 
+.founder-portrait {
+  margin: 0;
+  width: min(100%, 13.5rem);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(244, 239, 230, 0.2);
+  background: rgba(22, 19, 15, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 18px 40px rgba(0, 0, 0, 0.38);
+}
+
+.founder-portrait picture,
+.founder-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+}
+
+.about-intro {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+
+.about-intro .gaming-lead {
+  margin-top: 0;
+}
+
+.about-intro .founder-portrait {
+  width: min(100%, 16rem);
+}
+
+@media (min-width: 720px) {
+  .about-intro {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 1.5rem 1.75rem;
+  }
+}
+
+@media (min-width: 860px) {
+  .dusk-hero-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 14rem;
+    gap: 1.5rem 2rem;
+    align-items: center;
+  }
+
+  .dusk-hero-split .founder-portrait {
+    justify-self: end;
+    width: 14rem;
+  }
+}
+
 .desk-card:hover,
 .service-offer:hover,
 .project-card:hover {

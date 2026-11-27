@@ -6,6 +6,7 @@ import { BuyOffer } from "../../../../components/services/BuyOffer";
 import { nativePlatformFromUserAgent, nativeShellHidesStoreBilling } from "../../../../lib/native-shell";
 import { servicePage, SERVICE_PAGES } from "../../../../lib/service-copy";
 import { offersForService } from "../../../../lib/services";
+import { founderImage } from "../../../../lib/structured-data";
 
 type Params = { slug: string };
 
@@ -43,7 +44,7 @@ export default function ServiceDetailPage({
     name: "Anzen Digital Media LLC",
     url: "https://anzendigitalmedia.com",
     email: "contact@anzendigitalmedia.com",
-    founder: { "@type": "Person", name: "Javier Segura" },
+    founder: { "@type": "Person", name: "Javier Segura", image: founderImage() },
     address: {
       "@type": "PostalAddress",
       addressLocality: "Las Vegas",

@@ -41,6 +41,14 @@ export const CREATOR = {
   sameAs: CREATOR_PROFILES.map((profile) => profile.href),
 } as const;
 
+export const FOUNDER_PORTRAIT = {
+  jpg: "/images/javier-segura.jpg",
+  webp: "/images/javier-segura.webp",
+  width: 1600,
+  height: 904,
+  alt: "Javier Segura, founder of Anzen Digital Media",
+} as const;
+
 /** Bylines written as either name resolve to the same person. */
 export function isCreatorByline(author: string): boolean {
   const name = author.trim().toLowerCase();

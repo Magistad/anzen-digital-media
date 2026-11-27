@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DeskCard } from "../../components/desk/DeskCard";
+import { FounderPortrait } from "../../components/FounderPortrait";
 import { latestDeskPost } from "../../lib/desk-posts";
 import { HUB, SERVICE_PAGES } from "../../lib/service-copy";
 import { offersForService, offerPriceLabel } from "../../lib/services";
@@ -33,10 +34,13 @@ export default function Page() {
   return (
     <main id="content" className="desk-shell">
       <div className="desk-frame desk-frame-wide">
-        <header className="dusk-hero">
-          <p className="desk-kicker">{HUB.eyebrow}</p>
-          <h1 className="desk-title">{HUB.title}</h1>
-          <p className="desk-lead">{HUB.lead}</p>
+        <header className="dusk-hero dusk-hero-split">
+          <div className="min-w-0">
+            <p className="desk-kicker">{HUB.eyebrow}</p>
+            <h1 className="desk-title">{HUB.title}</h1>
+            <p className="desk-lead">{HUB.lead}</p>
+          </div>
+          <FounderPortrait priority />
         </header>
 
         <section className="desk-block" aria-labelledby="home-latest">
