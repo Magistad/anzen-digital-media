@@ -13,11 +13,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const linkClass =
-  "inline-flex items-center border border-paper/30 px-5 py-3 text-[15px] tracking-[-0.015em] text-paper transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink";
-
 const fieldClass =
-  "mt-2 w-full border-0 border-b border-paper/25 bg-transparent py-3 text-lg tracking-[-0.02em] text-paper";
+  "book-input mt-2 w-full py-3 text-lg tracking-[-0.02em]";
 
 const errors: Record<string, string> = {
   invalid: "Email or password is wrong.",
@@ -42,9 +39,10 @@ export default function SignInPage({
   const inApp = nativeShellHidesStoreBilling(nativePlatformFromUserAgent(headers().get("user-agent")));
 
   return (
-    <main id="content" className="flex min-h-[100svh] flex-col justify-end overflow-x-clip pb-12 pt-[calc(6.5rem+env(safe-area-inset-top))] sm:pb-20 md:pb-28">
+    <main id="content" className="flex min-h-[100svh] flex-col justify-center overflow-x-clip pb-12 pt-[calc(6.5rem+env(safe-area-inset-top))] sm:pb-20 md:pb-28">
       <div className="frame min-w-0">
-        <p className="text-[15px] tracking-[-0.02em] text-paper/60">Closepath</p>
+        <div className="glass-panel max-w-xl">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-signal">Closepath</p>
         <h1 className="mt-4 max-w-full text-[2.35rem] font-semibold leading-[0.92] tracking-[-0.045em] sm:mt-6 sm:max-w-[12ch] sm:text-[clamp(2.85rem,8vw,7rem)] sm:leading-[0.86] sm:tracking-[-0.055em]">
           Open your book.
         </h1>
@@ -71,7 +69,7 @@ export default function SignInPage({
               className={fieldClass}
             />
           </label>
-          <button type="submit" className={`${linkClass} mt-6 min-h-11 sm:mt-8`}>
+          <button type="submit" className="cta mt-6 min-h-11 px-5 py-3 text-[15px] sm:mt-8">
             Sign in
           </button>
         </form>
@@ -102,6 +100,7 @@ export default function SignInPage({
           )}
         </p>
         <QuestionsLine className="mt-8" />
+        </div>
       </div>
     </main>
   );

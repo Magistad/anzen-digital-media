@@ -18,9 +18,9 @@ function When({ line, today }: { line: MorningLine; today: string | null }) {
     <span className="block min-w-0">
       <span className={tone}>
         <span className="text-[15px] font-semibold tabular-nums tracking-[-0.03em]">{dayPrimary(line.days)}</span>
-        {secondary ? <span className={`ml-1 text-[12px] ${tone || "text-paper/50"}`}>{secondary}</span> : null}
+        {secondary ? <span className={`ml-1 text-[12px] ${tone || "text-paper/75"}`}>{secondary}</span> : null}
       </span>
-      <span className="block text-[12px] text-paper/45">{formatDate(line.date)}</span>
+      <span className="block text-[12px] text-paper/75">{formatDate(line.date)}</span>
     </span>
   );
 }
@@ -45,10 +45,10 @@ function Line({
       <span className="min-w-0">
         <span className="block text-[15px] leading-snug tracking-[-0.02em] sm:truncate">
           {line.address || "No address yet"}
-          {line.example ? <span className="ml-2 text-[12px] text-paper/40">Example</span> : null}
+          {line.example ? <span className="ml-2 text-[12px] text-paper/75">Example</span> : null}
         </span>
         <span className="mt-0.5 block text-[13px] leading-snug text-paper/70 sm:hidden">{line.label}</span>
-        <span className="block text-[13px] leading-snug text-paper/55 sm:truncate">
+        <span className="block text-[13px] leading-snug text-paper/75 sm:truncate">
           {line.client || "No client"}
           {line.side ? ` · ${line.side}` : ""}
         </span>
@@ -60,7 +60,7 @@ function Line({
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mt-4">
-      <h2 className="text-[12px] text-paper/45">{title}</h2>
+      <h2 className="text-[12px] text-paper/75">{title}</h2>
       <div className="mt-1 border-t border-paper/15">{children}</div>
     </section>
   );

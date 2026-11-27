@@ -34,7 +34,7 @@ import { ShareDeal } from "./ShareDeal";
 import { AreaField, DateField, MoneyField, PercentField, SelectField, TextField } from "./Fields";
 
 function DayState({ iso, today, quiet }: { iso: string | null; today: string | null; quiet?: boolean }) {
-  if (!iso) return <span className="text-[13px] text-paper/40">Not written</span>;
+  if (!iso) return <span className="text-[13px] text-paper/75">Not written</span>;
   if (!today || quiet) return null;
   const days = daysUntil(iso, today);
   if (days === null) return null;
@@ -154,7 +154,7 @@ function OutcomeActions({
 }) {
   return (
     <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[14px]">
-      <span className="text-paper/45">Outcome</span>
+      <span className="text-paper/75">Outcome</span>
       <span>{outcome}</span>
       {FILE_OUTCOMES.filter((item) => item !== outcome).map((item) => (
         <button key={item} type="button" className="book-quiet text-paper" onClick={() => onOutcome(item)}>
@@ -168,7 +168,7 @@ function OutcomeActions({
 function Section({ id, title, detail, children }: { id?: string; title: string; detail?: string; children: ReactNode }) {
   return (
     <section id={id} className="scroll-mt-32 lg:scroll-mt-24">
-      <h2 className="text-[12px] text-paper/45">{title}</h2>
+      <h2 className="text-[12px] text-paper/75">{title}</h2>
       {detail ? <p className="mt-1 max-w-xl text-[14px] leading-snug text-paper/60">{detail}</p> : null}
       <div className="mt-2">{children}</div>
     </section>
@@ -215,7 +215,7 @@ export function FileView({
         onChange={(event) => onChange({ ...file, address: event.target.value })}
       />
       <p className="mt-2 text-[14px] leading-snug text-paper/65">
-        {file.example ? <span className="text-paper/45">Example. Not a client. </span> : null}
+        {file.example ? <span className="text-paper/75">Example. Not a client. </span> : null}
         {today ? fileSummary(file, today) : fileSummary(file, summaryToday)}
       </p>
       <ShareDeal file={file} />
@@ -300,13 +300,13 @@ export function FileView({
           </div>
           <div className="mt-3 grid min-w-0 grid-cols-2 gap-x-4 border-t border-paper/15 py-2">
             <div>
-              <div className="text-[12px] text-paper/45">Gross</div>
+              <div className="text-[12px] text-paper/75">Gross</div>
               <div className="text-[1.35rem] font-semibold tabular-nums tracking-[-0.03em]">
                 {figures.gross === null ? "None" : formatMoneyAuto(figures.gross)}
               </div>
             </div>
             <div>
-              <div className="text-[12px] text-paper/45">Your net</div>
+              <div className="text-[12px] text-paper/75">Your net</div>
               <div className="text-[1.35rem] font-semibold tabular-nums tracking-[-0.03em]">
                 {figures.net === null ? "None" : formatMoneyAuto(figures.net)}
               </div>

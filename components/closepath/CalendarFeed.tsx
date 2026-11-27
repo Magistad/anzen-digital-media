@@ -126,7 +126,7 @@ export function CalendarFeed({ label = "Subscribe" }: { label?: string }) {
                   Download a copy
                 </a>
               </div>
-              <p className="mt-2 text-[13px] leading-snug text-paper/50">
+              <p className="mt-2 text-[13px] leading-snug text-paper/75">
                 Anyone with this link can see the property addresses and dates. Make a new link if it gets out.
               </p>
               {confirm === "rotate" ? (

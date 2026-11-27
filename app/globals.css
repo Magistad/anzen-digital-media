@@ -4,12 +4,22 @@
 
 :root {
   color-scheme: dark;
-  --ink: #070708;
-  --paper: #f4f0e6;
+  --ink: #07090c;
+  --paper: #f4efe6;
+  --signal: #f0b429;
+  --signal-deep: #f6d48a;
+  --line: rgba(244, 239, 230, 0.16);
+  --panel: #16130f;
+  --night: #05070a;
 }
 
 html {
-  background: var(--ink);
+  background-color: var(--ink);
+  background-image:
+    radial-gradient(ellipse 72% 48% at 12% -6%, rgba(240, 180, 41, 0.24), transparent 62%),
+    radial-gradient(ellipse 48% 40% at 100% 0%, rgba(176, 92, 42, 0.18), transparent 58%),
+    radial-gradient(ellipse 46% 36% at 68% 100%, rgba(240, 180, 41, 0.12), transparent 60%);
+  background-attachment: fixed;
   scroll-padding-top: calc(6.5rem + env(safe-area-inset-top));
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(93, 242, 220, 0.28);
@@ -45,8 +55,14 @@ body {
   min-height: 100%;
 }
 
-body {
-  background: var(--ink);
+body,
+body.bg-ink {
+  background-color: transparent;
+  background-image:
+    radial-gradient(ellipse 72% 48% at 12% -6%, rgba(240, 180, 41, 0.24), transparent 62%),
+    radial-gradient(ellipse 48% 40% at 100% 0%, rgba(176, 92, 42, 0.18), transparent 58%),
+    radial-gradient(ellipse 46% 36% at 68% 100%, rgba(240, 180, 41, 0.12), transparent 60%);
+  background-attachment: fixed;
   color: var(--paper);
   text-rendering: optimizeLegibility;
   overflow-x: clip;
@@ -342,8 +358,8 @@ select.book-input {
 /* Studio HUD. Original interface for the homepage, in the spirit of a
    tactical frame: black field, cyan rules, condensed type. */
 :root {
-  --signal: #5df2dc;
-  --signal-deep: #00cdab;
+  --signal: #f0b429;
+  --signal-deep: #f6d48a;
 }
 
 .hud-hero {
@@ -2763,10 +2779,401 @@ select.book-input {
 }
 
 .home-band-gaming {
-  background: #000;
+  background: transparent;
   min-height: auto;
 }
 
 .home-band-gaming .home-band-copy {
   padding-block: 5rem;
+}
+
+/* Dusk glass. Same family as the owner's other site: night field, cream type,
+   frosted panels on large screens, a solid panel on small ones, and a thin
+   glossy edge. The accent is amber so Anzen is not a copy of the mint site. */
+
+:focus-visible {
+  outline-color: var(--signal);
+}
+
+::selection {
+  background: rgba(240, 180, 41, 0.28);
+  color: var(--paper);
+}
+
+.wash {
+  background: radial-gradient(closest-side, rgba(240, 180, 41, 0.1), transparent 72%);
+}
+
+.vignette {
+  background: radial-gradient(ellipse at center, transparent 62%, rgba(5, 7, 10, 0.28) 100%);
+}
+
+.desk-shell,
+.gaming-shell,
+.home-legal,
+.hud-releases,
+.brand-wash {
+  background: transparent;
+}
+
+.hub-nav {
+  border-bottom: 1px solid rgba(244, 239, 230, 0.16);
+  background: rgba(22, 19, 15, 0.94);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  backdrop-filter: none;
+}
+
+.hub-nav-bar {
+  max-width: 72rem;
+  margin-inline: auto;
+  min-height: 4.25rem;
+  gap: 0.75rem 1.5rem;
+}
+
+.hub-brand {
+  display: flex;
+  min-height: 2.75rem;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.hub-brand .hub-mark {
+  min-height: 0;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.hub-sub {
+  margin-top: 0.15rem;
+  color: rgba(244, 239, 230, 0.78);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.hub-links {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.hub-link {
+  color: var(--paper);
+  font-weight: 700;
+}
+
+.hub-link-on {
+  border-bottom-color: var(--signal);
+  color: var(--signal);
+}
+
+.hub-link:hover {
+  color: var(--signal);
+}
+
+@media (min-width: 768px) {
+  .hub-nav {
+    background: rgba(22, 19, 15, 0.72);
+    backdrop-filter: blur(16px);
+  }
+}
+
+.dusk-hero,
+.glass-panel,
+.price-card,
+.benefit-card,
+.split-card,
+.desk-card,
+.service-offer,
+.hud-panel,
+.project-card,
+.contact-success {
+  border: 1px solid rgba(244, 239, 230, 0.16);
+  background-color: rgba(22, 19, 15, 0.92);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 32%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 28px rgba(240, 180, 41, 0.05);
+  clip-path: none;
+  backdrop-filter: none;
+}
+
+.dusk-hero {
+  margin-bottom: 0.5rem;
+  padding: 1.6rem 1.25rem 1.8rem;
+}
+
+.dusk-hero .desk-kicker {
+  color: var(--signal);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.desk-card:hover,
+.service-offer:hover,
+.project-card:hover {
+  border-color: rgba(240, 180, 41, 0.55);
+  filter: none;
+  background-color: rgba(28, 24, 20, 0.94);
+}
+
+.project-frame {
+  display: none;
+}
+
+.project-card {
+  min-height: 0;
+}
+
+.benefit-grid {
+  counter-reset: step;
+}
+
+.benefit-card::before {
+  content: counter(step, decimal-leading-zero);
+  counter-increment: step;
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--signal);
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cta,
+.trial-button,
+.hud-signin,
+.service-buy,
+.home-band-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: var(--signal);
+  color: #1a1208;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  text-transform: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  text-shadow: none;
+}
+
+.cta:hover,
+.trial-button:hover,
+.hud-signin:hover,
+.service-buy:hover,
+.home-band-link:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--signal-deep);
+  color: #1a1208;
+  text-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.hud-tab {
+  border: 1px solid rgba(244, 239, 230, 0.28);
+  color: var(--paper);
+  text-shadow: none;
+}
+
+.hud-tab:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+  text-shadow: none;
+}
+
+.book-input,
+.contact-form input,
+.contact-form textarea,
+.intake-form input[type="text"],
+.intake-form input[type="email"],
+.intake-form textarea,
+.intake-form select,
+.loot-field input[type="number"],
+.gaming-notes input[type="email"] {
+  border: 1px solid rgba(244, 239, 230, 0.22);
+  border-bottom-width: 1px;
+  background: rgba(7, 9, 12, 0.55);
+  padding: 0.55rem 0.7rem;
+}
+
+.book-input:focus-visible,
+.contact-form input:focus-visible,
+.contact-form textarea:focus-visible {
+  border-color: var(--signal);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.book-action,
+.loot-counter button,
+.hot-or-not-actions button,
+.gaming-notes button {
+  border: 1px solid rgba(244, 239, 230, 0.28);
+  background: rgba(22, 19, 15, 0.92);
+  color: var(--paper);
+}
+
+.book-action:hover,
+.loot-counter button:hover,
+.hot-or-not-actions button:hover,
+.gaming-notes button:hover:not(:disabled) {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: #1a1208;
+}
+
+.book-quiet,
+.book-email {
+  color: rgba(244, 239, 230, 0.82);
+}
+
+.book-quiet:hover {
+  color: var(--signal);
+}
+
+.text-link,
+.desk-lead a,
+.gaming-prose a,
+.service-offer-note a,
+.faq-list a {
+  text-decoration-color: rgba(240, 180, 41, 0.7);
+}
+
+.contact-form label span,
+.product-kicker,
+.hud-kicker,
+.release-status-live,
+.project-status-live,
+.project-action,
+.hud-action {
+  color: var(--signal);
+}
+
+.contact-form button:disabled,
+.trial-button:disabled {
+  color: #1a1208;
+  -webkit-text-fill-color: #1a1208;
+}
+
+.legal-copy .border-b:last-child {
+  border-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .dusk-hero,
+  .glass-panel,
+  .price-card,
+  .benefit-card,
+  .split-card,
+  .desk-card,
+  .service-offer,
+  .hud-panel,
+  .project-card {
+    background-color: rgba(22, 19, 15, 0.62);
+    backdrop-filter: blur(16px);
+  }
+}
+
+@media (max-width: 720px) {
+  .gaming-shell,
+  .desk-shell {
+    padding-top: calc(8.75rem + env(safe-area-inset-top));
+  }
+}
+
+@media (max-width: 639px) {
+  .book-nav {
+    top: calc(4.75rem + env(safe-area-inset-top));
+    background: var(--ink);
+    backdrop-filter: none;
+  }
+}
+
+.site-foot {
+  margin-top: 4rem;
+  border-top: 1px solid rgba(244, 239, 230, 0.16);
+  background: var(--night);
+  color: var(--paper);
+}
+
+.site-foot-grid {
+  display: grid;
+  gap: 2.5rem;
+  width: min(72rem, 100%);
+  margin-inline: auto;
+  padding: 3rem 1.25rem 2.5rem;
+}
+
+.site-foot-name {
+  margin: 0;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.site-foot-label {
+  margin: 0;
+  color: var(--signal);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.site-foot-meta {
+  max-width: 36rem;
+  margin: 0.75rem 0 0;
+  color: rgba(244, 239, 230, 0.8);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.site-foot-list {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-foot-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.site-foot-link:hover {
+  color: var(--signal);
+}
+
+.site-foot-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.site-foot-bar p {
+  width: min(72rem, 100%);
+  margin: 0 auto;
+  padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom));
+  color: rgba(244, 239, 230, 0.72);
+  font-size: 0.8rem;
+}
+
+@media (min-width: 768px) {
+  .site-foot-grid {
+    grid-template-columns: 1.4fr 0.8fr 0.8fr;
+    padding-inline: 2rem;
+  }
+
+  .site-foot-bar p {
+    padding-inline: 2rem;
+  }
 }

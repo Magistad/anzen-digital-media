@@ -120,7 +120,7 @@ export function CalendarMenu({
               <li key={event.uid} className="flex flex-wrap items-baseline gap-x-3 gap-y-0 border-b border-paper/10 py-1">
                 <span className="min-w-0 text-[14px] text-paper/75">
                   {event.label}
-                  <span className="text-paper/45"> · {formatCalendarDate(event.date)}</span>
+                  <span className="text-paper/75"> · {formatCalendarDate(event.date)}</span>
                 </span>
                 <span className="flex flex-wrap gap-x-3">
                   <EventLinks event={event} filename={calendarFilename(event.label)} onPhone={onPhone} />
@@ -139,7 +139,7 @@ export function CalendarMenu({
         </p>
       ) : null}
       {note ? (
-        <p className="mt-1 max-w-xl text-[13px] leading-snug text-paper/50">
+        <p className="mt-1 max-w-xl text-[13px] leading-snug text-paper/75">
           Adds a copy of these dates. It stays put if you later move a date. Subscribe to keep the calendar in step.
         </p>
       ) : null}

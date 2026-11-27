@@ -25,7 +25,7 @@ export function LeadList({
         <ul className="mt-2 border-t border-paper/15">
           {leads.map((lead) => (
             <li key={lead.id} className="border-b border-paper/12 py-2">
-              {lead.example ? <p className="text-[12px] text-paper/40">Example</p> : null}
+              {lead.example ? <p className="text-[12px] text-paper/75">Example</p> : null}
               <div className="grid min-w-0 gap-x-3 gap-y-3 sm:grid-cols-2 sm:gap-y-2 lg:grid-cols-4">
                 <TextField id={`${lead.id}-name`} label="Name" value={lead.name} onChange={(name) => onChange({ ...lead, name })} />
                 <TextField id={`${lead.id}-phone`} label="Phone" type="tel" maxLength={LIMITS.phone} value={lead.phone} onChange={(phone) => onChange({ ...lead, phone })} />

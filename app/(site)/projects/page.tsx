@@ -17,13 +17,14 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main id="content" className="relative min-h-[100svh] overflow-hidden bg-black px-4 pb-20 pt-[calc(4.5rem+env(safe-area-inset-top))] font-display text-paper sm:px-8">
+    <main id="content" className="relative min-h-[100svh] overflow-hidden px-4 pb-20 pt-[calc(7rem+env(safe-area-inset-top))] font-display text-paper sm:px-8">
       <div className="section-art-bleed" data-slot="projects" aria-hidden="true">
         <picture>
           <source srcSet="/brand/section-projects.webp" type="image/webp" />
           <img src="/brand/section-projects.jpg" alt="" width={2400} height={1356} decoding="async" />
         </picture>
       </div>
+      <div className="product-hero-shade" aria-hidden="true" />
       <div className="relative z-[1] mx-auto w-full max-w-5xl">
         <Link href="/" className="hud-tab">
           Studio

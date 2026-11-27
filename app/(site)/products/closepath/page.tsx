@@ -51,7 +51,7 @@ function offerLine(text: string) {
 function ProductMark() {
   return (
     <svg width="18" height="18" viewBox="0 0 100 100" aria-hidden="true" className="shrink-0">
-      <polygon points="30 3 70 3 97 30 97 70 70 97 30 97 3 70 3 30" fill="none" stroke="#5df2dc" strokeWidth="6" />
+      <polygon points="30 3 70 3 97 30 97 70 70 97 30 97 3 70 3 30" fill="none" stroke="currentColor" strokeWidth="6" />
     </svg>
   );
 }
@@ -111,7 +111,7 @@ const shots: { src: string; alt: string; label: string; caption: string }[] = [
 
 function ProductFilm() {
   return (
-    <section className="border-t border-signal/25 pt-16 md:pt-24" aria-labelledby="closepath-film">
+    <section className="border-t border-white/15 pt-16 md:pt-24" aria-labelledby="closepath-film">
       <div className="frame">
         <h2 id="closepath-film" className="page-title text-[clamp(2rem,4vw,3.2rem)]">
           The film
@@ -120,7 +120,7 @@ function ProductFilm() {
           The sample book, from the morning list through one address and the commission. The film has sound.
         </p>
         <video
-          className="mt-6 block aspect-video h-auto w-full max-w-full border border-signal/40 bg-ink"
+          className="mt-6 block aspect-video h-auto w-full max-w-full border border-white/20 bg-ink"
           controls
           playsInline
           preload="metadata"
@@ -158,7 +158,7 @@ function BookShot({
         height={998}
         loading="lazy"
         decoding="async"
-        className="block h-auto w-full max-w-full border border-signal/40"
+        className="block h-auto w-full max-w-full border border-white/20"
       />
       <figcaption className="mt-2 grid gap-1 text-[15px] leading-snug tracking-[-0.015em] sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-x-5">
         <span className="text-paper/75">{label}</span>
@@ -179,7 +179,7 @@ export default function ClosepathPage({
   const codeError = checkout === "code";
 
   return (
-    <main id="content" className="overflow-x-clip bg-black">
+    <main id="content" className="overflow-x-clip">
       <section className="product-hero">
         <div className="section-art-bleed" data-slot="closepath-hero" aria-hidden="true">
           <picture>
@@ -237,7 +237,7 @@ export default function ClosepathPage({
 
       <ProductFilm />
 
-      <section className="border-t border-signal/25 py-16 md:py-24" aria-labelledby="closepath-book">
+      <section className="border-t border-white/15 py-16 md:py-24" aria-labelledby="closepath-book">
         <div className="frame">
           <h2 id="closepath-book" className="page-title text-[clamp(2rem,4vw,3.2rem)]">
             The book
@@ -271,7 +271,7 @@ export default function ClosepathPage({
         </div>
       </section>
 
-      <section className="border-t border-signal/25 py-16 md:py-24">
+      <section className="border-t border-white/15 py-16 md:py-24">
         <div className="frame">
           <h2 className="page-title text-[clamp(2rem,4vw,3.2rem)]">What it tracks</h2>
           <ul className="benefit-grid">
@@ -285,7 +285,7 @@ export default function ClosepathPage({
         </div>
       </section>
 
-      <section className="border-t border-signal/25 py-16 md:py-24">
+      <section className="border-t border-white/15 py-16 md:py-24">
         <div className="frame split-grid">
           <article className="split-card">
             <h2>Who it’s for</h2>
@@ -313,7 +313,7 @@ export default function ClosepathPage({
         </div>
       </section>
 
-      <section className="overflow-x-clip border-t border-signal/25 py-16 md:py-24">
+      <section className="overflow-x-clip border-t border-white/15 py-16 md:py-24">
         <div className="frame grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.7fr)] lg:items-center">
           <div className="min-w-0">
             <h2 className="page-title text-[clamp(2rem,4vw,3.4rem)]">Price</h2>
