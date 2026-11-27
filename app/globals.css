@@ -2946,6 +2946,140 @@ select.book-input {
   margin-top: 0;
 }
 
+.about-intro p + p {
+  margin: 0.85rem 0 0;
+  color: rgba(244, 239, 230, 0.9);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.about-intro p + p a,
+.content-prose a,
+.gaming-prose a {
+  color: var(--paper);
+  text-decoration-line: underline;
+  text-decoration-color: rgba(240, 180, 41, 0.7);
+  text-underline-offset: 3px;
+}
+
+.about-intro p + p a:hover,
+.content-prose a:hover,
+.gaming-prose a:hover {
+  color: var(--signal);
+  text-decoration-color: var(--signal);
+}
+
+.about-sections {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.75rem;
+}
+
+.content-prose h2,
+.gaming-prose h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.gaming-prose h2 {
+  margin-top: 1.75rem;
+}
+
+.gaming-prose h2:first-child,
+.content-prose h2 {
+  margin-top: 0;
+}
+
+.content-prose p,
+.gaming-prose p {
+  margin: 0.85rem 0 0;
+  line-height: 1.65;
+}
+
+.content-prose > ul:not(.profile-pills),
+.content-prose > ol,
+.gaming-prose > ul,
+.gaming-prose > ol {
+  margin: 0.9rem 0 0;
+  padding-left: 0;
+  display: grid;
+  gap: 0.7rem;
+  list-style: none;
+}
+
+.content-prose > ol,
+.gaming-prose > ol {
+  counter-reset: step;
+}
+
+.content-prose li,
+.gaming-prose > ul > li,
+.gaming-prose > ol > li {
+  position: relative;
+  padding-left: 1.15rem;
+  line-height: 1.55;
+}
+
+.content-prose > ul:not(.profile-pills) > li::before,
+.gaming-prose > ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.45rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--signal);
+}
+
+.content-prose > ol > li,
+.gaming-prose > ol > li {
+  counter-increment: step;
+}
+
+.content-prose > ol > li::before,
+.gaming-prose > ol > li::before {
+  content: counter(step) ".";
+  position: absolute;
+  left: 0;
+  color: var(--signal);
+  font-weight: 700;
+}
+
+.profile-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1.15rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-pills a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border: 1px solid rgba(244, 239, 230, 0.24);
+  border-radius: 999px;
+  background: rgba(7, 9, 12, 0.45);
+  padding: 0.35rem 0.9rem;
+  color: var(--paper);
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.profile-pills a:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
 .about-intro .founder-portrait {
   width: min(100%, 16rem);
 }

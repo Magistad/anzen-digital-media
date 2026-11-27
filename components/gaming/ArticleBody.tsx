@@ -15,5 +15,5 @@ export async function ArticleBody({ source }: { source: string }) {
     components,
     options: { parseFrontmatter: false },
   });
-  return <div className="gaming-prose">{content}</div>;
+  return <div className="gaming-prose glass-panel">{content}</div>;
 }
