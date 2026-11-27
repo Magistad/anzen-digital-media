@@ -26,6 +26,9 @@ test("site graph links publisher and creator both ways", () => {
   assert.equal(org.founder["@id"], person["@id"]);
   assert.equal(person.worksFor["@id"], org["@id"]);
   assert.equal(person.alternateName, "LUNCHBRK");
+  assert.equal(person.image["@type"], "ImageObject");
+  assert.equal(person.image.url, "https://anzendigitalmedia.com/images/javier-segura.jpg");
+  assert.equal(person.image.caption, "Javier Segura, founder of Anzen Digital Media");
 });
 
 test("article graph uses the creator and the game", () => {
