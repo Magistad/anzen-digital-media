@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FounderPortrait } from "../../../components/FounderPortrait";
 import { GamingKicker, GamingShell } from "../../../components/gaming/GamingShell";
-import { CREATOR, CREATOR_PROFILES, PUBLISHER } from "../../../lib/identity";
+import { CREATOR, LUNCHBRK_AVATAR, LUNCHBRK_TWITCH, PUBLISHER } from "../../../lib/identity";
 
 const description = `${PUBLISHER.description} ${CREATOR.description}`;
 
@@ -39,20 +39,30 @@ export default function AboutPage() {
         <div className="about-sections">
           <section className="glass-panel content-prose" aria-labelledby="lunchbrk">
             <h2 id="lunchbrk">Who writes the gaming pieces</h2>
-            <p>{CREATOR.description}</p>
-            <p>
-              I have been playing since an Atari 2600 showed up for Christmas in 1982. I stream and post clips as{" "}
-              <span translate="no">{CREATOR.handle}</span>, and the guides here are written from my own runs.
-            </p>
-            <ul className="profile-pills">
-              {CREATOR_PROFILES.map((profile) => (
-                <li key={profile.href}>
-                  <a href={profile.href} rel="me noopener">
-                    <span translate="no">{CREATOR.handle}</span> on {profile.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div className="lunchbrk-card">
+              <figure className="lunchbrk-avatar">
+                <picture>
+                  <source srcSet={LUNCHBRK_AVATAR.webp} type="image/webp" />
+                  <img
+                    src={LUNCHBRK_AVATAR.jpg}
+                    alt={LUNCHBRK_AVATAR.alt}
+                    width={LUNCHBRK_AVATAR.width}
+                    height={LUNCHBRK_AVATAR.height}
+                    decoding="async"
+                  />
+                </picture>
+              </figure>
+              <div>
+                <p>{CREATOR.description}</p>
+                <p>
+                  I have been playing since an Atari 2600 showed up for Christmas in 1982. I stream and post clips as{" "}
+                  <span translate="no">{CREATOR.handle}</span>, and the guides here are written from my own runs.
+                </p>
+                <a className="cta lunchbrk-watch" href={LUNCHBRK_TWITCH} rel="me noopener">
+                  Watch LUNCHBRK on Twitch
+                </a>
+              </div>
+            </div>
           </section>
 
           <section className="glass-panel content-prose" aria-labelledby="how-we-check">

@@ -20,16 +20,16 @@ export const PUBLISHER = {
     "Anzen Digital Media LLC is a Las Vegas media company run by Javier Segura. It publishes gaming, business, tech, and money guides and sells three research services.",
 } as const;
 
-export type CreatorProfile = { label: string; href: string };
+/** The only public LUNCHBRK profile. */
+export const LUNCHBRK_TWITCH = "https://www.twitch.tv/lunchbrk";
 
-/** Public LUNCHBRK profiles. Each one should link back to anzendigitalmedia.com/gaming. */
-export const CREATOR_PROFILES: readonly CreatorProfile[] = [
-  { label: "YouTube", href: "https://www.youtube.com/@LUNCHBRK" },
-  { label: "Twitch", href: "https://www.twitch.tv/lunchbrk" },
-  { label: "X", href: "https://x.com/LUNCHBRKZ" },
-  { label: "Instagram", href: "https://www.instagram.com/lunchbrkz/" },
-  { label: "TikTok", href: "https://www.tiktok.com/@lunchbrkz" },
-];
+export const LUNCHBRK_AVATAR = {
+  jpg: "/images/lunchbrk-avatar.jpg",
+  webp: "/images/lunchbrk-avatar.webp",
+  width: 1024,
+  height: 768,
+  alt: "LUNCHBRK avatar",
+} as const;
 
 export const CREATOR = {
   id: `${SITE_ORIGIN}/about#lunchbrk`,
@@ -38,7 +38,7 @@ export const CREATOR = {
   url: `${SITE_ORIGIN}/about`,
   description:
     "LUNCHBRK is Javier Segura's gaming channel. He plays, tests, and writes the gaming guides for Anzen Digital Media.",
-  sameAs: CREATOR_PROFILES.map((profile) => profile.href),
+  sameAs: [LUNCHBRK_TWITCH],
 } as const;
 
 export const FOUNDER_PORTRAIT = {
