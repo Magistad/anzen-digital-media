@@ -9,9 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#070708",
-        paper: "#f4f0e6",
-        signal: "#5df2dc",
+        ink: "#07090c",
+        paper: "#f4efe6",
+        signal: "#f0b429",
+        line: "#3a342c",
+        foam: "#1c1814",
+        night: "#05070a",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],

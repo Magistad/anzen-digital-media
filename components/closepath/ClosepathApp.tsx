@@ -180,10 +180,10 @@ export function ClosepathApp({
         : "Open this before your inbox. Anything inside three days gets done today.";
 
   return (
-    <main id="content" className="pb-16 pt-20">
+    <main id="content" className="pb-16 pt-[calc(6.75rem+env(safe-area-inset-top))]">
       <div className="frame">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 sm:gap-x-6">
-          <p className="min-w-0 max-w-full text-[13px] text-paper/50">
+          <p className="min-w-0 max-w-full text-[13px] text-paper/75">
             Closepath
             <span className="book-email">{email}</span>
           </p>
@@ -233,7 +233,7 @@ export function ClosepathApp({
                 type="button"
                 aria-current={current ? "page" : undefined}
                 onClick={() => go(item.id)}
-                className={`book-tab -mb-px border-b pb-1.5 ${current ? "border-paper text-paper" : "border-transparent text-paper/45 hover:text-paper"}`}
+                className={`book-tab -mb-px border-b pb-1.5 ${current ? "border-paper text-paper" : "border-transparent text-paper/75 hover:text-paper"}`}
               >
                 {item.label}
               </button>
@@ -278,7 +278,7 @@ export function ClosepathApp({
 
         {hasExamples ? (
           <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 text-[14px] sm:items-baseline">
-            <p className="min-w-0 text-paper/50">Sample files are marked Example.</p>
+            <p className="min-w-0 text-paper/75">Sample files are marked Example.</p>
             <button
               type="button"
               className="book-quiet"

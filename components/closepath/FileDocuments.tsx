@@ -114,7 +114,7 @@ export function FileDocuments({
 
   return (
     <div>
-      <p className="text-[14px] text-paper/50">Photos and PDFs, up to 4.5 MB. 20 on a file.</p>
+      <p className="text-[14px] text-paper/75">Photos and PDFs, up to 4.5 MB. 20 on a file.</p>
       {file.attachments.length ? (
         <ul className="mt-2 border-t border-paper/15">
           {file.attachments.map((item) => (
@@ -130,7 +130,7 @@ export function FileDocuments({
               ) : null}
               <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[14px]">
                 <span className="min-w-0 break-all">{item.name}</span>
-                <span className="text-paper/45">{formatSize(item.size)}</span>
+                <span className="text-paper/75">{formatSize(item.size)}</span>
                 <a href={`/api/closepath/attachments/${item.id}`} target="_blank" rel="noreferrer" className="book-quiet text-paper">
                   View
                 </a>

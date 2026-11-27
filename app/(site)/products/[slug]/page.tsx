@@ -29,8 +29,8 @@ export default function ReleasePage({ params }: { params: Params }) {
   const soon = project.status === "soon";
 
   return (
-    <main id="content" className="bg-black px-4 py-24 font-display text-paper sm:px-8 md:py-28">
-      <article className="hud-panel mx-auto max-w-3xl px-6 py-12 sm:px-10 sm:py-16">
+    <main id="content" className="px-4 pb-24 pt-[calc(7rem+env(safe-area-inset-top))] font-display text-paper sm:px-8 md:pb-28">
+      <article className="glass-panel mx-auto max-w-3xl px-6 py-12 sm:px-10 sm:py-16">
         <p className="hud-kicker">{project.statusLabel}</p>
         <h1 className="hud-title mt-4 text-[clamp(2.6rem,8vw,5.5rem)]">{project.name}</h1>
         <p className="mt-6 max-w-xl text-base leading-snug text-paper/80 sm:text-lg">{project.summary}</p>

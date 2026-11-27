@@ -22,7 +22,7 @@ function attention(file: DealFile, today: string | null): { when: string; tone: 
   const { net } = commissionFigures(file.salePrice, file.ratePercent, file.splitPercent);
   const netLabel = formatMoneyAuto(net);
   if (file.outcome !== "Open") return { when: "None", tone: "text-paper/70", what: "None", net: netLabel };
-  if (!today) return { when: "", tone: "text-paper/50", what: "", net: netLabel };
+  if (!today) return { when: "", tone: "text-paper/75", what: "", net: netLabel };
   const next = nextWatch(file, today);
   if (!next) return { when: "None", tone: "text-paper/70", what: "No date", net: netLabel };
   const tone = next.days < 0 ? "when-past" : next.days <= 3 ? "when-soon" : "text-paper";
@@ -97,7 +97,7 @@ export function FileList({
               type="button"
               aria-pressed={current}
               onClick={() => onShow(item.id)}
-              className={`inline-flex min-h-11 items-center border-b sm:min-h-0 sm:pb-1 ${current ? "border-paper text-paper" : "border-transparent text-paper/45 hover:text-paper"}`}
+              className={`inline-flex min-h-11 items-center border-b sm:min-h-0 sm:pb-1 ${current ? "border-paper text-paper" : "border-transparent text-paper/75 hover:text-paper"}`}
             >
               {item.label}
             </button>
@@ -118,7 +118,7 @@ export function FileList({
           <div className="hidden lg:block">
             <table className="w-full border-collapse text-left text-[14px]">
               <thead>
-                <tr className="border-b border-paper/15 text-[12px] text-paper/45">
+                <tr className="border-b border-paper/15 text-[12px] text-paper/75">
                   <th className="py-1.5 font-normal">Address</th>
                   <th className="py-1.5 font-normal">Client</th>
                   <th className="py-1.5 font-normal">Side</th>
@@ -137,7 +137,7 @@ export function FileList({
                       <td className="py-1.5 pr-3">
                         <button type="button" onClick={() => onOpen(file.id)} className="text-left tracking-[-0.02em]">
                           {file.address || "No address yet"}
-                          {file.example ? <span className="ml-2 text-[12px] text-paper/40">Example</span> : null}
+                          {file.example ? <span className="ml-2 text-[12px] text-paper/75">Example</span> : null}
                         </button>
                       </td>
                       <td className="py-1.5 pr-3 text-paper/80">{file.client}</td>
@@ -172,9 +172,9 @@ export function FileList({
                     <button type="button" onClick={() => onOpen(file.id)} className="min-w-0 flex-1 text-left active:bg-paper/[0.04]">
                       <span className="block text-[15px] leading-snug tracking-[-0.02em]">
                         {file.address || "No address yet"}
-                        {file.example ? <span className="ml-2 text-[12px] text-paper/40">Example</span> : null}
+                        {file.example ? <span className="ml-2 text-[12px] text-paper/75">Example</span> : null}
                       </span>
-                      <span className="mt-0.5 block text-[13px] leading-snug text-paper/55">{detail}</span>
+                      <span className="mt-0.5 block text-[13px] leading-snug text-paper/75">{detail}</span>
                     </button>
                     <span className="shrink-0 pt-0.5 text-right">
                       <span className={`block text-[14px] font-semibold tabular-nums ${mark.tone}`}>{mark.when}</span>

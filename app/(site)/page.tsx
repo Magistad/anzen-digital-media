@@ -33,9 +33,11 @@ export default function Page() {
   return (
     <main id="content" className="desk-shell">
       <div className="desk-frame desk-frame-wide">
-        <p className="desk-kicker">{HUB.eyebrow}</p>
-        <h1 className="desk-title">{HUB.title}</h1>
-        <p className="desk-lead">{HUB.lead}</p>
+        <header className="dusk-hero">
+          <p className="desk-kicker">{HUB.eyebrow}</p>
+          <h1 className="desk-title">{HUB.title}</h1>
+          <p className="desk-lead">{HUB.lead}</p>
+        </header>
 
         <section className="desk-block" aria-labelledby="home-latest">
           <h2 id="home-latest" className="desk-heading">
