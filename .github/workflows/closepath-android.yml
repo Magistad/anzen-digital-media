@@ -24,13 +24,13 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.inputs.track == 'debug'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: mobile/package-lock.json
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
@@ -47,7 +47,7 @@ jobs:
       - name: Debug APK
         working-directory: mobile/android
         run: ./gradlew assembleDebug --no-daemon
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: closepath-android-debug
           path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
@@ -57,7 +57,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.track == 'play'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Require the upload keystore secrets
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -76,12 +76,12 @@ jobs:
             echo "Add the upload keystore secrets described in mobile/README.md. Do not commit the keystore."
             exit 1
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: mobile/package-lock.json
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
@@ -108,7 +108,7 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew bundleRelease --no-daemon
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: closepath-android-release
           path: mobile/android/app/build/outputs/bundle/release/*.aab
